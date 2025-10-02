@@ -299,8 +299,8 @@ python data_gen.py --scenario resource_sparse --n_jobs 200 --seed 123
 ## Notes
 
 - All time units are abstract 
-- Storage and memory values are in GB
-- Node values represent compute nodes
+- Memory (TB) and Storage (PB)
+- Node values represent compute nodes (without login nodes)
 - **Site assignment is random** - each job is independently assigned to ALCF, OLCF, or NERSC
 - **Resource constraints are strictly enforced** - no job can exceed its assigned site's limits
 - The generator creates realistic heterogeneity by varying both scenario patterns and site constraints
