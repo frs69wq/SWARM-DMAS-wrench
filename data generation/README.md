@@ -19,7 +19,7 @@ python data_gen.py --scenario <scenario_name> --n_jobs <number> [options]
 - `homogeneous_short`: Consistent short-duration jobs
 - `heterogeneous_mix`: Mixed workload with varied requirements
 - `long_job_dominant`: Mix with occasional very long jobs
-- `high_parallelism`: High-CPU, compute-intensive workloads
+- `high_parallelism`: High-node, compute-intensive workloads
 - `resource_sparse`: Minimal resource requirements
 - `bursty_idle`: Alternating burst and idle phases
 - `adversarial`: Stress test with one extremely demanding job
@@ -28,13 +28,13 @@ python data_gen.py --scenario <scenario_name> --n_jobs <number> [options]
 
 Jobs are randomly assigned to HPC sites with different resource limits:
 
-| Site | CPU Limit | Memory Limit (GB) | Storage Limit (GB) | Description |
-|------|-----------|-------------------|-------------------|-------------|
-| **ALCF** | 560 | 68 | 200 | Argonne Leadership Computing Facility |
-| **OLCF** | 1024 | 128 | 500 | Oak Ridge Leadership Computing Facility |
-| **NERSC** | 768 | 96 | 300 | National Energy Research Scientific Computing Center |
+| Site | Machine | Node Limit | Memory Limit (TB) | Storage Limit (PB) | Description |
+|------|------|-----------|-------------------|-------------------|-------------|
+| **ALCF** | Polaris | 560 | 38 | 1120 | Argonne Leadership Computing Facility |
+| **OLCF** | Frontier |9408 | 4600 | 695 | Oak Ridge Leadership Computing Facility |
+| **NERSC** | Perlmutter |4864 | 2312 | 44 | National Energy Research Scientific Computing Center |
 
-**Important**: All resource requests (CPUs, memory, storage) are constrained by the assigned site's limits using `min(requested_value, site_limit)`.
+**Important**: All resource requests (Nodes, memory, storage) are constrained by the assigned site's limits using `min(requested_value, site_limit)`.
 
 ## Generated Variables
 
@@ -45,7 +45,7 @@ Each job includes the following attributes:
 | `JobID` | Integer | Unique job identifier (1, 2, 3, ...) |
 | `SubmissionTime` | Integer | Job arrival time (time units) |
 | `Walltime` | Integer | Job execution duration (time units) |
-| `CPUs` | Integer | Number of CPU cores requested (site-constrained) |
+| `Nodes` | Integer | Number of nodes requested (site-constrained) |
 | `MemoryGB` | Integer | Memory requirement in GB (site-constrained) |
 | `RequestedGPU` | Boolean | Whether job requires GPU access |
 | `RequestedStorageGB` | Integer | Storage requirement in GB (site-constrained) |
@@ -69,7 +69,7 @@ SubmissionTime ~ Gamma(n, λ=0.05)  # where n = job_index + 1
 **Job Characteristics:**
 ```
 Walltime ~ DiscreteUniform(30, 120)
-CPUs ~ PointMass(2)
+Nodes ~ PointMass(2)
 MemoryGB ~ PointMass(4)
 RequestedGPU ~ Bernoulli(p=0.1)
 RequestedStorageGB ~ min(Gamma(shape=2, scale=5), site_storage_limit)
@@ -88,7 +88,7 @@ SubmissionTime ~ Gamma(n, λ=0.10)
 **Job Characteristics:**
 ```
 Walltime ~ Gamma(shape=1.5, scale=300)
-CPUs ~ min(2^DiscreteUniform(1, min(log₂(site_cpu_limit), 8)), site_cpu_limit)
+Nodes ~ min(2^DiscreteUniform(1, min(log₂(site_node_limit), 8)), site_node_limit)
 MemoryGB ~ min(2^DiscreteUniform(1, min(log₂(site_memory_limit), 7)), site_memory_limit)
 RequestedGPU ~ Bernoulli(p=0.3)
 RequestedStorageGB ~ min(LogNormal(μ=3, σ=1.5), site_storage_limit)
@@ -110,11 +110,11 @@ Walltime ~ MixtureDistribution:
   - 20%: DiscreteUniform(10000, 50000)  # Long jobs
   - 80%: DiscreteUniform(100, 500)      # Short jobs
 
-CPUs ~ ConditionalDistribution:
-  - min(128, site_cpu_limit) if walltime > 10000
+Nodes ~ ConditionalDistribution:
+  - min(128, site_node_limit) if walltime > 10000
   - 2 if walltime ≤ 10000
 
-MemoryGB ~ min(CPUs × DiscreteUniform(2, 8), site_memory_limit)
+MemoryGB ~ min(Nodes × DiscreteUniform(2, 8), site_memory_limit)
 
 RequestedGPU ~ ConditionalBernoulli:
   - Bernoulli(p=0.8) if walltime > 10000
@@ -132,7 +132,7 @@ HPCSite ~ DiscreteUniform({ALCF, OLCF, NERSC})
 ```
 
 ### 4. High Parallelism (`high_parallelism`)
-*High-CPU, compute-intensive workloads*
+*High-node, compute-intensive workloads*
 
 **Submission Times:**
 ```
@@ -142,10 +142,10 @@ SubmissionTime ~ Gamma(n, λ=0.20)
 **Job Characteristics:**
 ```
 Walltime ~ Gamma(shape=1, scale=800)  # Exponential distribution
-CPUs ~ min(2^DiscreteUniform(6, min(log₂(site_cpu_limit), 9)), site_cpu_limit)
-MemoryGB ~ min(CPUs × ContinuousUniform(2, 6), site_memory_limit)
+Nodes ~ min(2^DiscreteUniform(6, min(log₂(site_node_limit), 9)), site_node_limit)
+MemoryGB ~ min(Nodes × ContinuousUniform(2, 6), site_memory_limit)
 RequestedGPU ~ Bernoulli(p=0.6)
-RequestedStorageGB ~ min(CPUs × ContinuousUniform(1, 5), site_storage_limit)
+RequestedStorageGB ~ min(Nodes × ContinuousUniform(1, 5), site_storage_limit)
 JobType ~ Categorical(GPU: 40%, HYBRID: 30%, HPC: 20%, AI: 10%)
 HPCSite ~ DiscreteUniform({ALCF, OLCF, NERSC})
 ```
@@ -161,7 +161,7 @@ SubmissionTime ~ Gamma(n, λ=0.083)
 **Job Characteristics:**
 ```
 Walltime ~ DiscreteUniform(30, 300)
-CPUs ~ PointMass(1)
+Nodes ~ PointMass(1)
 MemoryGB ~ min(DiscreteUniform(1, 8), site_memory_limit)
 RequestedGPU ~ Bernoulli(p=0.05)
 RequestedStorageGB ~ min(Exponential(scale=2) + 1, site_storage_limit)
@@ -181,8 +181,8 @@ where BurstDelay = 50 for non-burst phases, 0 for burst phases
 **Job Characteristics:**
 ```
 Walltime ~ Gamma(shape=1, scale=600)  # Exponential distribution
-CPUs ~ min(2^DiscreteUniform(1, min(log₂(site_cpu_limit), 6)), site_cpu_limit)
-MemoryGB ~ min(CPUs × DiscreteUniform(1, 4), site_memory_limit)
+Nodes ~ min(2^DiscreteUniform(1, min(log₂(site_node_limit), 6)), site_node_limit)
+MemoryGB ~ min(Nodes × DiscreteUniform(1, 4), site_memory_limit)
 
 RequestedGPU ~ ConditionalBernoulli:
   - Bernoulli(p=0.4) during burst phases
@@ -213,8 +213,8 @@ Walltime ~ PointMassWithOutlier:
   - 100000 for Job[0]
   - 60 for all other jobs
 
-CPUs ~ PointMassWithOutlier:
-  - min(128, site_cpu_limit) for Job[0]
+Nodes ~ PointMassWithOutlier:
+  - min(128, site_node_limit) for Job[0]
   - 1 for all other jobs
 
 MemoryGB ~ PointMassWithOutlier:
@@ -242,7 +242,7 @@ All scenarios apply site-specific limits to resource requests:
 
 | Resource | ALCF Limit | OLCF Limit | NERSC Limit | Constraint Applied |
 |----------|------------|------------|-------------|-------------------|
-| CPUs | 560 | 1024 | 768 | `min(requested_cpus, site_cpu_limit)` |
+| Nodes | 560 | 1024 | 768 | `min(requested_nodes, site_node_limit)` |
 | Memory (GB) | 68 | 128 | 96 | `min(requested_memory, site_memory_limit)` |
 | Storage (GB) | 200 | 500 | 300 | `min(requested_storage, site_storage_limit)` |
 
@@ -283,7 +283,7 @@ python data_gen.py --scenario resource_sparse --n_jobs 200 --seed 123
 
 **Note**: All ranges are subject to site-specific constraints
 
-| Scenario | Job Duration | CPU Range* | Memory Range* | GPU Rate | Storage Range* | Primary Job Types |
+| Scenario | Job Duration | Node Range* | Memory Range* | GPU Rate | Storage Range* | Primary Job Types |
 |----------|-------------|------------|---------------|----------|----------------|-------------------|
 | homogeneous_short | 30-120 | {2} | {4} | 10% | 1-30 GB | HPC, AI |
 | heterogeneous_mix | Variable | 2-site_limit | 2-site_limit | 30% | 1-site_limit | Balanced mix |
@@ -293,14 +293,14 @@ python data_gen.py --scenario resource_sparse --n_jobs 200 --seed 123
 | bursty_idle | Exponential | 2-site_limit | 2-site_limit | 10-40% | 2-site_limit | Phase-dependent |
 | adversarial | Extreme outlier | {1, min(128,site_limit)} | {4, min(256,site_limit)} | 1% | {1, min(10000,site_limit)} | HPC, HYBRID |
 
-*Actual values constrained by: ALCF (560 CPU, 68 GB mem, 200 GB storage), OLCF (1024 CPU, 128 GB mem, 500 GB storage), NERSC (768 CPU, 96 GB mem, 300 GB storage)
+*Actual values constrained by: ALCF (560 nodes, 68 GB mem, 200 GB storage), OLCF (1024 nodes, 128 GB mem, 500 GB storage), NERSC (768 nodes, 96 GB mem, 300 GB storage)
 
 
 ## Notes
 
 - All time units are abstract 
 - Storage and memory values are in GB
-- CPU values represent core counts
+- Node values represent compute nodes
 - **Site assignment is random** - each job is independently assigned to ALCF, OLCF, or NERSC
 - **Resource constraints are strictly enforced** - no job can exceed its assigned site's limits
 - The generator creates realistic heterogeneity by varying both scenario patterns and site constraints
