@@ -7,7 +7,6 @@
  * (at your option) any later version.
  */
 
-
 #ifndef WRENCH_EXAMPLE_JOB_GENERATION_CONTROLLER_H
 #define WRENCH_EXAMPLE_JOB_GENERATION_CONTROLLER_H
 
@@ -15,30 +14,26 @@
 
 namespace wrench {
 
-    class BatchServiceController;
+class BatchServiceController;
 
-    /**
-     *  @brief An execution controller implementation
-     */
-    class JobGenerationController : public ExecutionController {
+/**
+ *  @brief An execution controller implementation
+ */
+class JobGenerationController : public ExecutionController {
 
-    public:
-        // Constructor
-        JobGenerationController(
-                const std::string &hostname,
-                int num_jobs,
-                const std::vector<std::shared_ptr<BatchServiceController>> &batch_service_controllers);
+public:
+  // Constructor
+  JobGenerationController(const std::string& hostname, int num_jobs,
+                          const std::vector<std::shared_ptr<BatchServiceController>>& batch_service_controllers);
 
-    private:
-        int main() override;
+private:
+  int main() override;
 
-        int _num_jobs;
-        std::vector<std::shared_ptr<BatchServiceController>> _batch_service_controllers;
+  int _num_jobs;
+  std::vector<std::shared_ptr<BatchServiceController>> _batch_service_controllers;
 
-        void processEventCustom(const std::shared_ptr<CustomEvent> &event) override;
+  void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
+};
 
-
-    };
-
-}// namespace wrench
-#endif//WRENCH_EXAMPLE_JOB_GENERATION_CONTROLLER_H
+} // namespace wrench
+#endif // WRENCH_EXAMPLE_JOB_GENERATION_CONTROLLER_H
