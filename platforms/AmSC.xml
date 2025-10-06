@@ -34,15 +34,13 @@
 
     <zone id="ALCF" routing="Full">
       <!-- Aurora at ALCF -->
-      <!-- "0-10624" -->
       <cluster id="Aurora" prefix="aurora-" suffix=".alcf.gov"
-               radical="0-3" 
+               radical="0-10624" 
                speed="312Tf" bw="200Gbps" lat="2us"/>
 
       <!-- Crux at ALCF -->
-       <!-- "0-256" -->
       <cluster id="Crux" prefix="crux-" suffix=".alcf.gov"
-               radical="0-3"
+               radical="0-256"
                speed="5Tf" bw="200Gbps" lat="2us"/>
       
       <zone id="ALCF_gw" routing="Full">
@@ -68,15 +66,13 @@
 
     <zone id="NERSC" routing="Full">
       <!-- Perlmutter (Phase 1, GPU nodes) at NERSC -->
-      <!-- "0-1536" -->
       <cluster id="Perlmutter-Phase-1" prefix="perlmutter-gpu-" suffix=".nersc.gov"
-               radical="0-3"
+               radical="0-1536"
                speed="4Tf" bw="200Gbps" lat="2us"/>
 
       <!-- Perlmutter (Phase 2, CPU nodes) at NERSC -->
-      <!-- "0-3072" -->
       <cluster id="Perlmutter-Phase-2" prefix="perlmutter-cpu-" suffix=".nersc.gov" 
-               radical="0-3"
+               radical="0-3072"
                speed="4.9Tf" bw="200Gbps" lat="2us"/>
       
       <zone id="NERSC_gw" routing="Full">
@@ -108,15 +104,13 @@
 
     <zone id="OLCF" routing="Full">
       <!-- Frontier at OLCF -->
-      <!-- "0-9472" -->
       <cluster id="Frontier" prefix="frontier-" suffix=".olcf.gov"
-               radical="0-3"
+               radical="0-9472"
                speed="83.9Tf" bw="200Gbps" lat="2us"/>
 
       <!-- Andes at OLCF -->
-      <!-- "0-704" -->
       <cluster id="Andes" prefix="andes-" suffix=".olcf.gov"
-               radical="0-3"
+               radical="0-704"
                speed="1.5Tf" bw="200Gbps" lat="2us"/>
 
       <zone id="OLCF_gw" routing="Full">
