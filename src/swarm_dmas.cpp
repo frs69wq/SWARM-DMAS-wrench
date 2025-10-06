@@ -64,7 +64,7 @@ int main(int argc, char** argv)
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
 
     // Instantiate a batch compute service on the computes node of this cluster
-    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes,"", {}, {}));
+    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
     scheduling_agents.push_back(simulation->add(new wrench::BatchServiceController(head_node, batch_service)));
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
   
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent = simulation->add(
-      new wrench::WorkloadSubmissionAgent("UserHost", job_list, scheduling_agents));
+      new wrench::WorkloadSubmissionAgent("WSAgent", job_list, scheduling_agents));
   for (const auto& agent : scheduling_agents)
     agent->setJobOriginator(workload_submission_agent);
   
