@@ -15,6 +15,7 @@ class JobDescription {
     std::string user_id_;
     std::string group_id_;
     std::string hpc_site_;
+    std::string hpc_system_;
     
 public:
     // getters
@@ -29,6 +30,7 @@ public:
     const std::string& get_user_id() const { return user_id_; }
     const std::string& get_group_id() const { return group_id_; }
     const std::string& get_hpc_site() const { return hpc_site_; }
+    const std::string& get_hpc_system() const { return hpc_system_; }
 
     // Setters
     void set_job_id(int value) { job_id_ = value; }
@@ -42,5 +44,6 @@ public:
     void set_user_id(const std::string& value) { user_id_ = value; }
     void set_group_id(const std::string& value) { group_id_ = value; }
     void set_hpc_site(const std::string& value) { hpc_site_ = value; }
+    void set_hpc_system(const std::string& value) { hpc_system_ = value; }
 };
 #endif //JOB_DESCRIPTION_H

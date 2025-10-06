@@ -34,7 +34,6 @@ static std::shared_ptr<std::vector<JobDescription>> extract_job_descriptions(con
     job.set_job_id(item.at("JobID").get<int>());
     job.set_submission_time(item.at("SubmissionTime").get<int>());
     job.set_walltime(item.at("Walltime").get<int>());
-    job.set_walltime(item.at("Walltime").get<int>());
     job.set_nodes(item.at("Nodes").get<int>());
     job.set_memory_gb(item.at("MemoryGB").get<int>());
     job.set_requested_gpu(item.at("RequestedGPU").get<bool>());
@@ -43,6 +42,7 @@ static std::shared_ptr<std::vector<JobDescription>> extract_job_descriptions(con
     job.set_user_id(item.at("UserID").get<std::string>());
     job.set_group_id(item.at("GroupID").get<std::string>());
     job.set_hpc_site(item.at("HPCSite").get<std::string>());
+    job.set_hpc_system(item.at("HPCSystem").get<std::string>());
 
     jobs->push_back(job);
   }
