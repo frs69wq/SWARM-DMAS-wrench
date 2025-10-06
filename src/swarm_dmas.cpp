@@ -1,13 +1,4 @@
 /**
- * Copyright (c) 2017-2021. The WRENCH Team.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- */
-
-/**
  ** This simulator simulates the execution of two batch compute services, each used by their own controller.
  ** The controllers "talk to each other" to delegate some jobs to the other controller.  There is a third
  ** controller that submits job requests to either of the previous two controllers.
@@ -34,47 +25,37 @@
 #include <wrench.h>
 
 #include "BatchServiceController.h"
-#include "JobGenerationController.h"
+#include "WorkloadSubmissionAgent.h"
 
-/**
- * @brief The Simulator's main function
- *
- * @param argc: argument count
- * @param argv: argument array
- * @return 0 on success, non-zero otherwise
- */
 int main(int argc, char** argv)
 {
-
-  /* Initialize the simulation. */
+  //Initialize the simulation.
   auto simulation = wrench::Simulation::createSimulation();
   simulation->init(&argc, argv);
 
-  /* Parsing of the command-line arguments for this WRENCH simulation */
+  // Parsing of the command-line arguments
   if (argc != 3) {
     std::cerr << "Usage: " << argv[0]
-              << " <a number of jobs> <xml platform file> [--log=batch_service_controller.threshold=info "
+              << " <json job description list> <xml platform file> "
+                 "[--log=batch_service_controller.threshold=info "
                  "--log=job_generation_controller.threshold=info]"
               << std::endl;
     exit(1);
   }
 
-  /* Reading and parsing the platform description file, written in XML following the SimGrid-defined DTD,
-   * to instantiate the simulated platform */
-  std::cerr << "Instantiating simulated platform..." << std::endl;
+  // The first command-line argument is the name of json file produced by the workload generator 
+  std::string job_list = argv[1];
+
+  // Reading and parsing the platform description file, written in XML following the SimGrid-defined DTD,
+  // to instantiate the simulated platform
   simulation->instantiatePlatform(argv[2]);
 
-  /* Parse the first command-line argument (number of jobs) */
-  int num_jobs;
-  try {
-    num_jobs = std::atoi(argv[1]);
-  } catch (std::invalid_argument& e) {
-    std::cerr << "Invalid number of jobs (" << e.what() << ")\n";
-    exit(1);
-  }
 
-  /* Instantiate two batch compute service, and add them to the simulation. */
-  std::cerr << "Instantiating a batch compute service on ComputeHost..." << std::endl;
+  // Instantiate two batch compute service, and add them to the simulation.
+  // TODO retrieve the number of clusters in the platform description
+  auto clusters = wrench::S4U_Simulation::getAllClusterIDsByZone();
+  exit(1);
+  // TODO instantiate a batch compute service per cluster
   auto batch_service_1 = simulation->add(
       new wrench::BatchComputeService("Batch1HeadNode", {"Batch1ComputeNode1", "Batch1ComputeNode2"}, "", {}, {}));
   auto batch_service_2 = simulation->add(
@@ -89,20 +70,18 @@ int main(int argc, char** argv)
   batch_controller_2->setDaemonized(true);
 
   /* Instantiate an execution controller that will generate jobs */
-  auto wms = simulation->add(
-      new wrench::JobGenerationController("UserHost", num_jobs, {batch_controller_1, batch_controller_2}));
-  batch_controller_1->setJobOriginator(wms);
-  batch_controller_2->setJobOriginator(wms);
+  auto workload_submission_agent = simulation->add(
+      new wrench::WorkloadSubmissionAgent("UserHost", job_list, {batch_controller_1, batch_controller_2}));
+  batch_controller_1->setJobOriginator(workload_submission_agent);
+  batch_controller_2->setJobOriginator(workload_submission_agent);
 
   /* Launch the simulation. This call only returns when the simulation is complete. */
-  std::cerr << "Launching the Simulation..." << std::endl;
   try {
     simulation->launch();
   } catch (std::runtime_error& e) {
     std::cerr << "Exception: " << e.what() << std::endl;
     return 1;
   }
-  std::cerr << "Simulation done!" << std::endl;
 
   return 0;
 }

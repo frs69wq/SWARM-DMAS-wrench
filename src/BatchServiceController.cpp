@@ -1,19 +1,10 @@
 /**
- * Copyright (c) 2017-2021. The WRENCH Team.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- */
-
-/**
  ** An batch service controller implementation that submits jobs to a batch compute
  ** service or delegate jobs to a peer...
  **/
 
 #include "BatchServiceController.h"
-#include "JobGenerationController.h"
+#include "WorkloadSubmissionAgent.h"
 
 #include "ControlMessages.h"
 
