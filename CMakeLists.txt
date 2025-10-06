@@ -39,6 +39,7 @@ add_custom_target(swarm_dmas-workloads
   VERBATIM
 )
 
+add_dependencies(swarm_dmas swarm_dmas-workloads)
 add_dependencies(swarm_dmas swarm_dmas-platform-file)
 
 if (ENABLE_BATSCHED)
