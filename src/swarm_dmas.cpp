@@ -50,32 +50,41 @@ int main(int argc, char** argv)
   // to instantiate the simulated platform
   simulation->instantiatePlatform(argv[2]);
 
+  // Retrieve the different clusters from the platform description and create batch services and scheduling agents
+  auto clusters = wrench::Simulation::getHostnameListByCluster();
 
-  // Instantiate two batch compute service, and add them to the simulation.
-  // TODO retrieve the number of clusters in the platform description
-  auto clusters = wrench::S4U_Simulation::getAllClusterIDsByZone();
-  exit(1);
-  // TODO instantiate a batch compute service per cluster
-  auto batch_service_1 = simulation->add(
-      new wrench::BatchComputeService("Batch1HeadNode", {"Batch1ComputeNode1", "Batch1ComputeNode2"}, "", {}, {}));
-  auto batch_service_2 = simulation->add(
-      new wrench::BatchComputeService("Batch2HeadNode", {"Batch2ComputeNode1", "Batch2ComputeNode2"}, "", {}, {}));
+  // TODO Rename BatchServiceController to SchedulingAgent
+  std::vector<std::shared_ptr<wrench::BatchServiceController>> scheduling_agents;
+    
+  std::cout << clusters.size() << " clusters in the platform"<< std::endl;
+  for (const auto& c : clusters) {
+    std::cout << "Creating BatchComputeService and SchedulingAgent on " << std::get<0>(c) << std::endl;
 
-  /* Instantiate an execution controller for each batch compute service */
-  auto batch_controller_1 = simulation->add(new wrench::BatchServiceController("Batch1HeadNode", batch_service_1));
-  auto batch_controller_2 = simulation->add(new wrench::BatchServiceController("Batch2HeadNode", batch_service_2));
-  batch_controller_1->setPeer(batch_controller_2);
-  batch_controller_1->setDaemonized(true);
-  batch_controller_2->setPeer(batch_controller_1);
-  batch_controller_2->setDaemonized(true);
+    std::string head_node = std::get<1>(c).front();
+    std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
 
-  /* Instantiate an execution controller that will generate jobs */
+    // Instantiate a batch compute service on the computes node of this cluster
+    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes,"", {}, {}));
+
+    // Instantiate a scheduling agent on the head node of this cluster
+    scheduling_agents.push_back(simulation->add(new wrench::BatchServiceController(head_node, batch_service)));
+  }
+
+  // Create the network of scheduling agents 
+  for (const auto& src : scheduling_agents) {
+    for (const auto& dst : scheduling_agents)
+      if (src!=dst)
+        src->setPeer(dst);
+    src->setDaemonized(true);
+  }
+  
+  // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent = simulation->add(
-      new wrench::WorkloadSubmissionAgent("UserHost", job_list, {batch_controller_1, batch_controller_2}));
-  batch_controller_1->setJobOriginator(workload_submission_agent);
-  batch_controller_2->setJobOriginator(workload_submission_agent);
-
-  /* Launch the simulation. This call only returns when the simulation is complete. */
+      new wrench::WorkloadSubmissionAgent("UserHost", job_list, scheduling_agents));
+  for (const auto& agent : scheduling_agents)
+    agent->setJobOriginator(workload_submission_agent);
+  
+  // Launch the simulation. This call only returns when the simulation is complete
   try {
     simulation->launch();
   } catch (std::runtime_error& e) {
