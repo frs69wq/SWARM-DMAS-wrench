@@ -10,7 +10,8 @@
     "JobType": "HYBRID",
     "UserID": "user_4",
     "GroupID": "group_1",
-    "HPCSite": "NERSC"
+    "HPCSite": "NERSC",
+    "HPCSystem":"Perlmutter-Phase-2"
   },
   {
     "JobID": 2,
@@ -23,7 +24,8 @@
     "JobType": "HPC",
     "UserID": "user_1",
     "GroupID": "group_1",
-    "HPCSite": "ALCF"
+    "HPCSite": "ALCF",
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 3,
@@ -36,7 +38,8 @@
     "JobType": "GPU",
     "UserID": "user_4",
     "GroupID": "group_1",
-    "HPCSite": "ALCF"
+    "HPCSite": "ALCF",
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 4,
@@ -49,7 +52,8 @@
     "JobType": "HPC",
     "UserID": "user_2",
     "GroupID": "group_1",
-    "HPCSite": "NERSC"
+    "HPCSite": "NERSC",
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 5,
