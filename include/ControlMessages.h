@@ -1,4 +1,3 @@
-
 #ifndef CONTROLMESSAGES_H
 #define CONTROLMESSAGES_H
 
