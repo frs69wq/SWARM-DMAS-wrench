@@ -62,19 +62,19 @@ int main(int argc, char** argv)
 
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
-
+    std::cout << compute_nodes.size() << " compute nodes on " << std::get<0>(c) << std::endl;
     // Instantiate a batch compute service on the computes node of this cluster
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
-    scheduling_agents.push_back(simulation->add(new wrench::BatchServiceController(head_node, batch_service)));
+    scheduling_agents.push_back(simulation->add(new wrench::BatchServiceController(std::get<0>(c), head_node, batch_service)));
   }
 
   // Create the network of scheduling agents 
   for (const auto& src : scheduling_agents) {
     for (const auto& dst : scheduling_agents)
       if (src!=dst)
-        src->setPeer(dst);
+        src->add_peer(dst);
     src->setDaemonized(true);
   }
   

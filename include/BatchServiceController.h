@@ -14,19 +14,22 @@ class BatchServiceController : public ExecutionController {
 
 public:
   // Constructor
-  BatchServiceController(const std::string& hostname,
+  BatchServiceController(const std::string& sitename,const std::string& hostname,
                          const std::shared_ptr<BatchComputeService>& batch_compute_service);
 
-  void setPeer(std::shared_ptr<BatchServiceController> peer) { this->_peer = peer; }
+  void add_peer(std::shared_ptr<BatchServiceController> peer) { peers_.push_back(peer); }
   void setJobOriginator(std::shared_ptr<WorkloadSubmissionAgent> originator) { this->_originator = originator; }
+  const std::string& get_sitename() const { return sitename_; }
 
 private:
   int main() override;
 
+  std::string sitename_;
+
   std::shared_ptr<JobManager> _job_manager;
 
   const std::shared_ptr<BatchComputeService> _batch_compute_service;
-  std::shared_ptr<BatchServiceController> _peer;
+  std::vector<std::shared_ptr<BatchServiceController>> peers_;
   std::shared_ptr<WorkloadSubmissionAgent> _originator;
 
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
@@ -34,4 +37,4 @@ private:
 };
 
 } // namespace wrench
-#endif // WRENCH_EXAMPLE_JOB_GENERATION_CONTROLLER_H
+#endif // BATCH_SERVICE_CONTROLLER_H

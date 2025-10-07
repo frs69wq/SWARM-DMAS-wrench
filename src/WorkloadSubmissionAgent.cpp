@@ -83,28 +83,40 @@ int WorkloadSubmissionAgent::main()
   /* Main loop */
   int next_job_to_submit = 0;
   int num_completed_jobs = 0;
-
+  
   // Set a timer for the arrival of the first job
   this->setTimer(jobs->at(0).get_submission_time(), "submit the next job");
-
+  
   while (num_completed_jobs < total_num_jobs) {
-
+    
     // Wait for the next event
     auto event = this->waitForNextEvent();
-
+    
     if (std::dynamic_pointer_cast<TimerEvent>(event)) {
       // If it's a timer event, then we send the job to a randomly selected batch service controller
-      auto target_bath_service_controller_index = dist(rng) % 2;
-      auto target_batch_service_controller      = batch_service_controllers_.at(target_bath_service_controller_index);
-
+      
+      
       auto next_job = jobs->at(next_job_to_submit);
       auto job_name = std::to_string(next_job.get_job_id());
       auto job_submission_time = next_job.get_submission_time();
-      auto job_walltime = next_job.get_walltime();
+      auto job_walltime = next_job.get_walltime();    
       auto job_nodes = next_job.get_nodes();
-      WRENCH_INFO("Sending %s to batch service controller #%d", job_name.c_str(), target_bath_service_controller_index);
+      auto job_HPCSystem = next_job.get_hpc_system();
+      
+      WRENCH_INFO("Sending %s to batch service controller %s", job_name.c_str(), job_HPCSystem.c_str());
+      std::cout << "Sending "<< job_name.c_str() << " to batch service controller " << job_HPCSystem.c_str() << std::endl;
+
+      auto target_batch_service_controller = 
+         *(std::find_if(batch_service_controllers_.begin(), batch_service_controllers_.end(),
+                        [job_HPCSystem](std::shared_ptr<wrench::BatchServiceController> c) {
+                          return c->get_sitename() == job_HPCSystem;
+                        })
+          );
+      // TODO The last parameter of JobRequestMessage is whether or not the Job can be forwarded to another
+      // scheduling agent. Make that a command line parameter to switch between scenarios without recompiling
       target_batch_service_controller->commport->dputMessage(
           new JobRequestMessage(job_name, job_nodes, job_walltime, true));
+      
       next_job_to_submit++;
 
       // Set the timer for the next job, if need be

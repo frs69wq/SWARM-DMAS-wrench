@@ -17,9 +17,9 @@ namespace wrench {
  * @param hostname: the name of the host on which to start the controller
  * @param batch_compute_service: the batch compute service this controller is in charge of
  */
-BatchServiceController::BatchServiceController(const std::string& hostname,
+BatchServiceController::BatchServiceController(const std::string& sitename, const std::string& hostname,
                                                const std::shared_ptr<BatchComputeService>& batch_compute_service)
-    : ExecutionController(hostname, "batch"), _batch_compute_service(batch_compute_service)
+    : ExecutionController(hostname, "batch"), sitename_(sitename), _batch_compute_service(batch_compute_service)
 {
 }
 
@@ -47,13 +47,13 @@ void BatchServiceController::processEventCustom(const std::shared_ptr<CustomEven
                 job_request_message->_name.c_str(), job_request_message->_num_compute_nodes,
                 job_request_message->_runtime);
     // Decide whether to forward or not based on some random criterion
-    if (job_request_message->_can_forward && (job_request_message->_num_compute_nodes % 2)) {
-      // Forward the job
-      WRENCH_INFO("Decided to forward this job to my peer!");
-      this->_peer->commport->dputMessage(new JobRequestMessage(
+    if (job_request_message->_can_forward && (job_request_message->_num_compute_nodes % 32)) {
+       // Forward the job
+      WRENCH_INFO("Decided to forward this job to one of my peers!");
+      this->peers_[std::stoi(job_request_message->_name)*47 % peers_.size()]->commport->dputMessage(new JobRequestMessage(
           job_request_message->_name, job_request_message->_num_compute_nodes, job_request_message->_runtime, false));
     } else {
-      // Do the job myself
+      //Do the job myself
       WRENCH_INFO("Doing this job myself!");
       auto job = _job_manager->createCompoundJob(job_request_message->_name);
       job->addSleepAction("", job_request_message->_runtime);
@@ -61,7 +61,7 @@ void BatchServiceController::processEventCustom(const std::shared_ptr<CustomEven
       std::map<string, string> job_args;
       job_args["-N"] = std::to_string(job_request_message->_num_compute_nodes);
       job_args["-t"] = std::to_string(job_request_message->_runtime);
-      job_args["-c"] = "10";
+      job_args["-c"] = "1";
       _job_manager->submitJob(job, _batch_compute_service, job_args);
     }
   }
