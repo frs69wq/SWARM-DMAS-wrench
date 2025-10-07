@@ -35,8 +35,8 @@ def generate_synthetic_jobs_v2(**kwargs):
         },
         'NERSC': {
             'machines': {
-                'Perlmutter-phase1': {'type': 'GPU', 'node_limit': 15000},
-                'Perlmutter-phase2': {'type': 'CPU', 'node_limit': 3000}
+                'Perlmutter-Phase-1': {'type': 'GPU', 'node_limit': 15000},
+                'Perlmutter-Phase-2': {'type': 'CPU', 'node_limit': 3000}
             },
             'memory_limit': 2312, 'storage_limit': 44
         }
@@ -313,7 +313,7 @@ def generate_synthetic_jobs_v2(**kwargs):
         'UserID': user_ids,
         'GroupID': group_ids,
         'HPCSite': sites,
-        'Machine': machine_names
+        'HPCSystem': machine_names
     })
 
     return df
