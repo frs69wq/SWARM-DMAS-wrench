@@ -1,20 +1,15 @@
-/**
- ** An execution controller implementation that generates job specifications and
- ** sends them to batch service controllers
- **/
-
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <vector>
 #include <iostream>
 
-#include "BatchServiceController.h"
+#include "JobSchedulingAgent.h"
 #include "ControlMessages.h"
 #include "JobDescription.h"
 #include "WorkloadSubmissionAgent.h"
 
 using json = nlohmann::json;
-WRENCH_LOG_CATEGORY(job_generation_controller, "Log category for JobGenerationController");
+WRENCH_LOG_CATEGORY(workload_submission_agent, "Log category for WorkloadSubmissionAgent");
 
 static std::shared_ptr<std::vector<JobDescription>> extract_job_descriptions(const std::string& filename)
 {
@@ -54,10 +49,10 @@ namespace wrench {
 
 WorkloadSubmissionAgent::WorkloadSubmissionAgent(
     const std::string& hostname, const std::string& job_list,
-    const std::vector<std::shared_ptr<BatchServiceController>>& batch_service_controllers)
-    : ExecutionController(hostname, "workload_generator")
+    const std::vector<std::shared_ptr<JobSchedulingAgent>>& job_scheduling_agents)
+    : ExecutionController(hostname, "workload_submission_agent")
     , job_list_(job_list)
-    , batch_service_controllers_(batch_service_controllers)
+    , job_scheduling_agents_(job_scheduling_agents)
 {
 }
 
@@ -65,16 +60,13 @@ int WorkloadSubmissionAgent::main()
 {
   /* Set the logging output to GREEN */
   TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_GREEN);
-  WRENCH_INFO("Job generation controller starting");
+  WRENCH_INFO("Workload Submission Agent starting");
 
   // open and parse the JSON file that describes the entire workload
   WRENCH_INFO("Creating a set of jobs to process:");
   auto jobs = extract_job_descriptions(job_list_);
   // compute and store the total number of jobs in the workload in total_num_jobs
   size_t total_num_jobs = jobs->size();
-
-  //  WRENCH_INFO("  - %s: arrival=%d compute_nodes=%d runtime=%d", job_name.c_str(), arrival_time, num_compute_nodes,
-  //              runtime);
 
   /* Initialize and seed a RNG */
   std::uniform_int_distribution<int> dist(100, 1000);
@@ -94,8 +86,7 @@ int WorkloadSubmissionAgent::main()
     
     if (std::dynamic_pointer_cast<TimerEvent>(event)) {
       // If it's a timer event, then we send the job to a randomly selected batch service controller
-      
-      
+            
       auto next_job = jobs->at(next_job_to_submit);
       auto job_name = std::to_string(next_job.get_job_id());
       auto job_submission_time = next_job.get_submission_time();
@@ -103,12 +94,12 @@ int WorkloadSubmissionAgent::main()
       auto job_nodes = next_job.get_nodes();
       auto job_HPCSystem = next_job.get_hpc_system();
       
-      WRENCH_INFO("Sending %s to batch service controller %s", job_name.c_str(), job_HPCSystem.c_str());
-      std::cout << "Sending "<< job_name.c_str() << " to batch service controller " << job_HPCSystem.c_str() << std::endl;
-
+      WRENCH_INFO("Sending Job #%s (to start at t = %5d) to Job Submission Agent '%s'", job_name.c_str(),
+                  job_submission_time, job_HPCSystem.c_str());
+      
       auto target_batch_service_controller = 
-         *(std::find_if(batch_service_controllers_.begin(), batch_service_controllers_.end(),
-                        [job_HPCSystem](std::shared_ptr<wrench::BatchServiceController> c) {
+         *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
+                        [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
                           return c->get_sitename() == job_HPCSystem;
                         })
           );

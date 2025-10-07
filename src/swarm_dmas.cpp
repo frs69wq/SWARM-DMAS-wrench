@@ -1,44 +1,24 @@
-/**
- ** This simulator simulates the execution of two batch compute services, each used by their own controller.
- ** The controllers "talk to each other" to delegate some jobs to the other controller.  There is a third
- ** controller that submits job requests to either of the previous two controllers.
- **
- ** The compute platform comprises seven hosts:
- **   - UserHost: runs the execution controller that creates job requests and sends them to one of the batch controllers
- **   - Batch1HeadNode, Batch1ComputeNode1,and Batch1ComputeNode2: the first batch system, which runs on Batch1HeadNode,
- *along with a controller
- **   - Batch2HeadNode, Batch2ComputeNode1,and Batch2ComputeNode2: the second batch system, which runs on
- *Batch2HeadNode, along with a controller
- **
- ** Example invocation of the simulator for 10 jobs, with no logging:
- **    ./wrench-example-batch-bag-of-actions 10 ./two_batch_services.xml
- **
- ** Example invocation of the simulator for 10 jobs, with only execution controller logging:
- **    ./wrench-example-batch-bag-of-actions 10 ./two_batch_services.xml --log=batch_service_controller.threshold=info
- *--log=job_generation_controller.threshold=info
- **
- ** Example invocation of the simulator for 10 jobs, with full logging:
- **    ./wrench-example-batch-bag-of-actions 10 ./two_batch_services.xml --wrench-full-log
- **/
-
 #include <iostream>
 #include <wrench.h>
 
-#include "BatchServiceController.h"
+#include "JobSchedulingAgent.h"
 #include "WorkloadSubmissionAgent.h"
+
+WRENCH_LOG_CATEGORY(swarm_dmas, "Log category for SWARM Distributed Multi-Agent Scheduling simulator");
 
 int main(int argc, char** argv)
 {
   //Initialize the simulation.
   auto simulation = wrench::Simulation::createSimulation();
   simulation->init(&argc, argv);
+  // Override WRENCH log formatting
+  xbt_log_control_set("root.fmt=[%12.6r]%e[%41a]%e[%26h]%e%e%m%n");
 
   // Parsing of the command-line arguments
   if (argc != 3) {
     std::cerr << "Usage: " << argv[0]
               << " <json job description list> <xml platform file> "
-                 "[--log=batch_service_controller.threshold=info "
-                 "--log=job_generation_controller.threshold=info]"
+                 "[--log=job_scheduling_agent.t=info --log=workload_submission_agent.t=info]"
               << std::endl;
     exit(1);
   }
@@ -53,26 +33,24 @@ int main(int argc, char** argv)
   // Retrieve the different clusters from the platform description and create batch services and scheduling agents
   auto clusters = wrench::Simulation::getHostnameListByCluster();
 
-  // TODO Rename BatchServiceController to SchedulingAgent
-  std::vector<std::shared_ptr<wrench::BatchServiceController>> scheduling_agents;
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;
     
-  std::cout << clusters.size() << " clusters in the platform"<< std::endl;
-  for (const auto& c : clusters) {
-    std::cout << "Creating BatchComputeService and SchedulingAgent on " << std::get<0>(c) << std::endl;
+  WRENCH_INFO("%lu HPC systems in the platform", clusters.size());
 
+  for (const auto& c : clusters) {
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
-    std::cout << compute_nodes.size() << " compute nodes on " << std::get<0>(c) << std::endl;
+    WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(), std::get<0>(c).c_str());
     // Instantiate a batch compute service on the computes node of this cluster
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
-    scheduling_agents.push_back(simulation->add(new wrench::BatchServiceController(std::get<0>(c), head_node, batch_service)));
+    job_scheduling_agents.push_back(simulation->add(new wrench::JobSchedulingAgent(std::get<0>(c), head_node, batch_service)));
   }
 
   // Create the network of scheduling agents 
-  for (const auto& src : scheduling_agents) {
-    for (const auto& dst : scheduling_agents)
+  for (const auto& src : job_scheduling_agents) {
+    for (const auto& dst : job_scheduling_agents)
       if (src!=dst)
         src->add_peer(dst);
     src->setDaemonized(true);
@@ -80,8 +58,8 @@ int main(int argc, char** argv)
   
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent = simulation->add(
-      new wrench::WorkloadSubmissionAgent("WSAgent", job_list, scheduling_agents));
-  for (const auto& agent : scheduling_agents)
+      new wrench::WorkloadSubmissionAgent("WSAgent", job_list, job_scheduling_agents));
+  for (const auto& agent : job_scheduling_agents)
     agent->setJobOriginator(workload_submission_agent);
   
   // Launch the simulation. This call only returns when the simulation is complete

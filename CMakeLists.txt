@@ -17,13 +17,13 @@ include_directories(include)
 
 set(HEADER_FILES
    include/JobDescription.h
-   include/BatchServiceController.h
+   include/JobSchedulingAgent.h
    include/WorkloadSubmissionAgent.h
 )
 
 set(SOURCE_FILES
    src/swarm_dmas.cpp
-   src/BatchServiceController.cpp
+   src/JobSchedulingAgent.cpp
    src/WorkloadSubmissionAgent.cpp
 )
    
