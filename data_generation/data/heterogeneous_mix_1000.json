@@ -11,7 +11,7 @@
     "UserID": "user_368",
     "GroupID": "group_156",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 2,
@@ -25,7 +25,7 @@
     "UserID": "user_176",
     "GroupID": "group_183",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 3,
@@ -39,7 +39,7 @@
     "UserID": "user_42",
     "GroupID": "group_100",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 4,
@@ -53,7 +53,7 @@
     "UserID": "user_297",
     "GroupID": "group_31",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 5,
@@ -67,7 +67,7 @@
     "UserID": "user_459",
     "GroupID": "group_161",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 6,
@@ -81,7 +81,7 @@
     "UserID": "user_89",
     "GroupID": "group_215",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 7,
@@ -95,7 +95,7 @@
     "UserID": "user_218",
     "GroupID": "group_188",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 8,
@@ -109,7 +109,7 @@
     "UserID": "user_442",
     "GroupID": "group_169",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 9,
@@ -123,7 +123,7 @@
     "UserID": "user_228",
     "GroupID": "group_81",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 10,
@@ -137,7 +137,7 @@
     "UserID": "user_298",
     "GroupID": "group_46",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 11,
@@ -151,7 +151,7 @@
     "UserID": "user_291",
     "GroupID": "group_49",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 12,
@@ -165,7 +165,7 @@
     "UserID": "user_422",
     "GroupID": "group_193",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 13,
@@ -179,7 +179,7 @@
     "UserID": "user_67",
     "GroupID": "group_42",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 14,
@@ -193,7 +193,7 @@
     "UserID": "user_251",
     "GroupID": "group_151",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 15,
@@ -207,7 +207,7 @@
     "UserID": "user_41",
     "GroupID": "group_112",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 16,
@@ -221,7 +221,7 @@
     "UserID": "user_99",
     "GroupID": "group_27",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 17,
@@ -235,7 +235,7 @@
     "UserID": "user_306",
     "GroupID": "group_217",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 18,
@@ -249,7 +249,7 @@
     "UserID": "user_360",
     "GroupID": "group_160",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 19,
@@ -263,7 +263,7 @@
     "UserID": "user_342",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 20,
@@ -277,7 +277,7 @@
     "UserID": "user_456",
     "GroupID": "group_88",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 21,
@@ -291,7 +291,7 @@
     "UserID": "user_79",
     "GroupID": "group_121",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 22,
@@ -305,7 +305,7 @@
     "UserID": "user_301",
     "GroupID": "group_3",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 23,
@@ -319,7 +319,7 @@
     "UserID": "user_199",
     "GroupID": "group_60",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 24,
@@ -333,7 +333,7 @@
     "UserID": "user_147",
     "GroupID": "group_204",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 25,
@@ -347,7 +347,7 @@
     "UserID": "user_488",
     "GroupID": "group_227",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 26,
@@ -361,7 +361,7 @@
     "UserID": "user_106",
     "GroupID": "group_79",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 27,
@@ -375,7 +375,7 @@
     "UserID": "user_401",
     "GroupID": "group_145",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 28,
@@ -389,7 +389,7 @@
     "UserID": "user_193",
     "GroupID": "group_242",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 29,
@@ -403,7 +403,7 @@
     "UserID": "user_493",
     "GroupID": "group_32",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 30,
@@ -417,7 +417,7 @@
     "UserID": "user_477",
     "GroupID": "group_7",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 31,
@@ -431,7 +431,7 @@
     "UserID": "user_122",
     "GroupID": "group_211",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 32,
@@ -445,7 +445,7 @@
     "UserID": "user_77",
     "GroupID": "group_71",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 33,
@@ -459,7 +459,7 @@
     "UserID": "user_312",
     "GroupID": "group_128",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 34,
@@ -473,7 +473,7 @@
     "UserID": "user_112",
     "GroupID": "group_197",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 35,
@@ -487,7 +487,7 @@
     "UserID": "user_349",
     "GroupID": "group_58",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 36,
@@ -501,7 +501,7 @@
     "UserID": "user_297",
     "GroupID": "group_168",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 37,
@@ -515,7 +515,7 @@
     "UserID": "user_170",
     "GroupID": "group_213",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 38,
@@ -529,7 +529,7 @@
     "UserID": "user_6",
     "GroupID": "group_112",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 39,
@@ -543,7 +543,7 @@
     "UserID": "user_197",
     "GroupID": "group_48",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 40,
@@ -557,7 +557,7 @@
     "UserID": "user_98",
     "GroupID": "group_179",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 41,
@@ -571,7 +571,7 @@
     "UserID": "user_459",
     "GroupID": "group_185",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 42,
@@ -585,7 +585,7 @@
     "UserID": "user_329",
     "GroupID": "group_111",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 43,
@@ -599,7 +599,7 @@
     "UserID": "user_230",
     "GroupID": "group_71",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 44,
@@ -613,7 +613,7 @@
     "UserID": "user_168",
     "GroupID": "group_165",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 45,
@@ -627,7 +627,7 @@
     "UserID": "user_297",
     "GroupID": "group_215",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 46,
@@ -641,7 +641,7 @@
     "UserID": "user_265",
     "GroupID": "group_75",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 47,
@@ -655,7 +655,7 @@
     "UserID": "user_8",
     "GroupID": "group_74",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 48,
@@ -669,7 +669,7 @@
     "UserID": "user_172",
     "GroupID": "group_121",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 49,
@@ -683,7 +683,7 @@
     "UserID": "user_442",
     "GroupID": "group_213",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 50,
@@ -697,7 +697,7 @@
     "UserID": "user_360",
     "GroupID": "group_55",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 51,
@@ -711,7 +711,7 @@
     "UserID": "user_195",
     "GroupID": "group_41",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 52,
@@ -725,7 +725,7 @@
     "UserID": "user_269",
     "GroupID": "group_97",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 53,
@@ -739,7 +739,7 @@
     "UserID": "user_19",
     "GroupID": "group_148",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 54,
@@ -753,7 +753,7 @@
     "UserID": "user_354",
     "GroupID": "group_33",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 55,
@@ -767,7 +767,7 @@
     "UserID": "user_352",
     "GroupID": "group_168",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 56,
@@ -781,7 +781,7 @@
     "UserID": "user_49",
     "GroupID": "group_227",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 57,
@@ -795,7 +795,7 @@
     "UserID": "user_464",
     "GroupID": "group_34",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 58,
@@ -809,7 +809,7 @@
     "UserID": "user_356",
     "GroupID": "group_62",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 59,
@@ -823,7 +823,7 @@
     "UserID": "user_338",
     "GroupID": "group_228",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 60,
@@ -837,7 +837,7 @@
     "UserID": "user_462",
     "GroupID": "group_219",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 61,
@@ -851,7 +851,7 @@
     "UserID": "user_158",
     "GroupID": "group_19",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 62,
@@ -865,7 +865,7 @@
     "UserID": "user_66",
     "GroupID": "group_171",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 63,
@@ -879,7 +879,7 @@
     "UserID": "user_461",
     "GroupID": "group_197",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 64,
@@ -893,7 +893,7 @@
     "UserID": "user_347",
     "GroupID": "group_191",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 65,
@@ -907,7 +907,7 @@
     "UserID": "user_59",
     "GroupID": "group_221",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 66,
@@ -921,7 +921,7 @@
     "UserID": "user_309",
     "GroupID": "group_248",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 67,
@@ -935,7 +935,7 @@
     "UserID": "user_308",
     "GroupID": "group_10",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 68,
@@ -949,7 +949,7 @@
     "UserID": "user_337",
     "GroupID": "group_120",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 69,
@@ -963,7 +963,7 @@
     "UserID": "user_159",
     "GroupID": "group_123",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 70,
@@ -977,7 +977,7 @@
     "UserID": "user_271",
     "GroupID": "group_247",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 71,
@@ -991,7 +991,7 @@
     "UserID": "user_121",
     "GroupID": "group_104",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 72,
@@ -1005,7 +1005,7 @@
     "UserID": "user_254",
     "GroupID": "group_141",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 73,
@@ -1019,7 +1019,7 @@
     "UserID": "user_404",
     "GroupID": "group_221",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 74,
@@ -1033,7 +1033,7 @@
     "UserID": "user_261",
     "GroupID": "group_5",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 75,
@@ -1047,7 +1047,7 @@
     "UserID": "user_135",
     "GroupID": "group_250",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 76,
@@ -1061,7 +1061,7 @@
     "UserID": "user_274",
     "GroupID": "group_58",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 77,
@@ -1075,7 +1075,7 @@
     "UserID": "user_56",
     "GroupID": "group_59",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 78,
@@ -1089,7 +1089,7 @@
     "UserID": "user_331",
     "GroupID": "group_204",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 79,
@@ -1103,7 +1103,7 @@
     "UserID": "user_96",
     "GroupID": "group_128",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 80,
@@ -1117,7 +1117,7 @@
     "UserID": "user_114",
     "GroupID": "group_187",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 81,
@@ -1131,7 +1131,7 @@
     "UserID": "user_475",
     "GroupID": "group_205",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 82,
@@ -1145,7 +1145,7 @@
     "UserID": "user_474",
     "GroupID": "group_86",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 83,
@@ -1159,7 +1159,7 @@
     "UserID": "user_357",
     "GroupID": "group_104",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 84,
@@ -1173,7 +1173,7 @@
     "UserID": "user_429",
     "GroupID": "group_143",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 85,
@@ -1187,7 +1187,7 @@
     "UserID": "user_28",
     "GroupID": "group_205",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 86,
@@ -1201,7 +1201,7 @@
     "UserID": "user_306",
     "GroupID": "group_129",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 87,
@@ -1215,7 +1215,7 @@
     "UserID": "user_2",
     "GroupID": "group_246",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 88,
@@ -1229,7 +1229,7 @@
     "UserID": "user_212",
     "GroupID": "group_38",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 89,
@@ -1243,7 +1243,7 @@
     "UserID": "user_68",
     "GroupID": "group_107",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 90,
@@ -1257,7 +1257,7 @@
     "UserID": "user_128",
     "GroupID": "group_109",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 91,
@@ -1271,7 +1271,7 @@
     "UserID": "user_333",
     "GroupID": "group_53",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 92,
@@ -1285,7 +1285,7 @@
     "UserID": "user_24",
     "GroupID": "group_52",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 93,
@@ -1299,7 +1299,7 @@
     "UserID": "user_253",
     "GroupID": "group_1",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 94,
@@ -1313,7 +1313,7 @@
     "UserID": "user_368",
     "GroupID": "group_11",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 95,
@@ -1327,7 +1327,7 @@
     "UserID": "user_230",
     "GroupID": "group_58",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 96,
@@ -1341,7 +1341,7 @@
     "UserID": "user_488",
     "GroupID": "group_235",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 97,
@@ -1355,7 +1355,7 @@
     "UserID": "user_176",
     "GroupID": "group_128",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 98,
@@ -1369,7 +1369,7 @@
     "UserID": "user_429",
     "GroupID": "group_168",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 99,
@@ -1383,7 +1383,7 @@
     "UserID": "user_375",
     "GroupID": "group_214",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 100,
@@ -1397,7 +1397,7 @@
     "UserID": "user_221",
     "GroupID": "group_227",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 101,
@@ -1411,7 +1411,7 @@
     "UserID": "user_442",
     "GroupID": "group_188",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 102,
@@ -1425,7 +1425,7 @@
     "UserID": "user_36",
     "GroupID": "group_243",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 103,
@@ -1439,7 +1439,7 @@
     "UserID": "user_2",
     "GroupID": "group_44",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 104,
@@ -1453,7 +1453,7 @@
     "UserID": "user_383",
     "GroupID": "group_6",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 105,
@@ -1467,7 +1467,7 @@
     "UserID": "user_361",
     "GroupID": "group_156",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 106,
@@ -1481,7 +1481,7 @@
     "UserID": "user_274",
     "GroupID": "group_159",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 107,
@@ -1495,7 +1495,7 @@
     "UserID": "user_177",
     "GroupID": "group_247",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 108,
@@ -1509,7 +1509,7 @@
     "UserID": "user_264",
     "GroupID": "group_8",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 109,
@@ -1523,7 +1523,7 @@
     "UserID": "user_186",
     "GroupID": "group_5",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 110,
@@ -1537,7 +1537,7 @@
     "UserID": "user_15",
     "GroupID": "group_106",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 111,
@@ -1551,7 +1551,7 @@
     "UserID": "user_489",
     "GroupID": "group_182",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 112,
@@ -1565,7 +1565,7 @@
     "UserID": "user_401",
     "GroupID": "group_112",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 113,
@@ -1579,7 +1579,7 @@
     "UserID": "user_279",
     "GroupID": "group_236",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 114,
@@ -1593,7 +1593,7 @@
     "UserID": "user_194",
     "GroupID": "group_17",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 115,
@@ -1607,7 +1607,7 @@
     "UserID": "user_198",
     "GroupID": "group_166",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 116,
@@ -1621,7 +1621,7 @@
     "UserID": "user_349",
     "GroupID": "group_9",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 117,
@@ -1635,7 +1635,7 @@
     "UserID": "user_411",
     "GroupID": "group_202",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 118,
@@ -1649,7 +1649,7 @@
     "UserID": "user_421",
     "GroupID": "group_212",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 119,
@@ -1663,7 +1663,7 @@
     "UserID": "user_305",
     "GroupID": "group_78",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 120,
@@ -1677,7 +1677,7 @@
     "UserID": "user_64",
     "GroupID": "group_14",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 121,
@@ -1691,7 +1691,7 @@
     "UserID": "user_290",
     "GroupID": "group_154",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 122,
@@ -1705,7 +1705,7 @@
     "UserID": "user_18",
     "GroupID": "group_221",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 123,
@@ -1719,7 +1719,7 @@
     "UserID": "user_64",
     "GroupID": "group_113",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 124,
@@ -1733,7 +1733,7 @@
     "UserID": "user_362",
     "GroupID": "group_190",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 125,
@@ -1747,7 +1747,7 @@
     "UserID": "user_330",
     "GroupID": "group_91",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 126,
@@ -1761,7 +1761,7 @@
     "UserID": "user_358",
     "GroupID": "group_25",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 127,
@@ -1775,7 +1775,7 @@
     "UserID": "user_251",
     "GroupID": "group_208",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 128,
@@ -1789,7 +1789,7 @@
     "UserID": "user_428",
     "GroupID": "group_164",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 129,
@@ -1803,7 +1803,7 @@
     "UserID": "user_17",
     "GroupID": "group_98",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 130,
@@ -1817,7 +1817,7 @@
     "UserID": "user_443",
     "GroupID": "group_208",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 131,
@@ -1831,7 +1831,7 @@
     "UserID": "user_141",
     "GroupID": "group_161",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 132,
@@ -1845,7 +1845,7 @@
     "UserID": "user_308",
     "GroupID": "group_3",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 133,
@@ -1859,7 +1859,7 @@
     "UserID": "user_444",
     "GroupID": "group_215",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 134,
@@ -1873,7 +1873,7 @@
     "UserID": "user_496",
     "GroupID": "group_139",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 135,
@@ -1887,7 +1887,7 @@
     "UserID": "user_426",
     "GroupID": "group_112",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 136,
@@ -1901,7 +1901,7 @@
     "UserID": "user_475",
     "GroupID": "group_186",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 137,
@@ -1915,7 +1915,7 @@
     "UserID": "user_320",
     "GroupID": "group_192",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 138,
@@ -1929,7 +1929,7 @@
     "UserID": "user_245",
     "GroupID": "group_146",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 139,
@@ -1943,7 +1943,7 @@
     "UserID": "user_450",
     "GroupID": "group_47",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 140,
@@ -1957,7 +1957,7 @@
     "UserID": "user_290",
     "GroupID": "group_233",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 141,
@@ -1971,7 +1971,7 @@
     "UserID": "user_351",
     "GroupID": "group_172",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 142,
@@ -1985,7 +1985,7 @@
     "UserID": "user_87",
     "GroupID": "group_221",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 143,
@@ -1999,7 +1999,7 @@
     "UserID": "user_199",
     "GroupID": "group_187",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 144,
@@ -2013,7 +2013,7 @@
     "UserID": "user_358",
     "GroupID": "group_50",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 145,
@@ -2027,7 +2027,7 @@
     "UserID": "user_448",
     "GroupID": "group_197",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 146,
@@ -2041,7 +2041,7 @@
     "UserID": "user_161",
     "GroupID": "group_216",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 147,
@@ -2055,7 +2055,7 @@
     "UserID": "user_140",
     "GroupID": "group_157",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 148,
@@ -2069,7 +2069,7 @@
     "UserID": "user_493",
     "GroupID": "group_221",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 149,
@@ -2083,7 +2083,7 @@
     "UserID": "user_76",
     "GroupID": "group_124",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 150,
@@ -2097,7 +2097,7 @@
     "UserID": "user_19",
     "GroupID": "group_90",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 151,
@@ -2111,7 +2111,7 @@
     "UserID": "user_393",
     "GroupID": "group_232",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 152,
@@ -2125,7 +2125,7 @@
     "UserID": "user_330",
     "GroupID": "group_67",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 153,
@@ -2139,7 +2139,7 @@
     "UserID": "user_401",
     "GroupID": "group_2",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 154,
@@ -2153,7 +2153,7 @@
     "UserID": "user_50",
     "GroupID": "group_153",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 155,
@@ -2167,7 +2167,7 @@
     "UserID": "user_232",
     "GroupID": "group_147",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 156,
@@ -2181,7 +2181,7 @@
     "UserID": "user_295",
     "GroupID": "group_168",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 157,
@@ -2195,7 +2195,7 @@
     "UserID": "user_425",
     "GroupID": "group_2",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 158,
@@ -2209,7 +2209,7 @@
     "UserID": "user_394",
     "GroupID": "group_211",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 159,
@@ -2223,7 +2223,7 @@
     "UserID": "user_12",
     "GroupID": "group_65",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 160,
@@ -2237,7 +2237,7 @@
     "UserID": "user_335",
     "GroupID": "group_190",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 161,
@@ -2251,7 +2251,7 @@
     "UserID": "user_479",
     "GroupID": "group_91",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 162,
@@ -2265,7 +2265,7 @@
     "UserID": "user_15",
     "GroupID": "group_182",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 163,
@@ -2279,7 +2279,7 @@
     "UserID": "user_28",
     "GroupID": "group_173",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 164,
@@ -2293,7 +2293,7 @@
     "UserID": "user_388",
     "GroupID": "group_247",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 165,
@@ -2307,7 +2307,7 @@
     "UserID": "user_292",
     "GroupID": "group_116",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 166,
@@ -2321,7 +2321,7 @@
     "UserID": "user_375",
     "GroupID": "group_49",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 167,
@@ -2335,7 +2335,7 @@
     "UserID": "user_321",
     "GroupID": "group_227",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 168,
@@ -2349,7 +2349,7 @@
     "UserID": "user_250",
     "GroupID": "group_233",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 169,
@@ -2363,7 +2363,7 @@
     "UserID": "user_492",
     "GroupID": "group_69",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 170,
@@ -2377,7 +2377,7 @@
     "UserID": "user_98",
     "GroupID": "group_166",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 171,
@@ -2391,7 +2391,7 @@
     "UserID": "user_303",
     "GroupID": "group_132",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 172,
@@ -2405,7 +2405,7 @@
     "UserID": "user_337",
     "GroupID": "group_145",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 173,
@@ -2419,7 +2419,7 @@
     "UserID": "user_39",
     "GroupID": "group_126",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 174,
@@ -2433,7 +2433,7 @@
     "UserID": "user_38",
     "GroupID": "group_181",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 175,
@@ -2447,7 +2447,7 @@
     "UserID": "user_300",
     "GroupID": "group_213",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 176,
@@ -2461,7 +2461,7 @@
     "UserID": "user_179",
     "GroupID": "group_53",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 177,
@@ -2475,7 +2475,7 @@
     "UserID": "user_97",
     "GroupID": "group_112",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 178,
@@ -2489,7 +2489,7 @@
     "UserID": "user_380",
     "GroupID": "group_159",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 179,
@@ -2503,7 +2503,7 @@
     "UserID": "user_469",
     "GroupID": "group_240",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 180,
@@ -2517,7 +2517,7 @@
     "UserID": "user_282",
     "GroupID": "group_150",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 181,
@@ -2531,7 +2531,7 @@
     "UserID": "user_238",
     "GroupID": "group_139",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 182,
@@ -2545,7 +2545,7 @@
     "UserID": "user_164",
     "GroupID": "group_162",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 183,
@@ -2559,7 +2559,7 @@
     "UserID": "user_453",
     "GroupID": "group_113",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 184,
@@ -2573,7 +2573,7 @@
     "UserID": "user_97",
     "GroupID": "group_143",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 185,
@@ -2587,7 +2587,7 @@
     "UserID": "user_257",
     "GroupID": "group_114",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 186,
@@ -2601,7 +2601,7 @@
     "UserID": "user_309",
     "GroupID": "group_138",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 187,
@@ -2615,7 +2615,7 @@
     "UserID": "user_262",
     "GroupID": "group_230",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 188,
@@ -2629,7 +2629,7 @@
     "UserID": "user_293",
     "GroupID": "group_224",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 189,
@@ -2643,7 +2643,7 @@
     "UserID": "user_258",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 190,
@@ -2657,7 +2657,7 @@
     "UserID": "user_249",
     "GroupID": "group_48",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 191,
@@ -2671,7 +2671,7 @@
     "UserID": "user_245",
     "GroupID": "group_31",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 192,
@@ -2685,7 +2685,7 @@
     "UserID": "user_251",
     "GroupID": "group_37",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 193,
@@ -2699,7 +2699,7 @@
     "UserID": "user_123",
     "GroupID": "group_108",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 194,
@@ -2713,7 +2713,7 @@
     "UserID": "user_325",
     "GroupID": "group_28",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 195,
@@ -2727,7 +2727,7 @@
     "UserID": "user_474",
     "GroupID": "group_159",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 196,
@@ -2741,7 +2741,7 @@
     "UserID": "user_169",
     "GroupID": "group_70",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 197,
@@ -2755,7 +2755,7 @@
     "UserID": "user_435",
     "GroupID": "group_14",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 198,
@@ -2769,7 +2769,7 @@
     "UserID": "user_175",
     "GroupID": "group_122",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 199,
@@ -2783,7 +2783,7 @@
     "UserID": "user_269",
     "GroupID": "group_215",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 200,
@@ -2797,7 +2797,7 @@
     "UserID": "user_204",
     "GroupID": "group_16",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 201,
@@ -2811,7 +2811,7 @@
     "UserID": "user_325",
     "GroupID": "group_25",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 202,
@@ -2825,7 +2825,7 @@
     "UserID": "user_66",
     "GroupID": "group_167",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 203,
@@ -2839,7 +2839,7 @@
     "UserID": "user_315",
     "GroupID": "group_66",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 204,
@@ -2853,7 +2853,7 @@
     "UserID": "user_324",
     "GroupID": "group_38",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 205,
@@ -2867,7 +2867,7 @@
     "UserID": "user_59",
     "GroupID": "group_169",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 206,
@@ -2881,7 +2881,7 @@
     "UserID": "user_219",
     "GroupID": "group_103",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 207,
@@ -2895,7 +2895,7 @@
     "UserID": "user_498",
     "GroupID": "group_98",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 208,
@@ -2909,7 +2909,7 @@
     "UserID": "user_373",
     "GroupID": "group_115",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 209,
@@ -2923,7 +2923,7 @@
     "UserID": "user_266",
     "GroupID": "group_40",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 210,
@@ -2937,7 +2937,7 @@
     "UserID": "user_141",
     "GroupID": "group_235",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 211,
@@ -2951,7 +2951,7 @@
     "UserID": "user_236",
     "GroupID": "group_64",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 212,
@@ -2965,7 +2965,7 @@
     "UserID": "user_386",
     "GroupID": "group_89",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 213,
@@ -2979,7 +2979,7 @@
     "UserID": "user_218",
     "GroupID": "group_100",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 214,
@@ -2993,7 +2993,7 @@
     "UserID": "user_15",
     "GroupID": "group_144",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 215,
@@ -3007,7 +3007,7 @@
     "UserID": "user_302",
     "GroupID": "group_249",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 216,
@@ -3021,7 +3021,7 @@
     "UserID": "user_441",
     "GroupID": "group_82",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 217,
@@ -3035,7 +3035,7 @@
     "UserID": "user_138",
     "GroupID": "group_77",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 218,
@@ -3049,7 +3049,7 @@
     "UserID": "user_406",
     "GroupID": "group_59",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 219,
@@ -3063,7 +3063,7 @@
     "UserID": "user_232",
     "GroupID": "group_229",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 220,
@@ -3077,7 +3077,7 @@
     "UserID": "user_89",
     "GroupID": "group_91",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 221,
@@ -3091,7 +3091,7 @@
     "UserID": "user_463",
     "GroupID": "group_98",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 222,
@@ -3105,7 +3105,7 @@
     "UserID": "user_77",
     "GroupID": "group_139",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 223,
@@ -3119,7 +3119,7 @@
     "UserID": "user_136",
     "GroupID": "group_1",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 224,
@@ -3133,7 +3133,7 @@
     "UserID": "user_405",
     "GroupID": "group_13",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 225,
@@ -3147,7 +3147,7 @@
     "UserID": "user_469",
     "GroupID": "group_30",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 226,
@@ -3161,7 +3161,7 @@
     "UserID": "user_406",
     "GroupID": "group_197",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 227,
@@ -3175,7 +3175,7 @@
     "UserID": "user_110",
     "GroupID": "group_18",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 228,
@@ -3189,7 +3189,7 @@
     "UserID": "user_353",
     "GroupID": "group_78",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 229,
@@ -3203,7 +3203,7 @@
     "UserID": "user_301",
     "GroupID": "group_141",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 230,
@@ -3217,7 +3217,7 @@
     "UserID": "user_91",
     "GroupID": "group_32",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 231,
@@ -3231,7 +3231,7 @@
     "UserID": "user_424",
     "GroupID": "group_71",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 232,
@@ -3245,7 +3245,7 @@
     "UserID": "user_370",
     "GroupID": "group_200",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 233,
@@ -3259,7 +3259,7 @@
     "UserID": "user_406",
     "GroupID": "group_50",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 234,
@@ -3273,7 +3273,7 @@
     "UserID": "user_414",
     "GroupID": "group_199",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 235,
@@ -3287,7 +3287,7 @@
     "UserID": "user_190",
     "GroupID": "group_116",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 236,
@@ -3301,7 +3301,7 @@
     "UserID": "user_73",
     "GroupID": "group_113",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 237,
@@ -3315,7 +3315,7 @@
     "UserID": "user_173",
     "GroupID": "group_80",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 238,
@@ -3329,7 +3329,7 @@
     "UserID": "user_35",
     "GroupID": "group_235",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 239,
@@ -3343,7 +3343,7 @@
     "UserID": "user_210",
     "GroupID": "group_31",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 240,
@@ -3357,7 +3357,7 @@
     "UserID": "user_298",
     "GroupID": "group_51",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 241,
@@ -3371,7 +3371,7 @@
     "UserID": "user_133",
     "GroupID": "group_155",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 242,
@@ -3385,7 +3385,7 @@
     "UserID": "user_283",
     "GroupID": "group_60",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 243,
@@ -3399,7 +3399,7 @@
     "UserID": "user_198",
     "GroupID": "group_33",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 244,
@@ -3413,7 +3413,7 @@
     "UserID": "user_446",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 245,
@@ -3427,7 +3427,7 @@
     "UserID": "user_32",
     "GroupID": "group_127",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 246,
@@ -3441,7 +3441,7 @@
     "UserID": "user_136",
     "GroupID": "group_221",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 247,
@@ -3455,7 +3455,7 @@
     "UserID": "user_248",
     "GroupID": "group_200",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 248,
@@ -3469,7 +3469,7 @@
     "UserID": "user_359",
     "GroupID": "group_161",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 249,
@@ -3483,7 +3483,7 @@
     "UserID": "user_341",
     "GroupID": "group_126",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 250,
@@ -3497,7 +3497,7 @@
     "UserID": "user_146",
     "GroupID": "group_41",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 251,
@@ -3511,7 +3511,7 @@
     "UserID": "user_334",
     "GroupID": "group_19",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 252,
@@ -3525,7 +3525,7 @@
     "UserID": "user_143",
     "GroupID": "group_213",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 253,
@@ -3539,7 +3539,7 @@
     "UserID": "user_234",
     "GroupID": "group_41",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 254,
@@ -3553,7 +3553,7 @@
     "UserID": "user_410",
     "GroupID": "group_85",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 255,
@@ -3567,7 +3567,7 @@
     "UserID": "user_437",
     "GroupID": "group_89",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 256,
@@ -3581,7 +3581,7 @@
     "UserID": "user_44",
     "GroupID": "group_42",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 257,
@@ -3595,7 +3595,7 @@
     "UserID": "user_32",
     "GroupID": "group_120",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 258,
@@ -3609,7 +3609,7 @@
     "UserID": "user_231",
     "GroupID": "group_23",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 259,
@@ -3623,7 +3623,7 @@
     "UserID": "user_28",
     "GroupID": "group_203",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 260,
@@ -3637,7 +3637,7 @@
     "UserID": "user_423",
     "GroupID": "group_33",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 261,
@@ -3651,7 +3651,7 @@
     "UserID": "user_491",
     "GroupID": "group_20",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 262,
@@ -3665,7 +3665,7 @@
     "UserID": "user_160",
     "GroupID": "group_153",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 263,
@@ -3679,7 +3679,7 @@
     "UserID": "user_333",
     "GroupID": "group_90",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 264,
@@ -3693,7 +3693,7 @@
     "UserID": "user_207",
     "GroupID": "group_104",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 265,
@@ -3707,7 +3707,7 @@
     "UserID": "user_18",
     "GroupID": "group_180",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 266,
@@ -3721,7 +3721,7 @@
     "UserID": "user_103",
     "GroupID": "group_12",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 267,
@@ -3735,7 +3735,7 @@
     "UserID": "user_70",
     "GroupID": "group_160",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 268,
@@ -3749,7 +3749,7 @@
     "UserID": "user_119",
     "GroupID": "group_161",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 269,
@@ -3763,7 +3763,7 @@
     "UserID": "user_139",
     "GroupID": "group_202",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 270,
@@ -3777,7 +3777,7 @@
     "UserID": "user_160",
     "GroupID": "group_196",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 271,
@@ -3791,7 +3791,7 @@
     "UserID": "user_232",
     "GroupID": "group_143",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 272,
@@ -3805,7 +3805,7 @@
     "UserID": "user_148",
     "GroupID": "group_51",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 273,
@@ -3819,7 +3819,7 @@
     "UserID": "user_353",
     "GroupID": "group_6",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 274,
@@ -3833,7 +3833,7 @@
     "UserID": "user_424",
     "GroupID": "group_91",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 275,
@@ -3847,7 +3847,7 @@
     "UserID": "user_392",
     "GroupID": "group_197",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 276,
@@ -3861,7 +3861,7 @@
     "UserID": "user_243",
     "GroupID": "group_69",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 277,
@@ -3875,7 +3875,7 @@
     "UserID": "user_35",
     "GroupID": "group_210",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 278,
@@ -3889,7 +3889,7 @@
     "UserID": "user_325",
     "GroupID": "group_220",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 279,
@@ -3903,7 +3903,7 @@
     "UserID": "user_382",
     "GroupID": "group_163",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 280,
@@ -3917,7 +3917,7 @@
     "UserID": "user_355",
     "GroupID": "group_123",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 281,
@@ -3931,7 +3931,7 @@
     "UserID": "user_239",
     "GroupID": "group_214",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 282,
@@ -3945,7 +3945,7 @@
     "UserID": "user_334",
     "GroupID": "group_162",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 283,
@@ -3959,7 +3959,7 @@
     "UserID": "user_149",
     "GroupID": "group_191",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 284,
@@ -3973,7 +3973,7 @@
     "UserID": "user_111",
     "GroupID": "group_196",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 285,
@@ -3987,7 +3987,7 @@
     "UserID": "user_408",
     "GroupID": "group_146",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 286,
@@ -4001,7 +4001,7 @@
     "UserID": "user_17",
     "GroupID": "group_233",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 287,
@@ -4015,7 +4015,7 @@
     "UserID": "user_402",
     "GroupID": "group_115",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 288,
@@ -4029,7 +4029,7 @@
     "UserID": "user_226",
     "GroupID": "group_154",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 289,
@@ -4043,7 +4043,7 @@
     "UserID": "user_140",
     "GroupID": "group_234",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 290,
@@ -4057,7 +4057,7 @@
     "UserID": "user_144",
     "GroupID": "group_214",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 291,
@@ -4071,7 +4071,7 @@
     "UserID": "user_260",
     "GroupID": "group_111",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 292,
@@ -4085,7 +4085,7 @@
     "UserID": "user_217",
     "GroupID": "group_225",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 293,
@@ -4099,7 +4099,7 @@
     "UserID": "user_162",
     "GroupID": "group_61",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 294,
@@ -4113,7 +4113,7 @@
     "UserID": "user_92",
     "GroupID": "group_107",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 295,
@@ -4127,7 +4127,7 @@
     "UserID": "user_174",
     "GroupID": "group_78",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 296,
@@ -4141,7 +4141,7 @@
     "UserID": "user_331",
     "GroupID": "group_95",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 297,
@@ -4155,7 +4155,7 @@
     "UserID": "user_205",
     "GroupID": "group_74",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 298,
@@ -4169,7 +4169,7 @@
     "UserID": "user_415",
     "GroupID": "group_243",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 299,
@@ -4183,7 +4183,7 @@
     "UserID": "user_153",
     "GroupID": "group_216",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 300,
@@ -4197,7 +4197,7 @@
     "UserID": "user_103",
     "GroupID": "group_213",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 301,
@@ -4211,7 +4211,7 @@
     "UserID": "user_202",
     "GroupID": "group_48",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 302,
@@ -4225,7 +4225,7 @@
     "UserID": "user_280",
     "GroupID": "group_200",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 303,
@@ -4239,7 +4239,7 @@
     "UserID": "user_65",
     "GroupID": "group_96",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 304,
@@ -4253,7 +4253,7 @@
     "UserID": "user_117",
     "GroupID": "group_31",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 305,
@@ -4267,7 +4267,7 @@
     "UserID": "user_153",
     "GroupID": "group_34",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 306,
@@ -4281,7 +4281,7 @@
     "UserID": "user_156",
     "GroupID": "group_87",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 307,
@@ -4295,7 +4295,7 @@
     "UserID": "user_164",
     "GroupID": "group_217",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 308,
@@ -4309,7 +4309,7 @@
     "UserID": "user_82",
     "GroupID": "group_135",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 309,
@@ -4323,7 +4323,7 @@
     "UserID": "user_6",
     "GroupID": "group_83",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 310,
@@ -4337,7 +4337,7 @@
     "UserID": "user_322",
     "GroupID": "group_135",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 311,
@@ -4351,7 +4351,7 @@
     "UserID": "user_67",
     "GroupID": "group_47",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 312,
@@ -4365,7 +4365,7 @@
     "UserID": "user_238",
     "GroupID": "group_136",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 313,
@@ -4379,7 +4379,7 @@
     "UserID": "user_72",
     "GroupID": "group_206",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 314,
@@ -4393,7 +4393,7 @@
     "UserID": "user_95",
     "GroupID": "group_129",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 315,
@@ -4407,7 +4407,7 @@
     "UserID": "user_304",
     "GroupID": "group_125",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 316,
@@ -4421,7 +4421,7 @@
     "UserID": "user_467",
     "GroupID": "group_77",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 317,
@@ -4435,7 +4435,7 @@
     "UserID": "user_498",
     "GroupID": "group_3",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 318,
@@ -4449,7 +4449,7 @@
     "UserID": "user_326",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 319,
@@ -4463,7 +4463,7 @@
     "UserID": "user_78",
     "GroupID": "group_92",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 320,
@@ -4477,7 +4477,7 @@
     "UserID": "user_67",
     "GroupID": "group_166",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 321,
@@ -4491,7 +4491,7 @@
     "UserID": "user_176",
     "GroupID": "group_179",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 322,
@@ -4505,7 +4505,7 @@
     "UserID": "user_321",
     "GroupID": "group_143",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 323,
@@ -4519,7 +4519,7 @@
     "UserID": "user_172",
     "GroupID": "group_100",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 324,
@@ -4533,7 +4533,7 @@
     "UserID": "user_478",
     "GroupID": "group_245",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 325,
@@ -4547,7 +4547,7 @@
     "UserID": "user_255",
     "GroupID": "group_127",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 326,
@@ -4561,7 +4561,7 @@
     "UserID": "user_63",
     "GroupID": "group_195",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 327,
@@ -4575,7 +4575,7 @@
     "UserID": "user_302",
     "GroupID": "group_192",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 328,
@@ -4589,7 +4589,7 @@
     "UserID": "user_403",
     "GroupID": "group_68",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 329,
@@ -4603,7 +4603,7 @@
     "UserID": "user_246",
     "GroupID": "group_133",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 330,
@@ -4617,7 +4617,7 @@
     "UserID": "user_192",
     "GroupID": "group_242",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 331,
@@ -4631,7 +4631,7 @@
     "UserID": "user_467",
     "GroupID": "group_90",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 332,
@@ -4645,7 +4645,7 @@
     "UserID": "user_329",
     "GroupID": "group_89",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 333,
@@ -4659,7 +4659,7 @@
     "UserID": "user_71",
     "GroupID": "group_10",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 334,
@@ -4673,7 +4673,7 @@
     "UserID": "user_366",
     "GroupID": "group_8",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 335,
@@ -4687,7 +4687,7 @@
     "UserID": "user_229",
     "GroupID": "group_12",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 336,
@@ -4701,7 +4701,7 @@
     "UserID": "user_434",
     "GroupID": "group_64",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 337,
@@ -4715,7 +4715,7 @@
     "UserID": "user_63",
     "GroupID": "group_118",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 338,
@@ -4729,7 +4729,7 @@
     "UserID": "user_297",
     "GroupID": "group_250",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 339,
@@ -4743,7 +4743,7 @@
     "UserID": "user_245",
     "GroupID": "group_59",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 340,
@@ -4757,7 +4757,7 @@
     "UserID": "user_7",
     "GroupID": "group_195",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 341,
@@ -4771,7 +4771,7 @@
     "UserID": "user_393",
     "GroupID": "group_219",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 342,
@@ -4785,7 +4785,7 @@
     "UserID": "user_260",
     "GroupID": "group_50",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 343,
@@ -4799,7 +4799,7 @@
     "UserID": "user_89",
     "GroupID": "group_151",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 344,
@@ -4813,7 +4813,7 @@
     "UserID": "user_177",
     "GroupID": "group_40",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 345,
@@ -4827,7 +4827,7 @@
     "UserID": "user_204",
     "GroupID": "group_122",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 346,
@@ -4841,7 +4841,7 @@
     "UserID": "user_134",
     "GroupID": "group_97",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 347,
@@ -4855,7 +4855,7 @@
     "UserID": "user_82",
     "GroupID": "group_206",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 348,
@@ -4869,7 +4869,7 @@
     "UserID": "user_488",
     "GroupID": "group_127",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 349,
@@ -4883,7 +4883,7 @@
     "UserID": "user_21",
     "GroupID": "group_246",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 350,
@@ -4897,7 +4897,7 @@
     "UserID": "user_399",
     "GroupID": "group_87",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 351,
@@ -4911,7 +4911,7 @@
     "UserID": "user_128",
     "GroupID": "group_223",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 352,
@@ -4925,7 +4925,7 @@
     "UserID": "user_195",
     "GroupID": "group_77",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 353,
@@ -4939,7 +4939,7 @@
     "UserID": "user_194",
     "GroupID": "group_121",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 354,
@@ -4953,7 +4953,7 @@
     "UserID": "user_184",
     "GroupID": "group_204",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 355,
@@ -4967,7 +4967,7 @@
     "UserID": "user_247",
     "GroupID": "group_227",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 356,
@@ -4981,7 +4981,7 @@
     "UserID": "user_361",
     "GroupID": "group_146",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 357,
@@ -4995,7 +4995,7 @@
     "UserID": "user_360",
     "GroupID": "group_149",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 358,
@@ -5009,7 +5009,7 @@
     "UserID": "user_324",
     "GroupID": "group_237",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 359,
@@ -5023,7 +5023,7 @@
     "UserID": "user_160",
     "GroupID": "group_111",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 360,
@@ -5037,7 +5037,7 @@
     "UserID": "user_194",
     "GroupID": "group_234",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 361,
@@ -5051,7 +5051,7 @@
     "UserID": "user_110",
     "GroupID": "group_129",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 362,
@@ -5065,7 +5065,7 @@
     "UserID": "user_413",
     "GroupID": "group_166",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 363,
@@ -5079,7 +5079,7 @@
     "UserID": "user_66",
     "GroupID": "group_41",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 364,
@@ -5093,7 +5093,7 @@
     "UserID": "user_418",
     "GroupID": "group_170",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 365,
@@ -5107,7 +5107,7 @@
     "UserID": "user_254",
     "GroupID": "group_239",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 366,
@@ -5121,7 +5121,7 @@
     "UserID": "user_283",
     "GroupID": "group_137",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 367,
@@ -5135,7 +5135,7 @@
     "UserID": "user_60",
     "GroupID": "group_23",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 368,
@@ -5149,7 +5149,7 @@
     "UserID": "user_118",
     "GroupID": "group_78",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 369,
@@ -5163,7 +5163,7 @@
     "UserID": "user_423",
     "GroupID": "group_11",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 370,
@@ -5177,7 +5177,7 @@
     "UserID": "user_44",
     "GroupID": "group_71",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 371,
@@ -5191,7 +5191,7 @@
     "UserID": "user_486",
     "GroupID": "group_159",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 372,
@@ -5205,7 +5205,7 @@
     "UserID": "user_210",
     "GroupID": "group_216",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 373,
@@ -5219,7 +5219,7 @@
     "UserID": "user_36",
     "GroupID": "group_26",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 374,
@@ -5233,7 +5233,7 @@
     "UserID": "user_19",
     "GroupID": "group_30",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 375,
@@ -5247,7 +5247,7 @@
     "UserID": "user_91",
     "GroupID": "group_162",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 376,
@@ -5261,7 +5261,7 @@
     "UserID": "user_301",
     "GroupID": "group_174",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 377,
@@ -5275,7 +5275,7 @@
     "UserID": "user_212",
     "GroupID": "group_102",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 378,
@@ -5289,7 +5289,7 @@
     "UserID": "user_405",
     "GroupID": "group_69",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 379,
@@ -5303,7 +5303,7 @@
     "UserID": "user_407",
     "GroupID": "group_133",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 380,
@@ -5317,7 +5317,7 @@
     "UserID": "user_222",
     "GroupID": "group_189",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 381,
@@ -5331,7 +5331,7 @@
     "UserID": "user_217",
     "GroupID": "group_211",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 382,
@@ -5345,7 +5345,7 @@
     "UserID": "user_223",
     "GroupID": "group_243",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 383,
@@ -5359,7 +5359,7 @@
     "UserID": "user_411",
     "GroupID": "group_166",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 384,
@@ -5373,7 +5373,7 @@
     "UserID": "user_98",
     "GroupID": "group_156",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 385,
@@ -5387,7 +5387,7 @@
     "UserID": "user_456",
     "GroupID": "group_154",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 386,
@@ -5401,7 +5401,7 @@
     "UserID": "user_19",
     "GroupID": "group_61",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 387,
@@ -5415,7 +5415,7 @@
     "UserID": "user_297",
     "GroupID": "group_106",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 388,
@@ -5429,7 +5429,7 @@
     "UserID": "user_26",
     "GroupID": "group_23",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 389,
@@ -5443,7 +5443,7 @@
     "UserID": "user_28",
     "GroupID": "group_174",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 390,
@@ -5457,7 +5457,7 @@
     "UserID": "user_64",
     "GroupID": "group_113",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 391,
@@ -5471,7 +5471,7 @@
     "UserID": "user_324",
     "GroupID": "group_30",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 392,
@@ -5485,7 +5485,7 @@
     "UserID": "user_223",
     "GroupID": "group_67",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 393,
@@ -5499,7 +5499,7 @@
     "UserID": "user_80",
     "GroupID": "group_220",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 394,
@@ -5513,7 +5513,7 @@
     "UserID": "user_51",
     "GroupID": "group_161",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 395,
@@ -5527,7 +5527,7 @@
     "UserID": "user_458",
     "GroupID": "group_234",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 396,
@@ -5541,7 +5541,7 @@
     "UserID": "user_102",
     "GroupID": "group_131",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 397,
@@ -5555,7 +5555,7 @@
     "UserID": "user_176",
     "GroupID": "group_197",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 398,
@@ -5569,7 +5569,7 @@
     "UserID": "user_10",
     "GroupID": "group_121",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 399,
@@ -5583,7 +5583,7 @@
     "UserID": "user_237",
     "GroupID": "group_83",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 400,
@@ -5597,7 +5597,7 @@
     "UserID": "user_457",
     "GroupID": "group_170",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 401,
@@ -5611,7 +5611,7 @@
     "UserID": "user_423",
     "GroupID": "group_62",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 402,
@@ -5625,7 +5625,7 @@
     "UserID": "user_100",
     "GroupID": "group_186",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 403,
@@ -5639,7 +5639,7 @@
     "UserID": "user_499",
     "GroupID": "group_57",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 404,
@@ -5653,7 +5653,7 @@
     "UserID": "user_378",
     "GroupID": "group_240",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 405,
@@ -5667,7 +5667,7 @@
     "UserID": "user_228",
     "GroupID": "group_1",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 406,
@@ -5681,7 +5681,7 @@
     "UserID": "user_403",
     "GroupID": "group_102",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 407,
@@ -5695,7 +5695,7 @@
     "UserID": "user_64",
     "GroupID": "group_201",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 408,
@@ -5709,7 +5709,7 @@
     "UserID": "user_380",
     "GroupID": "group_188",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 409,
@@ -5723,7 +5723,7 @@
     "UserID": "user_19",
     "GroupID": "group_69",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 410,
@@ -5737,7 +5737,7 @@
     "UserID": "user_332",
     "GroupID": "group_59",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 411,
@@ -5751,7 +5751,7 @@
     "UserID": "user_318",
     "GroupID": "group_46",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 412,
@@ -5765,7 +5765,7 @@
     "UserID": "user_141",
     "GroupID": "group_106",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 413,
@@ -5779,7 +5779,7 @@
     "UserID": "user_25",
     "GroupID": "group_34",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 414,
@@ -5793,7 +5793,7 @@
     "UserID": "user_228",
     "GroupID": "group_101",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 415,
@@ -5807,7 +5807,7 @@
     "UserID": "user_89",
     "GroupID": "group_97",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 416,
@@ -5821,7 +5821,7 @@
     "UserID": "user_92",
     "GroupID": "group_153",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 417,
@@ -5835,7 +5835,7 @@
     "UserID": "user_42",
     "GroupID": "group_170",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 418,
@@ -5849,7 +5849,7 @@
     "UserID": "user_373",
     "GroupID": "group_29",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 419,
@@ -5863,7 +5863,7 @@
     "UserID": "user_295",
     "GroupID": "group_250",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 420,
@@ -5877,7 +5877,7 @@
     "UserID": "user_414",
     "GroupID": "group_153",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 421,
@@ -5891,7 +5891,7 @@
     "UserID": "user_389",
     "GroupID": "group_182",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 422,
@@ -5905,7 +5905,7 @@
     "UserID": "user_81",
     "GroupID": "group_123",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 423,
@@ -5919,7 +5919,7 @@
     "UserID": "user_402",
     "GroupID": "group_73",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 424,
@@ -5933,7 +5933,7 @@
     "UserID": "user_107",
     "GroupID": "group_195",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 425,
@@ -5947,7 +5947,7 @@
     "UserID": "user_111",
     "GroupID": "group_143",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 426,
@@ -5961,7 +5961,7 @@
     "UserID": "user_277",
     "GroupID": "group_4",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 427,
@@ -5975,7 +5975,7 @@
     "UserID": "user_214",
     "GroupID": "group_237",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 428,
@@ -5989,7 +5989,7 @@
     "UserID": "user_231",
     "GroupID": "group_38",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 429,
@@ -6003,7 +6003,7 @@
     "UserID": "user_306",
     "GroupID": "group_20",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 430,
@@ -6017,7 +6017,7 @@
     "UserID": "user_121",
     "GroupID": "group_113",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 431,
@@ -6031,7 +6031,7 @@
     "UserID": "user_134",
     "GroupID": "group_23",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 432,
@@ -6045,7 +6045,7 @@
     "UserID": "user_306",
     "GroupID": "group_165",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 433,
@@ -6059,7 +6059,7 @@
     "UserID": "user_208",
     "GroupID": "group_190",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 434,
@@ -6073,7 +6073,7 @@
     "UserID": "user_450",
     "GroupID": "group_111",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 435,
@@ -6087,7 +6087,7 @@
     "UserID": "user_371",
     "GroupID": "group_136",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 436,
@@ -6101,7 +6101,7 @@
     "UserID": "user_257",
     "GroupID": "group_249",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 437,
@@ -6115,7 +6115,7 @@
     "UserID": "user_185",
     "GroupID": "group_165",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 438,
@@ -6129,7 +6129,7 @@
     "UserID": "user_286",
     "GroupID": "group_248",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 439,
@@ -6143,7 +6143,7 @@
     "UserID": "user_442",
     "GroupID": "group_45",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 440,
@@ -6157,7 +6157,7 @@
     "UserID": "user_363",
     "GroupID": "group_97",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 441,
@@ -6171,7 +6171,7 @@
     "UserID": "user_180",
     "GroupID": "group_33",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 442,
@@ -6185,7 +6185,7 @@
     "UserID": "user_421",
     "GroupID": "group_135",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 443,
@@ -6199,7 +6199,7 @@
     "UserID": "user_48",
     "GroupID": "group_22",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 444,
@@ -6213,7 +6213,7 @@
     "UserID": "user_87",
     "GroupID": "group_133",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 445,
@@ -6227,7 +6227,7 @@
     "UserID": "user_385",
     "GroupID": "group_238",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 446,
@@ -6241,7 +6241,7 @@
     "UserID": "user_19",
     "GroupID": "group_15",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 447,
@@ -6255,7 +6255,7 @@
     "UserID": "user_46",
     "GroupID": "group_21",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 448,
@@ -6269,7 +6269,7 @@
     "UserID": "user_451",
     "GroupID": "group_126",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 449,
@@ -6283,7 +6283,7 @@
     "UserID": "user_386",
     "GroupID": "group_89",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 450,
@@ -6297,7 +6297,7 @@
     "UserID": "user_56",
     "GroupID": "group_17",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 451,
@@ -6311,7 +6311,7 @@
     "UserID": "user_229",
     "GroupID": "group_56",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 452,
@@ -6325,7 +6325,7 @@
     "UserID": "user_145",
     "GroupID": "group_50",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 453,
@@ -6339,7 +6339,7 @@
     "UserID": "user_92",
     "GroupID": "group_135",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 454,
@@ -6353,7 +6353,7 @@
     "UserID": "user_82",
     "GroupID": "group_118",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 455,
@@ -6367,7 +6367,7 @@
     "UserID": "user_225",
     "GroupID": "group_122",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 456,
@@ -6381,7 +6381,7 @@
     "UserID": "user_79",
     "GroupID": "group_50",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 457,
@@ -6395,7 +6395,7 @@
     "UserID": "user_150",
     "GroupID": "group_60",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 458,
@@ -6409,7 +6409,7 @@
     "UserID": "user_361",
     "GroupID": "group_125",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 459,
@@ -6423,7 +6423,7 @@
     "UserID": "user_283",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 460,
@@ -6437,7 +6437,7 @@
     "UserID": "user_311",
     "GroupID": "group_116",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 461,
@@ -6451,7 +6451,7 @@
     "UserID": "user_485",
     "GroupID": "group_135",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 462,
@@ -6465,7 +6465,7 @@
     "UserID": "user_160",
     "GroupID": "group_168",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 463,
@@ -6479,7 +6479,7 @@
     "UserID": "user_316",
     "GroupID": "group_173",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 464,
@@ -6493,7 +6493,7 @@
     "UserID": "user_365",
     "GroupID": "group_187",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 465,
@@ -6507,7 +6507,7 @@
     "UserID": "user_467",
     "GroupID": "group_242",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 466,
@@ -6521,7 +6521,7 @@
     "UserID": "user_156",
     "GroupID": "group_88",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 467,
@@ -6535,7 +6535,7 @@
     "UserID": "user_156",
     "GroupID": "group_203",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 468,
@@ -6549,7 +6549,7 @@
     "UserID": "user_376",
     "GroupID": "group_105",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 469,
@@ -6563,7 +6563,7 @@
     "UserID": "user_202",
     "GroupID": "group_55",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 470,
@@ -6577,7 +6577,7 @@
     "UserID": "user_468",
     "GroupID": "group_64",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 471,
@@ -6591,7 +6591,7 @@
     "UserID": "user_409",
     "GroupID": "group_193",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 472,
@@ -6605,7 +6605,7 @@
     "UserID": "user_341",
     "GroupID": "group_182",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 473,
@@ -6619,7 +6619,7 @@
     "UserID": "user_462",
     "GroupID": "group_96",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 474,
@@ -6633,7 +6633,7 @@
     "UserID": "user_342",
     "GroupID": "group_168",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 475,
@@ -6647,7 +6647,7 @@
     "UserID": "user_117",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 476,
@@ -6661,7 +6661,7 @@
     "UserID": "user_154",
     "GroupID": "group_44",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 477,
@@ -6675,7 +6675,7 @@
     "UserID": "user_364",
     "GroupID": "group_191",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 478,
@@ -6689,7 +6689,7 @@
     "UserID": "user_331",
     "GroupID": "group_130",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 479,
@@ -6703,7 +6703,7 @@
     "UserID": "user_119",
     "GroupID": "group_207",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 480,
@@ -6717,7 +6717,7 @@
     "UserID": "user_199",
     "GroupID": "group_149",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 481,
@@ -6731,7 +6731,7 @@
     "UserID": "user_401",
     "GroupID": "group_216",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 482,
@@ -6745,7 +6745,7 @@
     "UserID": "user_466",
     "GroupID": "group_50",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 483,
@@ -6759,7 +6759,7 @@
     "UserID": "user_263",
     "GroupID": "group_209",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 484,
@@ -6773,7 +6773,7 @@
     "UserID": "user_184",
     "GroupID": "group_111",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 485,
@@ -6787,7 +6787,7 @@
     "UserID": "user_448",
     "GroupID": "group_180",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 486,
@@ -6801,7 +6801,7 @@
     "UserID": "user_148",
     "GroupID": "group_244",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 487,
@@ -6815,7 +6815,7 @@
     "UserID": "user_166",
     "GroupID": "group_137",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 488,
@@ -6829,7 +6829,7 @@
     "UserID": "user_75",
     "GroupID": "group_99",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 489,
@@ -6843,7 +6843,7 @@
     "UserID": "user_236",
     "GroupID": "group_148",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 490,
@@ -6857,7 +6857,7 @@
     "UserID": "user_314",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 491,
@@ -6871,7 +6871,7 @@
     "UserID": "user_272",
     "GroupID": "group_146",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 492,
@@ -6885,7 +6885,7 @@
     "UserID": "user_179",
     "GroupID": "group_84",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 493,
@@ -6899,7 +6899,7 @@
     "UserID": "user_283",
     "GroupID": "group_30",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 494,
@@ -6913,7 +6913,7 @@
     "UserID": "user_51",
     "GroupID": "group_232",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 495,
@@ -6927,7 +6927,7 @@
     "UserID": "user_75",
     "GroupID": "group_65",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 496,
@@ -6941,7 +6941,7 @@
     "UserID": "user_144",
     "GroupID": "group_24",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 497,
@@ -6955,7 +6955,7 @@
     "UserID": "user_343",
     "GroupID": "group_216",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 498,
@@ -6969,7 +6969,7 @@
     "UserID": "user_188",
     "GroupID": "group_175",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 499,
@@ -6983,7 +6983,7 @@
     "UserID": "user_123",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 500,
@@ -6997,7 +6997,7 @@
     "UserID": "user_332",
     "GroupID": "group_222",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 501,
@@ -7011,7 +7011,7 @@
     "UserID": "user_251",
     "GroupID": "group_90",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 502,
@@ -7025,7 +7025,7 @@
     "UserID": "user_296",
     "GroupID": "group_106",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 503,
@@ -7039,7 +7039,7 @@
     "UserID": "user_323",
     "GroupID": "group_172",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 504,
@@ -7053,7 +7053,7 @@
     "UserID": "user_130",
     "GroupID": "group_230",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 505,
@@ -7067,7 +7067,7 @@
     "UserID": "user_252",
     "GroupID": "group_157",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 506,
@@ -7081,7 +7081,7 @@
     "UserID": "user_358",
     "GroupID": "group_77",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 507,
@@ -7095,7 +7095,7 @@
     "UserID": "user_432",
     "GroupID": "group_68",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 508,
@@ -7109,7 +7109,7 @@
     "UserID": "user_180",
     "GroupID": "group_109",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 509,
@@ -7123,7 +7123,7 @@
     "UserID": "user_408",
     "GroupID": "group_145",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 510,
@@ -7137,7 +7137,7 @@
     "UserID": "user_349",
     "GroupID": "group_97",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 511,
@@ -7151,7 +7151,7 @@
     "UserID": "user_495",
     "GroupID": "group_133",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 512,
@@ -7165,7 +7165,7 @@
     "UserID": "user_110",
     "GroupID": "group_92",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 513,
@@ -7179,7 +7179,7 @@
     "UserID": "user_482",
     "GroupID": "group_88",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 514,
@@ -7193,7 +7193,7 @@
     "UserID": "user_468",
     "GroupID": "group_209",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 515,
@@ -7207,7 +7207,7 @@
     "UserID": "user_338",
     "GroupID": "group_50",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 516,
@@ -7221,7 +7221,7 @@
     "UserID": "user_78",
     "GroupID": "group_103",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 517,
@@ -7235,7 +7235,7 @@
     "UserID": "user_466",
     "GroupID": "group_112",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 518,
@@ -7249,7 +7249,7 @@
     "UserID": "user_2",
     "GroupID": "group_168",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 519,
@@ -7263,7 +7263,7 @@
     "UserID": "user_321",
     "GroupID": "group_236",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 520,
@@ -7277,7 +7277,7 @@
     "UserID": "user_276",
     "GroupID": "group_46",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 521,
@@ -7291,7 +7291,7 @@
     "UserID": "user_290",
     "GroupID": "group_179",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 522,
@@ -7305,7 +7305,7 @@
     "UserID": "user_297",
     "GroupID": "group_11",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 523,
@@ -7319,7 +7319,7 @@
     "UserID": "user_169",
     "GroupID": "group_12",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 524,
@@ -7333,7 +7333,7 @@
     "UserID": "user_240",
     "GroupID": "group_141",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 525,
@@ -7347,7 +7347,7 @@
     "UserID": "user_459",
     "GroupID": "group_64",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 526,
@@ -7361,7 +7361,7 @@
     "UserID": "user_475",
     "GroupID": "group_8",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 527,
@@ -7375,7 +7375,7 @@
     "UserID": "user_23",
     "GroupID": "group_193",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 528,
@@ -7389,7 +7389,7 @@
     "UserID": "user_294",
     "GroupID": "group_9",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 529,
@@ -7403,7 +7403,7 @@
     "UserID": "user_172",
     "GroupID": "group_220",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 530,
@@ -7417,7 +7417,7 @@
     "UserID": "user_323",
     "GroupID": "group_130",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 531,
@@ -7431,7 +7431,7 @@
     "UserID": "user_318",
     "GroupID": "group_78",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 532,
@@ -7445,7 +7445,7 @@
     "UserID": "user_396",
     "GroupID": "group_141",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 533,
@@ -7459,7 +7459,7 @@
     "UserID": "user_286",
     "GroupID": "group_240",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 534,
@@ -7473,7 +7473,7 @@
     "UserID": "user_479",
     "GroupID": "group_2",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 535,
@@ -7487,7 +7487,7 @@
     "UserID": "user_343",
     "GroupID": "group_196",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 536,
@@ -7501,7 +7501,7 @@
     "UserID": "user_193",
     "GroupID": "group_204",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 537,
@@ -7515,7 +7515,7 @@
     "UserID": "user_169",
     "GroupID": "group_176",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 538,
@@ -7529,7 +7529,7 @@
     "UserID": "user_404",
     "GroupID": "group_74",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 539,
@@ -7543,7 +7543,7 @@
     "UserID": "user_118",
     "GroupID": "group_131",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 540,
@@ -7557,7 +7557,7 @@
     "UserID": "user_6",
     "GroupID": "group_196",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 541,
@@ -7571,7 +7571,7 @@
     "UserID": "user_331",
     "GroupID": "group_134",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 542,
@@ -7585,7 +7585,7 @@
     "UserID": "user_483",
     "GroupID": "group_87",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 543,
@@ -7599,7 +7599,7 @@
     "UserID": "user_132",
     "GroupID": "group_5",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 544,
@@ -7613,7 +7613,7 @@
     "UserID": "user_93",
     "GroupID": "group_242",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 545,
@@ -7627,7 +7627,7 @@
     "UserID": "user_251",
     "GroupID": "group_131",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 546,
@@ -7641,7 +7641,7 @@
     "UserID": "user_10",
     "GroupID": "group_138",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 547,
@@ -7655,7 +7655,7 @@
     "UserID": "user_51",
     "GroupID": "group_171",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 548,
@@ -7669,7 +7669,7 @@
     "UserID": "user_349",
     "GroupID": "group_147",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 549,
@@ -7683,7 +7683,7 @@
     "UserID": "user_294",
     "GroupID": "group_14",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 550,
@@ -7697,7 +7697,7 @@
     "UserID": "user_129",
     "GroupID": "group_149",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 551,
@@ -7711,7 +7711,7 @@
     "UserID": "user_488",
     "GroupID": "group_124",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 552,
@@ -7725,7 +7725,7 @@
     "UserID": "user_392",
     "GroupID": "group_43",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 553,
@@ -7739,7 +7739,7 @@
     "UserID": "user_249",
     "GroupID": "group_28",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 554,
@@ -7753,7 +7753,7 @@
     "UserID": "user_102",
     "GroupID": "group_149",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 555,
@@ -7767,7 +7767,7 @@
     "UserID": "user_337",
     "GroupID": "group_164",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 556,
@@ -7781,7 +7781,7 @@
     "UserID": "user_83",
     "GroupID": "group_24",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 557,
@@ -7795,7 +7795,7 @@
     "UserID": "user_191",
     "GroupID": "group_182",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 558,
@@ -7809,7 +7809,7 @@
     "UserID": "user_417",
     "GroupID": "group_166",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 559,
@@ -7823,7 +7823,7 @@
     "UserID": "user_143",
     "GroupID": "group_17",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 560,
@@ -7837,7 +7837,7 @@
     "UserID": "user_237",
     "GroupID": "group_150",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 561,
@@ -7851,7 +7851,7 @@
     "UserID": "user_287",
     "GroupID": "group_83",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 562,
@@ -7865,7 +7865,7 @@
     "UserID": "user_277",
     "GroupID": "group_45",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 563,
@@ -7879,7 +7879,7 @@
     "UserID": "user_387",
     "GroupID": "group_246",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 564,
@@ -7893,7 +7893,7 @@
     "UserID": "user_382",
     "GroupID": "group_74",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 565,
@@ -7907,7 +7907,7 @@
     "UserID": "user_450",
     "GroupID": "group_189",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 566,
@@ -7921,7 +7921,7 @@
     "UserID": "user_291",
     "GroupID": "group_139",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 567,
@@ -7935,7 +7935,7 @@
     "UserID": "user_169",
     "GroupID": "group_61",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 568,
@@ -7949,7 +7949,7 @@
     "UserID": "user_443",
     "GroupID": "group_38",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 569,
@@ -7963,7 +7963,7 @@
     "UserID": "user_144",
     "GroupID": "group_66",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 570,
@@ -7977,7 +7977,7 @@
     "UserID": "user_184",
     "GroupID": "group_33",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 571,
@@ -7991,7 +7991,7 @@
     "UserID": "user_45",
     "GroupID": "group_43",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 572,
@@ -8005,7 +8005,7 @@
     "UserID": "user_243",
     "GroupID": "group_159",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 573,
@@ -8019,7 +8019,7 @@
     "UserID": "user_315",
     "GroupID": "group_112",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 574,
@@ -8033,7 +8033,7 @@
     "UserID": "user_434",
     "GroupID": "group_35",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 575,
@@ -8047,7 +8047,7 @@
     "UserID": "user_469",
     "GroupID": "group_37",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 576,
@@ -8061,7 +8061,7 @@
     "UserID": "user_268",
     "GroupID": "group_175",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 577,
@@ -8075,7 +8075,7 @@
     "UserID": "user_476",
     "GroupID": "group_239",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 578,
@@ -8089,7 +8089,7 @@
     "UserID": "user_253",
     "GroupID": "group_100",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 579,
@@ -8103,7 +8103,7 @@
     "UserID": "user_396",
     "GroupID": "group_23",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 580,
@@ -8117,7 +8117,7 @@
     "UserID": "user_289",
     "GroupID": "group_164",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 581,
@@ -8131,7 +8131,7 @@
     "UserID": "user_212",
     "GroupID": "group_168",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 582,
@@ -8145,7 +8145,7 @@
     "UserID": "user_488",
     "GroupID": "group_231",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 583,
@@ -8159,7 +8159,7 @@
     "UserID": "user_177",
     "GroupID": "group_218",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 584,
@@ -8173,7 +8173,7 @@
     "UserID": "user_21",
     "GroupID": "group_89",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 585,
@@ -8187,7 +8187,7 @@
     "UserID": "user_316",
     "GroupID": "group_209",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 586,
@@ -8201,7 +8201,7 @@
     "UserID": "user_52",
     "GroupID": "group_15",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 587,
@@ -8215,7 +8215,7 @@
     "UserID": "user_438",
     "GroupID": "group_165",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 588,
@@ -8229,7 +8229,7 @@
     "UserID": "user_423",
     "GroupID": "group_237",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 589,
@@ -8243,7 +8243,7 @@
     "UserID": "user_233",
     "GroupID": "group_132",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 590,
@@ -8257,7 +8257,7 @@
     "UserID": "user_433",
     "GroupID": "group_150",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 591,
@@ -8271,7 +8271,7 @@
     "UserID": "user_123",
     "GroupID": "group_209",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 592,
@@ -8285,7 +8285,7 @@
     "UserID": "user_362",
     "GroupID": "group_22",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 593,
@@ -8299,7 +8299,7 @@
     "UserID": "user_448",
     "GroupID": "group_209",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 594,
@@ -8313,7 +8313,7 @@
     "UserID": "user_100",
     "GroupID": "group_206",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 595,
@@ -8327,7 +8327,7 @@
     "UserID": "user_214",
     "GroupID": "group_78",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 596,
@@ -8341,7 +8341,7 @@
     "UserID": "user_410",
     "GroupID": "group_145",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 597,
@@ -8355,7 +8355,7 @@
     "UserID": "user_327",
     "GroupID": "group_72",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 598,
@@ -8369,7 +8369,7 @@
     "UserID": "user_135",
     "GroupID": "group_98",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 599,
@@ -8383,7 +8383,7 @@
     "UserID": "user_456",
     "GroupID": "group_90",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 600,
@@ -8397,7 +8397,7 @@
     "UserID": "user_318",
     "GroupID": "group_109",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 601,
@@ -8411,7 +8411,7 @@
     "UserID": "user_218",
     "GroupID": "group_94",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 602,
@@ -8425,7 +8425,7 @@
     "UserID": "user_88",
     "GroupID": "group_214",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 603,
@@ -8439,7 +8439,7 @@
     "UserID": "user_280",
     "GroupID": "group_80",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 604,
@@ -8453,7 +8453,7 @@
     "UserID": "user_40",
     "GroupID": "group_94",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 605,
@@ -8467,7 +8467,7 @@
     "UserID": "user_240",
     "GroupID": "group_80",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 606,
@@ -8481,7 +8481,7 @@
     "UserID": "user_332",
     "GroupID": "group_38",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 607,
@@ -8495,7 +8495,7 @@
     "UserID": "user_431",
     "GroupID": "group_246",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 608,
@@ -8509,7 +8509,7 @@
     "UserID": "user_136",
     "GroupID": "group_152",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 609,
@@ -8523,7 +8523,7 @@
     "UserID": "user_182",
     "GroupID": "group_228",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 610,
@@ -8537,7 +8537,7 @@
     "UserID": "user_265",
     "GroupID": "group_227",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 611,
@@ -8551,7 +8551,7 @@
     "UserID": "user_259",
     "GroupID": "group_134",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 612,
@@ -8565,7 +8565,7 @@
     "UserID": "user_182",
     "GroupID": "group_196",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 613,
@@ -8579,7 +8579,7 @@
     "UserID": "user_21",
     "GroupID": "group_210",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 614,
@@ -8593,7 +8593,7 @@
     "UserID": "user_351",
     "GroupID": "group_134",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 615,
@@ -8607,7 +8607,7 @@
     "UserID": "user_432",
     "GroupID": "group_26",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 616,
@@ -8621,7 +8621,7 @@
     "UserID": "user_431",
     "GroupID": "group_101",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 617,
@@ -8635,7 +8635,7 @@
     "UserID": "user_472",
     "GroupID": "group_219",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 618,
@@ -8649,7 +8649,7 @@
     "UserID": "user_196",
     "GroupID": "group_169",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 619,
@@ -8663,7 +8663,7 @@
     "UserID": "user_212",
     "GroupID": "group_75",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 620,
@@ -8677,7 +8677,7 @@
     "UserID": "user_447",
     "GroupID": "group_38",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 621,
@@ -8691,7 +8691,7 @@
     "UserID": "user_16",
     "GroupID": "group_208",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 622,
@@ -8705,7 +8705,7 @@
     "UserID": "user_202",
     "GroupID": "group_83",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 623,
@@ -8719,7 +8719,7 @@
     "UserID": "user_363",
     "GroupID": "group_171",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 624,
@@ -8733,7 +8733,7 @@
     "UserID": "user_218",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 625,
@@ -8747,7 +8747,7 @@
     "UserID": "user_93",
     "GroupID": "group_143",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 626,
@@ -8761,7 +8761,7 @@
     "UserID": "user_133",
     "GroupID": "group_218",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 627,
@@ -8775,7 +8775,7 @@
     "UserID": "user_139",
     "GroupID": "group_56",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 628,
@@ -8789,7 +8789,7 @@
     "UserID": "user_157",
     "GroupID": "group_105",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 629,
@@ -8803,7 +8803,7 @@
     "UserID": "user_493",
     "GroupID": "group_184",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 630,
@@ -8817,7 +8817,7 @@
     "UserID": "user_335",
     "GroupID": "group_31",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 631,
@@ -8831,7 +8831,7 @@
     "UserID": "user_70",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 632,
@@ -8845,7 +8845,7 @@
     "UserID": "user_304",
     "GroupID": "group_185",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 633,
@@ -8859,7 +8859,7 @@
     "UserID": "user_15",
     "GroupID": "group_179",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 634,
@@ -8873,7 +8873,7 @@
     "UserID": "user_235",
     "GroupID": "group_152",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 635,
@@ -8887,7 +8887,7 @@
     "UserID": "user_212",
     "GroupID": "group_58",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 636,
@@ -8901,7 +8901,7 @@
     "UserID": "user_290",
     "GroupID": "group_73",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 637,
@@ -8915,7 +8915,7 @@
     "UserID": "user_60",
     "GroupID": "group_215",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 638,
@@ -8929,7 +8929,7 @@
     "UserID": "user_252",
     "GroupID": "group_132",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 639,
@@ -8943,7 +8943,7 @@
     "UserID": "user_446",
     "GroupID": "group_10",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 640,
@@ -8957,7 +8957,7 @@
     "UserID": "user_2",
     "GroupID": "group_191",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 641,
@@ -8971,7 +8971,7 @@
     "UserID": "user_236",
     "GroupID": "group_73",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 642,
@@ -8985,7 +8985,7 @@
     "UserID": "user_336",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 643,
@@ -8999,7 +8999,7 @@
     "UserID": "user_19",
     "GroupID": "group_15",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 644,
@@ -9013,7 +9013,7 @@
     "UserID": "user_482",
     "GroupID": "group_243",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 645,
@@ -9027,7 +9027,7 @@
     "UserID": "user_49",
     "GroupID": "group_98",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 646,
@@ -9041,7 +9041,7 @@
     "UserID": "user_78",
     "GroupID": "group_234",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 647,
@@ -9055,7 +9055,7 @@
     "UserID": "user_472",
     "GroupID": "group_63",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 648,
@@ -9069,7 +9069,7 @@
     "UserID": "user_28",
     "GroupID": "group_19",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 649,
@@ -9083,7 +9083,7 @@
     "UserID": "user_48",
     "GroupID": "group_113",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 650,
@@ -9097,7 +9097,7 @@
     "UserID": "user_96",
     "GroupID": "group_63",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 651,
@@ -9111,7 +9111,7 @@
     "UserID": "user_165",
     "GroupID": "group_116",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 652,
@@ -9125,7 +9125,7 @@
     "UserID": "user_458",
     "GroupID": "group_184",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 653,
@@ -9139,7 +9139,7 @@
     "UserID": "user_433",
     "GroupID": "group_21",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 654,
@@ -9153,7 +9153,7 @@
     "UserID": "user_365",
     "GroupID": "group_162",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 655,
@@ -9167,7 +9167,7 @@
     "UserID": "user_176",
     "GroupID": "group_243",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 656,
@@ -9181,7 +9181,7 @@
     "UserID": "user_73",
     "GroupID": "group_145",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 657,
@@ -9195,7 +9195,7 @@
     "UserID": "user_472",
     "GroupID": "group_146",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 658,
@@ -9209,7 +9209,7 @@
     "UserID": "user_356",
     "GroupID": "group_81",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 659,
@@ -9223,7 +9223,7 @@
     "UserID": "user_29",
     "GroupID": "group_66",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 660,
@@ -9237,7 +9237,7 @@
     "UserID": "user_444",
     "GroupID": "group_179",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 661,
@@ -9251,7 +9251,7 @@
     "UserID": "user_157",
     "GroupID": "group_65",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 662,
@@ -9265,7 +9265,7 @@
     "UserID": "user_314",
     "GroupID": "group_43",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 663,
@@ -9279,7 +9279,7 @@
     "UserID": "user_304",
     "GroupID": "group_57",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 664,
@@ -9293,7 +9293,7 @@
     "UserID": "user_279",
     "GroupID": "group_138",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 665,
@@ -9307,7 +9307,7 @@
     "UserID": "user_283",
     "GroupID": "group_37",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 666,
@@ -9321,7 +9321,7 @@
     "UserID": "user_479",
     "GroupID": "group_176",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 667,
@@ -9335,7 +9335,7 @@
     "UserID": "user_491",
     "GroupID": "group_120",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 668,
@@ -9349,7 +9349,7 @@
     "UserID": "user_7",
     "GroupID": "group_69",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 669,
@@ -9363,7 +9363,7 @@
     "UserID": "user_305",
     "GroupID": "group_56",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 670,
@@ -9377,7 +9377,7 @@
     "UserID": "user_182",
     "GroupID": "group_119",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 671,
@@ -9391,7 +9391,7 @@
     "UserID": "user_109",
     "GroupID": "group_204",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 672,
@@ -9405,7 +9405,7 @@
     "UserID": "user_324",
     "GroupID": "group_164",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 673,
@@ -9419,7 +9419,7 @@
     "UserID": "user_206",
     "GroupID": "group_159",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 674,
@@ -9433,7 +9433,7 @@
     "UserID": "user_234",
     "GroupID": "group_55",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 675,
@@ -9447,7 +9447,7 @@
     "UserID": "user_426",
     "GroupID": "group_38",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 676,
@@ -9461,7 +9461,7 @@
     "UserID": "user_458",
     "GroupID": "group_243",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 677,
@@ -9475,7 +9475,7 @@
     "UserID": "user_187",
     "GroupID": "group_201",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 678,
@@ -9489,7 +9489,7 @@
     "UserID": "user_428",
     "GroupID": "group_236",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 679,
@@ -9503,7 +9503,7 @@
     "UserID": "user_482",
     "GroupID": "group_218",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 680,
@@ -9517,7 +9517,7 @@
     "UserID": "user_410",
     "GroupID": "group_15",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 681,
@@ -9531,7 +9531,7 @@
     "UserID": "user_407",
     "GroupID": "group_144",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 682,
@@ -9545,7 +9545,7 @@
     "UserID": "user_329",
     "GroupID": "group_77",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 683,
@@ -9559,7 +9559,7 @@
     "UserID": "user_357",
     "GroupID": "group_217",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 684,
@@ -9573,7 +9573,7 @@
     "UserID": "user_8",
     "GroupID": "group_222",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 685,
@@ -9587,7 +9587,7 @@
     "UserID": "user_53",
     "GroupID": "group_53",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 686,
@@ -9601,7 +9601,7 @@
     "UserID": "user_398",
     "GroupID": "group_184",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 687,
@@ -9615,7 +9615,7 @@
     "UserID": "user_199",
     "GroupID": "group_7",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 688,
@@ -9629,7 +9629,7 @@
     "UserID": "user_391",
     "GroupID": "group_185",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 689,
@@ -9643,7 +9643,7 @@
     "UserID": "user_137",
     "GroupID": "group_55",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 690,
@@ -9657,7 +9657,7 @@
     "UserID": "user_259",
     "GroupID": "group_52",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 691,
@@ -9671,7 +9671,7 @@
     "UserID": "user_334",
     "GroupID": "group_4",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 692,
@@ -9685,7 +9685,7 @@
     "UserID": "user_401",
     "GroupID": "group_43",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 693,
@@ -9699,7 +9699,7 @@
     "UserID": "user_498",
     "GroupID": "group_40",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 694,
@@ -9713,7 +9713,7 @@
     "UserID": "user_172",
     "GroupID": "group_230",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 695,
@@ -9727,7 +9727,7 @@
     "UserID": "user_86",
     "GroupID": "group_121",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 696,
@@ -9741,7 +9741,7 @@
     "UserID": "user_46",
     "GroupID": "group_30",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 697,
@@ -9755,7 +9755,7 @@
     "UserID": "user_346",
     "GroupID": "group_138",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 698,
@@ -9769,7 +9769,7 @@
     "UserID": "user_186",
     "GroupID": "group_222",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 699,
@@ -9783,7 +9783,7 @@
     "UserID": "user_156",
     "GroupID": "group_103",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 700,
@@ -9797,7 +9797,7 @@
     "UserID": "user_493",
     "GroupID": "group_7",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 701,
@@ -9811,7 +9811,7 @@
     "UserID": "user_398",
     "GroupID": "group_164",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 702,
@@ -9825,7 +9825,7 @@
     "UserID": "user_9",
     "GroupID": "group_163",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 703,
@@ -9839,7 +9839,7 @@
     "UserID": "user_115",
     "GroupID": "group_216",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 704,
@@ -9853,7 +9853,7 @@
     "UserID": "user_154",
     "GroupID": "group_167",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 705,
@@ -9867,7 +9867,7 @@
     "UserID": "user_130",
     "GroupID": "group_164",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 706,
@@ -9881,7 +9881,7 @@
     "UserID": "user_331",
     "GroupID": "group_109",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 707,
@@ -9895,7 +9895,7 @@
     "UserID": "user_81",
     "GroupID": "group_20",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 708,
@@ -9909,7 +9909,7 @@
     "UserID": "user_384",
     "GroupID": "group_49",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 709,
@@ -9923,7 +9923,7 @@
     "UserID": "user_290",
     "GroupID": "group_96",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 710,
@@ -9937,7 +9937,7 @@
     "UserID": "user_147",
     "GroupID": "group_59",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 711,
@@ -9951,7 +9951,7 @@
     "UserID": "user_295",
     "GroupID": "group_231",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 712,
@@ -9965,7 +9965,7 @@
     "UserID": "user_466",
     "GroupID": "group_177",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 713,
@@ -9979,7 +9979,7 @@
     "UserID": "user_269",
     "GroupID": "group_90",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 714,
@@ -9993,7 +9993,7 @@
     "UserID": "user_133",
     "GroupID": "group_26",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 715,
@@ -10007,7 +10007,7 @@
     "UserID": "user_50",
     "GroupID": "group_36",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 716,
@@ -10021,7 +10021,7 @@
     "UserID": "user_23",
     "GroupID": "group_171",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 717,
@@ -10035,7 +10035,7 @@
     "UserID": "user_378",
     "GroupID": "group_126",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 718,
@@ -10049,7 +10049,7 @@
     "UserID": "user_376",
     "GroupID": "group_227",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 719,
@@ -10063,7 +10063,7 @@
     "UserID": "user_88",
     "GroupID": "group_43",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 720,
@@ -10077,7 +10077,7 @@
     "UserID": "user_413",
     "GroupID": "group_99",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 721,
@@ -10091,7 +10091,7 @@
     "UserID": "user_112",
     "GroupID": "group_204",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 722,
@@ -10105,7 +10105,7 @@
     "UserID": "user_111",
     "GroupID": "group_33",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 723,
@@ -10119,7 +10119,7 @@
     "UserID": "user_72",
     "GroupID": "group_100",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 724,
@@ -10133,7 +10133,7 @@
     "UserID": "user_154",
     "GroupID": "group_206",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 725,
@@ -10147,7 +10147,7 @@
     "UserID": "user_463",
     "GroupID": "group_97",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 726,
@@ -10161,7 +10161,7 @@
     "UserID": "user_57",
     "GroupID": "group_238",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 727,
@@ -10175,7 +10175,7 @@
     "UserID": "user_257",
     "GroupID": "group_173",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 728,
@@ -10189,7 +10189,7 @@
     "UserID": "user_156",
     "GroupID": "group_45",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 729,
@@ -10203,7 +10203,7 @@
     "UserID": "user_113",
     "GroupID": "group_88",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 730,
@@ -10217,7 +10217,7 @@
     "UserID": "user_318",
     "GroupID": "group_143",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 731,
@@ -10231,7 +10231,7 @@
     "UserID": "user_47",
     "GroupID": "group_95",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 732,
@@ -10245,7 +10245,7 @@
     "UserID": "user_238",
     "GroupID": "group_17",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 733,
@@ -10259,7 +10259,7 @@
     "UserID": "user_334",
     "GroupID": "group_140",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 734,
@@ -10273,7 +10273,7 @@
     "UserID": "user_106",
     "GroupID": "group_22",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 735,
@@ -10287,7 +10287,7 @@
     "UserID": "user_482",
     "GroupID": "group_151",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 736,
@@ -10301,7 +10301,7 @@
     "UserID": "user_187",
     "GroupID": "group_90",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 737,
@@ -10315,7 +10315,7 @@
     "UserID": "user_159",
     "GroupID": "group_78",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 738,
@@ -10329,7 +10329,7 @@
     "UserID": "user_198",
     "GroupID": "group_140",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 739,
@@ -10343,7 +10343,7 @@
     "UserID": "user_382",
     "GroupID": "group_114",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 740,
@@ -10357,7 +10357,7 @@
     "UserID": "user_177",
     "GroupID": "group_68",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 741,
@@ -10371,7 +10371,7 @@
     "UserID": "user_261",
     "GroupID": "group_110",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 742,
@@ -10385,7 +10385,7 @@
     "UserID": "user_287",
     "GroupID": "group_179",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 743,
@@ -10399,7 +10399,7 @@
     "UserID": "user_293",
     "GroupID": "group_125",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 744,
@@ -10413,7 +10413,7 @@
     "UserID": "user_335",
     "GroupID": "group_141",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 745,
@@ -10427,7 +10427,7 @@
     "UserID": "user_143",
     "GroupID": "group_57",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 746,
@@ -10441,7 +10441,7 @@
     "UserID": "user_308",
     "GroupID": "group_55",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 747,
@@ -10455,7 +10455,7 @@
     "UserID": "user_491",
     "GroupID": "group_82",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 748,
@@ -10469,7 +10469,7 @@
     "UserID": "user_197",
     "GroupID": "group_107",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 749,
@@ -10483,7 +10483,7 @@
     "UserID": "user_476",
     "GroupID": "group_156",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 750,
@@ -10497,7 +10497,7 @@
     "UserID": "user_225",
     "GroupID": "group_102",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 751,
@@ -10511,7 +10511,7 @@
     "UserID": "user_395",
     "GroupID": "group_233",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 752,
@@ -10525,7 +10525,7 @@
     "UserID": "user_43",
     "GroupID": "group_172",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 753,
@@ -10539,7 +10539,7 @@
     "UserID": "user_454",
     "GroupID": "group_147",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 754,
@@ -10553,7 +10553,7 @@
     "UserID": "user_151",
     "GroupID": "group_174",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 755,
@@ -10567,7 +10567,7 @@
     "UserID": "user_296",
     "GroupID": "group_111",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 756,
@@ -10581,7 +10581,7 @@
     "UserID": "user_63",
     "GroupID": "group_107",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 757,
@@ -10595,7 +10595,7 @@
     "UserID": "user_130",
     "GroupID": "group_102",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 758,
@@ -10609,7 +10609,7 @@
     "UserID": "user_255",
     "GroupID": "group_238",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 759,
@@ -10623,7 +10623,7 @@
     "UserID": "user_463",
     "GroupID": "group_3",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 760,
@@ -10637,7 +10637,7 @@
     "UserID": "user_343",
     "GroupID": "group_211",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 761,
@@ -10651,7 +10651,7 @@
     "UserID": "user_214",
     "GroupID": "group_148",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 762,
@@ -10665,7 +10665,7 @@
     "UserID": "user_73",
     "GroupID": "group_25",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 763,
@@ -10679,7 +10679,7 @@
     "UserID": "user_431",
     "GroupID": "group_75",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 764,
@@ -10693,7 +10693,7 @@
     "UserID": "user_104",
     "GroupID": "group_184",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 765,
@@ -10707,7 +10707,7 @@
     "UserID": "user_158",
     "GroupID": "group_209",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 766,
@@ -10721,7 +10721,7 @@
     "UserID": "user_272",
     "GroupID": "group_61",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 767,
@@ -10735,7 +10735,7 @@
     "UserID": "user_315",
     "GroupID": "group_123",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 768,
@@ -10749,7 +10749,7 @@
     "UserID": "user_238",
     "GroupID": "group_241",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 769,
@@ -10763,7 +10763,7 @@
     "UserID": "user_303",
     "GroupID": "group_55",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 770,
@@ -10777,7 +10777,7 @@
     "UserID": "user_372",
     "GroupID": "group_163",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 771,
@@ -10791,7 +10791,7 @@
     "UserID": "user_158",
     "GroupID": "group_206",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 772,
@@ -10805,7 +10805,7 @@
     "UserID": "user_109",
     "GroupID": "group_187",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 773,
@@ -10819,7 +10819,7 @@
     "UserID": "user_9",
     "GroupID": "group_39",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 774,
@@ -10833,7 +10833,7 @@
     "UserID": "user_321",
     "GroupID": "group_185",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 775,
@@ -10847,7 +10847,7 @@
     "UserID": "user_59",
     "GroupID": "group_83",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 776,
@@ -10861,7 +10861,7 @@
     "UserID": "user_358",
     "GroupID": "group_195",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 777,
@@ -10875,7 +10875,7 @@
     "UserID": "user_192",
     "GroupID": "group_34",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 778,
@@ -10889,7 +10889,7 @@
     "UserID": "user_136",
     "GroupID": "group_250",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 779,
@@ -10903,7 +10903,7 @@
     "UserID": "user_251",
     "GroupID": "group_113",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 780,
@@ -10917,7 +10917,7 @@
     "UserID": "user_379",
     "GroupID": "group_169",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 781,
@@ -10931,7 +10931,7 @@
     "UserID": "user_436",
     "GroupID": "group_150",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 782,
@@ -10945,7 +10945,7 @@
     "UserID": "user_146",
     "GroupID": "group_230",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 783,
@@ -10959,7 +10959,7 @@
     "UserID": "user_347",
     "GroupID": "group_248",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 784,
@@ -10973,7 +10973,7 @@
     "UserID": "user_466",
     "GroupID": "group_27",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 785,
@@ -10987,7 +10987,7 @@
     "UserID": "user_352",
     "GroupID": "group_149",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 786,
@@ -11001,7 +11001,7 @@
     "UserID": "user_58",
     "GroupID": "group_169",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 787,
@@ -11015,7 +11015,7 @@
     "UserID": "user_177",
     "GroupID": "group_31",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 788,
@@ -11029,7 +11029,7 @@
     "UserID": "user_288",
     "GroupID": "group_155",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 789,
@@ -11043,7 +11043,7 @@
     "UserID": "user_245",
     "GroupID": "group_165",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 790,
@@ -11057,7 +11057,7 @@
     "UserID": "user_48",
     "GroupID": "group_194",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 791,
@@ -11071,7 +11071,7 @@
     "UserID": "user_301",
     "GroupID": "group_182",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 792,
@@ -11085,7 +11085,7 @@
     "UserID": "user_438",
     "GroupID": "group_239",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 793,
@@ -11099,7 +11099,7 @@
     "UserID": "user_356",
     "GroupID": "group_137",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 794,
@@ -11113,7 +11113,7 @@
     "UserID": "user_100",
     "GroupID": "group_83",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 795,
@@ -11127,7 +11127,7 @@
     "UserID": "user_213",
     "GroupID": "group_170",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 796,
@@ -11141,7 +11141,7 @@
     "UserID": "user_302",
     "GroupID": "group_164",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 797,
@@ -11155,7 +11155,7 @@
     "UserID": "user_480",
     "GroupID": "group_10",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 798,
@@ -11169,7 +11169,7 @@
     "UserID": "user_415",
     "GroupID": "group_187",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 799,
@@ -11183,7 +11183,7 @@
     "UserID": "user_165",
     "GroupID": "group_40",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 800,
@@ -11197,7 +11197,7 @@
     "UserID": "user_400",
     "GroupID": "group_54",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 801,
@@ -11211,7 +11211,7 @@
     "UserID": "user_430",
     "GroupID": "group_237",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 802,
@@ -11225,7 +11225,7 @@
     "UserID": "user_126",
     "GroupID": "group_167",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 803,
@@ -11239,7 +11239,7 @@
     "UserID": "user_302",
     "GroupID": "group_135",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 804,
@@ -11253,7 +11253,7 @@
     "UserID": "user_462",
     "GroupID": "group_4",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 805,
@@ -11267,7 +11267,7 @@
     "UserID": "user_121",
     "GroupID": "group_143",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 806,
@@ -11281,7 +11281,7 @@
     "UserID": "user_88",
     "GroupID": "group_204",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 807,
@@ -11295,7 +11295,7 @@
     "UserID": "user_217",
     "GroupID": "group_176",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 808,
@@ -11309,7 +11309,7 @@
     "UserID": "user_61",
     "GroupID": "group_6",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 809,
@@ -11323,7 +11323,7 @@
     "UserID": "user_302",
     "GroupID": "group_73",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 810,
@@ -11337,7 +11337,7 @@
     "UserID": "user_179",
     "GroupID": "group_163",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 811,
@@ -11351,7 +11351,7 @@
     "UserID": "user_190",
     "GroupID": "group_200",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 812,
@@ -11365,7 +11365,7 @@
     "UserID": "user_163",
     "GroupID": "group_199",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 813,
@@ -11379,7 +11379,7 @@
     "UserID": "user_81",
     "GroupID": "group_196",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 814,
@@ -11393,7 +11393,7 @@
     "UserID": "user_494",
     "GroupID": "group_58",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 815,
@@ -11407,7 +11407,7 @@
     "UserID": "user_170",
     "GroupID": "group_77",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 816,
@@ -11421,7 +11421,7 @@
     "UserID": "user_301",
     "GroupID": "group_19",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 817,
@@ -11435,7 +11435,7 @@
     "UserID": "user_374",
     "GroupID": "group_62",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 818,
@@ -11449,7 +11449,7 @@
     "UserID": "user_196",
     "GroupID": "group_71",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 819,
@@ -11463,7 +11463,7 @@
     "UserID": "user_203",
     "GroupID": "group_138",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 820,
@@ -11477,7 +11477,7 @@
     "UserID": "user_47",
     "GroupID": "group_25",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 821,
@@ -11491,7 +11491,7 @@
     "UserID": "user_463",
     "GroupID": "group_172",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 822,
@@ -11505,7 +11505,7 @@
     "UserID": "user_158",
     "GroupID": "group_250",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 823,
@@ -11519,7 +11519,7 @@
     "UserID": "user_408",
     "GroupID": "group_227",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 824,
@@ -11533,7 +11533,7 @@
     "UserID": "user_194",
     "GroupID": "group_127",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 825,
@@ -11547,7 +11547,7 @@
     "UserID": "user_427",
     "GroupID": "group_58",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 826,
@@ -11561,7 +11561,7 @@
     "UserID": "user_418",
     "GroupID": "group_153",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 827,
@@ -11575,7 +11575,7 @@
     "UserID": "user_279",
     "GroupID": "group_221",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 828,
@@ -11589,7 +11589,7 @@
     "UserID": "user_317",
     "GroupID": "group_120",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 829,
@@ -11603,7 +11603,7 @@
     "UserID": "user_479",
     "GroupID": "group_204",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 830,
@@ -11617,7 +11617,7 @@
     "UserID": "user_421",
     "GroupID": "group_243",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 831,
@@ -11631,7 +11631,7 @@
     "UserID": "user_269",
     "GroupID": "group_111",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 832,
@@ -11645,7 +11645,7 @@
     "UserID": "user_481",
     "GroupID": "group_168",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 833,
@@ -11659,7 +11659,7 @@
     "UserID": "user_199",
     "GroupID": "group_76",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 834,
@@ -11673,7 +11673,7 @@
     "UserID": "user_224",
     "GroupID": "group_244",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 835,
@@ -11687,7 +11687,7 @@
     "UserID": "user_263",
     "GroupID": "group_70",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 836,
@@ -11701,7 +11701,7 @@
     "UserID": "user_426",
     "GroupID": "group_138",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 837,
@@ -11715,7 +11715,7 @@
     "UserID": "user_166",
     "GroupID": "group_66",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 838,
@@ -11729,7 +11729,7 @@
     "UserID": "user_180",
     "GroupID": "group_120",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 839,
@@ -11743,7 +11743,7 @@
     "UserID": "user_428",
     "GroupID": "group_237",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 840,
@@ -11757,7 +11757,7 @@
     "UserID": "user_192",
     "GroupID": "group_153",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 841,
@@ -11771,7 +11771,7 @@
     "UserID": "user_397",
     "GroupID": "group_199",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 842,
@@ -11785,7 +11785,7 @@
     "UserID": "user_216",
     "GroupID": "group_232",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 843,
@@ -11799,7 +11799,7 @@
     "UserID": "user_284",
     "GroupID": "group_87",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 844,
@@ -11813,7 +11813,7 @@
     "UserID": "user_352",
     "GroupID": "group_240",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 845,
@@ -11827,7 +11827,7 @@
     "UserID": "user_107",
     "GroupID": "group_139",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 846,
@@ -11841,7 +11841,7 @@
     "UserID": "user_466",
     "GroupID": "group_122",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 847,
@@ -11855,7 +11855,7 @@
     "UserID": "user_98",
     "GroupID": "group_164",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 848,
@@ -11869,7 +11869,7 @@
     "UserID": "user_368",
     "GroupID": "group_49",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 849,
@@ -11883,7 +11883,7 @@
     "UserID": "user_482",
     "GroupID": "group_48",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 850,
@@ -11897,7 +11897,7 @@
     "UserID": "user_499",
     "GroupID": "group_115",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 851,
@@ -11911,7 +11911,7 @@
     "UserID": "user_230",
     "GroupID": "group_87",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 852,
@@ -11925,7 +11925,7 @@
     "UserID": "user_257",
     "GroupID": "group_235",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 853,
@@ -11939,7 +11939,7 @@
     "UserID": "user_43",
     "GroupID": "group_7",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 854,
@@ -11953,7 +11953,7 @@
     "UserID": "user_242",
     "GroupID": "group_219",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 855,
@@ -11967,7 +11967,7 @@
     "UserID": "user_42",
     "GroupID": "group_77",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 856,
@@ -11981,7 +11981,7 @@
     "UserID": "user_95",
     "GroupID": "group_179",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 857,
@@ -11995,7 +11995,7 @@
     "UserID": "user_434",
     "GroupID": "group_145",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 858,
@@ -12009,7 +12009,7 @@
     "UserID": "user_254",
     "GroupID": "group_160",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 859,
@@ -12023,7 +12023,7 @@
     "UserID": "user_188",
     "GroupID": "group_154",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 860,
@@ -12037,7 +12037,7 @@
     "UserID": "user_385",
     "GroupID": "group_121",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 861,
@@ -12051,7 +12051,7 @@
     "UserID": "user_307",
     "GroupID": "group_124",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 862,
@@ -12065,7 +12065,7 @@
     "UserID": "user_400",
     "GroupID": "group_150",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 863,
@@ -12079,7 +12079,7 @@
     "UserID": "user_167",
     "GroupID": "group_141",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 864,
@@ -12093,7 +12093,7 @@
     "UserID": "user_271",
     "GroupID": "group_125",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 865,
@@ -12107,7 +12107,7 @@
     "UserID": "user_125",
     "GroupID": "group_12",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 866,
@@ -12121,7 +12121,7 @@
     "UserID": "user_161",
     "GroupID": "group_71",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 867,
@@ -12135,7 +12135,7 @@
     "UserID": "user_87",
     "GroupID": "group_1",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 868,
@@ -12149,7 +12149,7 @@
     "UserID": "user_309",
     "GroupID": "group_161",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 869,
@@ -12163,7 +12163,7 @@
     "UserID": "user_489",
     "GroupID": "group_244",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 870,
@@ -12177,7 +12177,7 @@
     "UserID": "user_226",
     "GroupID": "group_119",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 871,
@@ -12191,7 +12191,7 @@
     "UserID": "user_145",
     "GroupID": "group_142",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 872,
@@ -12205,7 +12205,7 @@
     "UserID": "user_345",
     "GroupID": "group_111",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 873,
@@ -12219,7 +12219,7 @@
     "UserID": "user_248",
     "GroupID": "group_64",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 874,
@@ -12233,7 +12233,7 @@
     "UserID": "user_362",
     "GroupID": "group_43",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 875,
@@ -12247,7 +12247,7 @@
     "UserID": "user_6",
     "GroupID": "group_248",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 876,
@@ -12261,7 +12261,7 @@
     "UserID": "user_31",
     "GroupID": "group_186",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 877,
@@ -12275,7 +12275,7 @@
     "UserID": "user_197",
     "GroupID": "group_41",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 878,
@@ -12289,7 +12289,7 @@
     "UserID": "user_232",
     "GroupID": "group_209",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 879,
@@ -12303,7 +12303,7 @@
     "UserID": "user_296",
     "GroupID": "group_196",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 880,
@@ -12317,7 +12317,7 @@
     "UserID": "user_414",
     "GroupID": "group_244",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 881,
@@ -12331,7 +12331,7 @@
     "UserID": "user_325",
     "GroupID": "group_115",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 882,
@@ -12345,7 +12345,7 @@
     "UserID": "user_460",
     "GroupID": "group_39",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 883,
@@ -12359,7 +12359,7 @@
     "UserID": "user_135",
     "GroupID": "group_1",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 884,
@@ -12373,7 +12373,7 @@
     "UserID": "user_493",
     "GroupID": "group_41",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 885,
@@ -12387,7 +12387,7 @@
     "UserID": "user_13",
     "GroupID": "group_173",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 886,
@@ -12401,7 +12401,7 @@
     "UserID": "user_497",
     "GroupID": "group_88",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 887,
@@ -12415,7 +12415,7 @@
     "UserID": "user_4",
     "GroupID": "group_226",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 888,
@@ -12429,7 +12429,7 @@
     "UserID": "user_178",
     "GroupID": "group_98",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 889,
@@ -12443,7 +12443,7 @@
     "UserID": "user_234",
     "GroupID": "group_88",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 890,
@@ -12457,7 +12457,7 @@
     "UserID": "user_259",
     "GroupID": "group_79",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 891,
@@ -12471,7 +12471,7 @@
     "UserID": "user_140",
     "GroupID": "group_209",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 892,
@@ -12485,7 +12485,7 @@
     "UserID": "user_65",
     "GroupID": "group_141",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 893,
@@ -12499,7 +12499,7 @@
     "UserID": "user_283",
     "GroupID": "group_71",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 894,
@@ -12513,7 +12513,7 @@
     "UserID": "user_363",
     "GroupID": "group_137",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 895,
@@ -12527,7 +12527,7 @@
     "UserID": "user_306",
     "GroupID": "group_236",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 896,
@@ -12541,7 +12541,7 @@
     "UserID": "user_205",
     "GroupID": "group_191",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 897,
@@ -12555,7 +12555,7 @@
     "UserID": "user_17",
     "GroupID": "group_99",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 898,
@@ -12569,7 +12569,7 @@
     "UserID": "user_200",
     "GroupID": "group_151",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 899,
@@ -12583,7 +12583,7 @@
     "UserID": "user_32",
     "GroupID": "group_182",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 900,
@@ -12597,7 +12597,7 @@
     "UserID": "user_212",
     "GroupID": "group_175",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 901,
@@ -12611,7 +12611,7 @@
     "UserID": "user_435",
     "GroupID": "group_167",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 902,
@@ -12625,7 +12625,7 @@
     "UserID": "user_273",
     "GroupID": "group_87",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 903,
@@ -12639,7 +12639,7 @@
     "UserID": "user_290",
     "GroupID": "group_154",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 904,
@@ -12653,7 +12653,7 @@
     "UserID": "user_291",
     "GroupID": "group_1",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 905,
@@ -12667,7 +12667,7 @@
     "UserID": "user_483",
     "GroupID": "group_142",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 906,
@@ -12681,7 +12681,7 @@
     "UserID": "user_486",
     "GroupID": "group_224",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 907,
@@ -12695,7 +12695,7 @@
     "UserID": "user_234",
     "GroupID": "group_243",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 908,
@@ -12709,7 +12709,7 @@
     "UserID": "user_408",
     "GroupID": "group_112",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 909,
@@ -12723,7 +12723,7 @@
     "UserID": "user_182",
     "GroupID": "group_74",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 910,
@@ -12737,7 +12737,7 @@
     "UserID": "user_146",
     "GroupID": "group_65",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 911,
@@ -12751,7 +12751,7 @@
     "UserID": "user_50",
     "GroupID": "group_69",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 912,
@@ -12765,7 +12765,7 @@
     "UserID": "user_430",
     "GroupID": "group_67",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 913,
@@ -12779,7 +12779,7 @@
     "UserID": "user_432",
     "GroupID": "group_177",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 914,
@@ -12793,7 +12793,7 @@
     "UserID": "user_103",
     "GroupID": "group_50",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 915,
@@ -12807,7 +12807,7 @@
     "UserID": "user_33",
     "GroupID": "group_58",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 916,
@@ -12821,7 +12821,7 @@
     "UserID": "user_497",
     "GroupID": "group_53",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 917,
@@ -12835,7 +12835,7 @@
     "UserID": "user_471",
     "GroupID": "group_91",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 918,
@@ -12849,7 +12849,7 @@
     "UserID": "user_89",
     "GroupID": "group_115",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 919,
@@ -12863,7 +12863,7 @@
     "UserID": "user_485",
     "GroupID": "group_118",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 920,
@@ -12877,7 +12877,7 @@
     "UserID": "user_411",
     "GroupID": "group_57",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 921,
@@ -12891,7 +12891,7 @@
     "UserID": "user_385",
     "GroupID": "group_86",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 922,
@@ -12905,7 +12905,7 @@
     "UserID": "user_341",
     "GroupID": "group_18",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 923,
@@ -12919,7 +12919,7 @@
     "UserID": "user_315",
     "GroupID": "group_16",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 924,
@@ -12933,7 +12933,7 @@
     "UserID": "user_241",
     "GroupID": "group_130",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 925,
@@ -12947,7 +12947,7 @@
     "UserID": "user_266",
     "GroupID": "group_239",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 926,
@@ -12961,7 +12961,7 @@
     "UserID": "user_223",
     "GroupID": "group_13",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 927,
@@ -12975,7 +12975,7 @@
     "UserID": "user_236",
     "GroupID": "group_173",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 928,
@@ -12989,7 +12989,7 @@
     "UserID": "user_153",
     "GroupID": "group_80",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 929,
@@ -13003,7 +13003,7 @@
     "UserID": "user_468",
     "GroupID": "group_200",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 930,
@@ -13017,7 +13017,7 @@
     "UserID": "user_57",
     "GroupID": "group_43",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 931,
@@ -13031,7 +13031,7 @@
     "UserID": "user_322",
     "GroupID": "group_200",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 932,
@@ -13045,7 +13045,7 @@
     "UserID": "user_375",
     "GroupID": "group_54",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 933,
@@ -13059,7 +13059,7 @@
     "UserID": "user_112",
     "GroupID": "group_202",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 934,
@@ -13073,7 +13073,7 @@
     "UserID": "user_15",
     "GroupID": "group_247",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 935,
@@ -13087,7 +13087,7 @@
     "UserID": "user_412",
     "GroupID": "group_225",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 936,
@@ -13101,7 +13101,7 @@
     "UserID": "user_269",
     "GroupID": "group_159",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 937,
@@ -13115,7 +13115,7 @@
     "UserID": "user_114",
     "GroupID": "group_204",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 938,
@@ -13129,7 +13129,7 @@
     "UserID": "user_252",
     "GroupID": "group_137",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 939,
@@ -13143,7 +13143,7 @@
     "UserID": "user_500",
     "GroupID": "group_229",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 940,
@@ -13157,7 +13157,7 @@
     "UserID": "user_374",
     "GroupID": "group_73",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 941,
@@ -13171,7 +13171,7 @@
     "UserID": "user_142",
     "GroupID": "group_48",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 942,
@@ -13185,7 +13185,7 @@
     "UserID": "user_114",
     "GroupID": "group_18",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 943,
@@ -13199,7 +13199,7 @@
     "UserID": "user_450",
     "GroupID": "group_222",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 944,
@@ -13213,7 +13213,7 @@
     "UserID": "user_290",
     "GroupID": "group_224",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 945,
@@ -13227,7 +13227,7 @@
     "UserID": "user_483",
     "GroupID": "group_232",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 946,
@@ -13241,7 +13241,7 @@
     "UserID": "user_357",
     "GroupID": "group_215",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 947,
@@ -13255,7 +13255,7 @@
     "UserID": "user_25",
     "GroupID": "group_11",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 948,
@@ -13269,7 +13269,7 @@
     "UserID": "user_368",
     "GroupID": "group_190",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 949,
@@ -13283,7 +13283,7 @@
     "UserID": "user_310",
     "GroupID": "group_84",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 950,
@@ -13297,7 +13297,7 @@
     "UserID": "user_255",
     "GroupID": "group_19",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 951,
@@ -13311,7 +13311,7 @@
     "UserID": "user_463",
     "GroupID": "group_100",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 952,
@@ -13325,7 +13325,7 @@
     "UserID": "user_268",
     "GroupID": "group_116",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 953,
@@ -13339,7 +13339,7 @@
     "UserID": "user_126",
     "GroupID": "group_90",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 954,
@@ -13353,7 +13353,7 @@
     "UserID": "user_393",
     "GroupID": "group_74",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 955,
@@ -13367,7 +13367,7 @@
     "UserID": "user_250",
     "GroupID": "group_24",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 956,
@@ -13381,7 +13381,7 @@
     "UserID": "user_287",
     "GroupID": "group_13",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 957,
@@ -13395,7 +13395,7 @@
     "UserID": "user_334",
     "GroupID": "group_125",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 958,
@@ -13409,7 +13409,7 @@
     "UserID": "user_477",
     "GroupID": "group_116",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 959,
@@ -13423,7 +13423,7 @@
     "UserID": "user_53",
     "GroupID": "group_174",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 960,
@@ -13437,7 +13437,7 @@
     "UserID": "user_368",
     "GroupID": "group_181",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 961,
@@ -13451,7 +13451,7 @@
     "UserID": "user_43",
     "GroupID": "group_226",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 962,
@@ -13465,7 +13465,7 @@
     "UserID": "user_166",
     "GroupID": "group_157",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 963,
@@ -13479,7 +13479,7 @@
     "UserID": "user_42",
     "GroupID": "group_164",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 964,
@@ -13493,7 +13493,7 @@
     "UserID": "user_380",
     "GroupID": "group_71",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 965,
@@ -13507,7 +13507,7 @@
     "UserID": "user_456",
     "GroupID": "group_243",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 966,
@@ -13521,7 +13521,7 @@
     "UserID": "user_176",
     "GroupID": "group_222",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 967,
@@ -13535,7 +13535,7 @@
     "UserID": "user_67",
     "GroupID": "group_126",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 968,
@@ -13549,7 +13549,7 @@
     "UserID": "user_66",
     "GroupID": "group_145",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 969,
@@ -13563,7 +13563,7 @@
     "UserID": "user_400",
     "GroupID": "group_176",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 970,
@@ -13577,7 +13577,7 @@
     "UserID": "user_83",
     "GroupID": "group_205",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 971,
@@ -13591,7 +13591,7 @@
     "UserID": "user_350",
     "GroupID": "group_248",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 972,
@@ -13605,7 +13605,7 @@
     "UserID": "user_105",
     "GroupID": "group_152",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 973,
@@ -13619,7 +13619,7 @@
     "UserID": "user_400",
     "GroupID": "group_182",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 974,
@@ -13633,7 +13633,7 @@
     "UserID": "user_287",
     "GroupID": "group_119",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 975,
@@ -13647,7 +13647,7 @@
     "UserID": "user_374",
     "GroupID": "group_223",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 976,
@@ -13661,7 +13661,7 @@
     "UserID": "user_186",
     "GroupID": "group_250",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 977,
@@ -13675,7 +13675,7 @@
     "UserID": "user_284",
     "GroupID": "group_91",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 978,
@@ -13689,7 +13689,7 @@
     "UserID": "user_4",
     "GroupID": "group_242",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 979,
@@ -13703,7 +13703,7 @@
     "UserID": "user_138",
     "GroupID": "group_85",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 980,
@@ -13717,7 +13717,7 @@
     "UserID": "user_179",
     "GroupID": "group_108",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 981,
@@ -13731,7 +13731,7 @@
     "UserID": "user_237",
     "GroupID": "group_247",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 982,
@@ -13745,7 +13745,7 @@
     "UserID": "user_18",
     "GroupID": "group_127",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 983,
@@ -13759,7 +13759,7 @@
     "UserID": "user_303",
     "GroupID": "group_121",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 984,
@@ -13773,7 +13773,7 @@
     "UserID": "user_416",
     "GroupID": "group_129",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 985,
@@ -13787,7 +13787,7 @@
     "UserID": "user_414",
     "GroupID": "group_207",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 986,
@@ -13801,7 +13801,7 @@
     "UserID": "user_420",
     "GroupID": "group_195",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 987,
@@ -13815,7 +13815,7 @@
     "UserID": "user_9",
     "GroupID": "group_6",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 988,
@@ -13829,7 +13829,7 @@
     "UserID": "user_420",
     "GroupID": "group_78",
     "HPCSite": "ALCF",
-    "Machine": "Aurora"
+    "HPCSystem": "Aurora"
   },
   {
     "JobID": 989,
@@ -13843,7 +13843,7 @@
     "UserID": "user_29",
     "GroupID": "group_183",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 990,
@@ -13857,7 +13857,7 @@
     "UserID": "user_144",
     "GroupID": "group_38",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 991,
@@ -13871,7 +13871,7 @@
     "UserID": "user_348",
     "GroupID": "group_161",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase1"
+    "HPCSystem": "Perlmutter-Phase-1"
   },
   {
     "JobID": 992,
@@ -13885,7 +13885,7 @@
     "UserID": "user_149",
     "GroupID": "group_116",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 993,
@@ -13899,7 +13899,7 @@
     "UserID": "user_64",
     "GroupID": "group_102",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 994,
@@ -13913,7 +13913,7 @@
     "UserID": "user_367",
     "GroupID": "group_8",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 995,
@@ -13927,7 +13927,7 @@
     "UserID": "user_450",
     "GroupID": "group_218",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 996,
@@ -13941,7 +13941,7 @@
     "UserID": "user_380",
     "GroupID": "group_207",
     "HPCSite": "NERSC",
-    "Machine": "Perlmutter-phase2"
+    "HPCSystem": "Perlmutter-Phase-2"
   },
   {
     "JobID": 997,
@@ -13955,7 +13955,7 @@
     "UserID": "user_187",
     "GroupID": "group_78",
     "HPCSite": "ALCF",
-    "Machine": "Crux"
+    "HPCSystem": "Crux"
   },
   {
     "JobID": 998,
@@ -13969,7 +13969,7 @@
     "UserID": "user_366",
     "GroupID": "group_112",
     "HPCSite": "OLCF",
-    "Machine": "Andes"
+    "HPCSystem": "Andes"
   },
   {
     "JobID": 999,
@@ -13983,7 +13983,7 @@
     "UserID": "user_227",
     "GroupID": "group_148",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   },
   {
     "JobID": 1000,
@@ -13997,6 +13997,6 @@
     "UserID": "user_118",
     "GroupID": "group_55",
     "HPCSite": "OLCF",
-    "Machine": "Frontier"
+    "HPCSystem": "Frontier"
   }
 ]
