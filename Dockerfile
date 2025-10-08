@@ -21,7 +21,7 @@ RUN pip install --break-system-packages jsonref
 
 # install WRENCH
 RUN git config --global http.postBuffer 524288000
-RUN git clone https://github.com/wrench-project/wrench && cd wrench && mkdir build && cd build && cmake .. && make -j12 wrench-daemon examples && make install && cp -r ./examples /home/wrench/ && chown -R wrench /home/wrench && cd ../.. && /bin/rm -rf wrench
+RUN git clone --depth 1 https://github.com/wrench-project/wrench.git && cd wrench && mkdir build && cd build && cmake .. && make -j12 wrench-daemon examples && make install && cp -r ./examples /home/wrench/ && chown -R wrench /home/wrench && cd ../.. && /bin/rm -rf wrench
 
 # fix the run_all_examples.sh script
 RUN sed -i "s/INSTALL_DIR=.*/INSTALL_DIR=\/home\/wrench\/examples/" /home/wrench/examples/run_all_examples.sh
