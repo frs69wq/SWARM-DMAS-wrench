@@ -32,11 +32,10 @@ int main(int argc, char** argv)
 
   // Retrieve the different clusters from the platform description and create batch services and scheduling agents
   auto clusters = wrench::Simulation::getHostnameListByCluster();
-
-  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;
-    
   WRENCH_INFO("%lu HPC systems in the platform", clusters.size());
 
+  // Create the network of job scheduling agents
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;    
   for (const auto& c : clusters) {
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
@@ -48,10 +47,10 @@ int main(int argc, char** argv)
     job_scheduling_agents.push_back(simulation->add(new wrench::JobSchedulingAgent(std::get<0>(c), head_node, batch_service)));
   }
 
-  // Create the network of scheduling agents 
+  // Connect the agents in the network 
   for (const auto& src : job_scheduling_agents) {
     for (const auto& dst : job_scheduling_agents)
-      if (src!=dst)
+      if (src != dst)
         src->add_peer(dst);
     src->setDaemonized(true);
   }
@@ -59,6 +58,9 @@ int main(int argc, char** argv)
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent = simulation->add(
       new wrench::WorkloadSubmissionAgent("WSAgent", job_list, job_scheduling_agents));
+  
+  // FIXME This is to allow job scheduling agents to notify the workload scheduling agent of job completion.
+  // This may change at some point
   for (const auto& agent : job_scheduling_agents)
     agent->setJobOriginator(workload_submission_agent);
   

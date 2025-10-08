@@ -47,15 +47,6 @@ static std::shared_ptr<std::vector<JobDescription>> extract_job_descriptions(con
 
 namespace wrench {
 
-WorkloadSubmissionAgent::WorkloadSubmissionAgent(
-    const std::string& hostname, const std::string& job_list,
-    const std::vector<std::shared_ptr<JobSchedulingAgent>>& job_scheduling_agents)
-    : ExecutionController(hostname, "workload_submission_agent")
-    , job_list_(job_list)
-    , job_scheduling_agents_(job_scheduling_agents)
-{
-}
-
 int WorkloadSubmissionAgent::main()
 {
   /* Set the logging output to GREEN */
@@ -68,16 +59,12 @@ int WorkloadSubmissionAgent::main()
   // compute and store the total number of jobs in the workload in total_num_jobs
   size_t total_num_jobs = jobs->size();
 
-  /* Initialize and seed a RNG */
-  std::uniform_int_distribution<int> dist(100, 1000);
-  std::mt19937 rng(42);
-  
   /* Main loop */
   int next_job_to_submit = 0;
   int num_completed_jobs = 0;
   
   // Set a timer for the arrival of the first job
-  this->setTimer(jobs->at(0).get_submission_time(), "submit the next job");
+  this->setTimer(jobs->at(0).get_submission_time(), "Submit the next job");
   
   while (num_completed_jobs < total_num_jobs) {
     
@@ -97,7 +84,7 @@ int WorkloadSubmissionAgent::main()
       WRENCH_INFO("Sending Job #%s (to start at t = %5d) to Job Submission Agent '%s'", job_name.c_str(),
                   job_submission_time, job_HPCSystem.c_str());
       
-      auto target_batch_service_controller = 
+      auto target_job_scheduling_agent = 
          *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
                         [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
                           return c->get_sitename() == job_HPCSystem;
@@ -105,18 +92,19 @@ int WorkloadSubmissionAgent::main()
           );
       // TODO The last parameter of JobRequestMessage is whether or not the Job can be forwarded to another
       // scheduling agent. Make that a command line parameter to switch between scenarios without recompiling
-      target_batch_service_controller->commport->dputMessage(
+      target_job_scheduling_agent->commport->dputMessage(
           new JobRequestMessage(job_name, job_nodes, job_walltime, true));
       
       next_job_to_submit++;
 
-      // Set the timer for the next job, if need be
+      // Set the timer for the next job
       if (next_job_to_submit < total_num_jobs) {
         auto next_job_arrival_time = jobs->at(next_job_to_submit).get_submission_time();
         this->setTimer(next_job_arrival_time, "submit the next job");
       }
 
     } else if (auto custom_event = std::dynamic_pointer_cast<CustomEvent>(event)) {
+      // FIXME not sure we want to handle the notification of completed job here
       // If it's a job completion notification, then we just take it into account
       if (auto job_notification_message = std::dynamic_pointer_cast<JobNotificationMessage>(custom_event->message)) {
         WRENCH_INFO("Notified that %s has completed!", job_notification_message->_name.c_str());
@@ -128,8 +116,4 @@ int WorkloadSubmissionAgent::main()
   return 0;
 }
 
-void WorkloadSubmissionAgent::processEventCustom(const std::shared_ptr<CustomEvent>& event) 
-{
-  // TODO to be implemented
-}
 } // namespace wrench

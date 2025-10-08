@@ -7,7 +7,7 @@
 
 namespace wrench {
 /**
- * Message to send a job request to a batch service controller
+ * Message to send a job request to a job scheduling agent
  */
 class JobRequestMessage : public ExecutionControllerCustomEventMessage {
 public:
@@ -38,10 +38,6 @@ public:
  */
 class JobNotificationMessage : public ExecutionControllerCustomEventMessage {
 public:
-  /**
-   *
-   * @param name job name
-   */
   JobNotificationMessage(const std::string& name)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE), _name(name)
   {

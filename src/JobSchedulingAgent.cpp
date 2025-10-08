@@ -12,19 +12,6 @@ WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent")
 
 namespace wrench {
 
-int JobSchedulingAgent::main()
-{
-  TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_CYAN);
-  WRENCH_INFO("Job Scheduling Agent starting");
-
-  // Create my job manager
-  job_manager_ = this->createJobManager();
-
-  // Just waits for events to happen
-  while (true)
-    this->waitForAndProcessNextEvent();
-}
-
 void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& event)
 {
   if (auto job_request_message = std::dynamic_pointer_cast<JobRequestMessage>(event->message)) {
@@ -59,4 +46,18 @@ void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr
   WRENCH_INFO("Job #%s, which I ran locally, has completed. Notifying the Workload Submission Agent", job_name.c_str());
   originator_->commport->dputMessage(new JobNotificationMessage(job_name));
 }
+
+int JobSchedulingAgent::main()
+{
+  TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_CYAN);
+  WRENCH_INFO("Job Scheduling Agent starting");
+
+  // Create my job manager
+  job_manager_ = this->createJobManager();
+
+  // Just waits for events to happen
+  while (true)
+    this->waitForAndProcessNextEvent();
+}
+
 } // namespace wrench
