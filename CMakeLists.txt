@@ -16,6 +16,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 include_directories(include)
 
 set(HEADER_FILES
+   include/ControlMessages.h
+   include/HPCSystemDescription.h
    include/JobDescription.h
    include/JobSchedulingAgent.h
    include/WorkloadSubmissionAgent.h

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <wrench.h>
 
+#include "HPCSystemDescription.h"
 #include "JobSchedulingAgent.h"
 #include "WorkloadSubmissionAgent.h"
 
@@ -30,13 +31,19 @@ int main(int argc, char** argv)
   // to instantiate the simulated platform
   simulation->instantiatePlatform(argv[2]);
 
-  // Retrieve the different clusters from the platform description and create batch services and scheduling agents
-  auto clusters = wrench::Simulation::getHostnameListByCluster();
-  WRENCH_INFO("%lu HPC systems in the platform", clusters.size());
+  // Retrieve the different hpc_systems from the platform description and create batch services and scheduling agents
+  auto hpc_systems = wrench::Simulation::getHostnameListByCluster();
+  WRENCH_INFO("%lu HPC systems in the platform", hpc_systems.size());
 
   // Create the network of job scheduling agents
   std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;    
-  for (const auto& c : clusters) {
+  for (const auto& c : hpc_systems ) {
+    // Create the HPCSystemDescription
+    auto system_description = std::make_shared<HPCSystemDescription>();
+    system_description->set_name(std::get<0>(c));
+    system_description->set_num_nodes(std::get<1>(c).size() - 1);
+    // TODO Complete the instantiation once more information are available in the platform description
+
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
     WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(), std::get<0>(c).c_str());
@@ -44,7 +51,7 @@ int main(int argc, char** argv)
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
-    job_scheduling_agents.push_back(simulation->add(new wrench::JobSchedulingAgent(std::get<0>(c), head_node, batch_service)));
+    job_scheduling_agents.push_back(simulation->add(new wrench::JobSchedulingAgent(system_description, head_node, batch_service)));
   }
 
   // Connect the agents in the network 

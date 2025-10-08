@@ -87,7 +87,7 @@ int WorkloadSubmissionAgent::main()
       auto target_job_scheduling_agent = 
          *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
                         [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
-                          return c->get_sitename() == job_HPCSystem;
+                          return c->get_hpc_system_name() == job_HPCSystem;
                         })
           );
       // TODO The last parameter of JobRequestMessage is whether or not the Job can be forwarded to another

@@ -2,6 +2,7 @@
 #define JOB_SCHEDULING_AGENT_H
 
 #include <wrench-dev.h>
+#include "HPCSystemDescription.h"
 
 namespace wrench {
 
@@ -11,7 +12,7 @@ class WorkloadSubmissionAgent;
  *  @brief An execution controller implementation
  */
 class JobSchedulingAgent : public ExecutionController {
-  std::string sitename_;
+  const std::shared_ptr<HPCSystemDescription> hpc_system_;
   std::shared_ptr<JobManager> job_manager_;
   
   const std::shared_ptr<BatchComputeService> batch_compute_service_;
@@ -23,13 +24,13 @@ class JobSchedulingAgent : public ExecutionController {
   void processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event) override;
 
 public:
-  JobSchedulingAgent(const std::string& sitename,const std::string& hostname,
-                         const std::shared_ptr<BatchComputeService>& batch_compute_service)
-    : ExecutionController(hostname, "job_scheduling_agent"), sitename_(sitename), batch_compute_service_(batch_compute_service){}
+  JobSchedulingAgent(const std::shared_ptr<HPCSystemDescription>& hpc_system, const std::string& hostname,
+                     const std::shared_ptr<BatchComputeService>& batch_compute_service)
+    : ExecutionController(hostname, "job_scheduling_agent"), hpc_system_(hpc_system), batch_compute_service_(batch_compute_service){}
 
   void add_peer(std::shared_ptr<JobSchedulingAgent> peer) { peers_.push_back(peer); }
   void setJobOriginator(std::shared_ptr<WorkloadSubmissionAgent> originator) { this->originator_ = originator; }
-  const std::string& get_sitename() const { return sitename_; }
+  const std::string& get_hpc_system_name() const { return this->hpc_system_->get_name(); }
 };
 
 } // namespace wrench

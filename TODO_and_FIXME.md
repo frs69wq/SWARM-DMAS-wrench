@@ -31,10 +31,18 @@ TODO
        - [ ] Step 4: Upon winning the competitive bidding, schedule the job on my local HPC system
  - [ ] Create an HPCSystem Class that contains a static high level description of the system
        - [ ] Decide of the information to have
-       - [ ] Add them to the platform description 
-       - [ ] Create the .h file
-       - [ ] Instantiate at parsing time
-       - [ ] Pass it to the JSA at creation time
+            - [X] name: string
+            - [ ] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
+            - [X] num_nodes: size_t
+            - [ ] memory_amount_in_gb: int
+            - [ ] has_gpu: bool
+            - [ ] storage_amount_in_gb: int
+            - [ ] network_interconnect: string 
+       - [ ] Add missing information to the platform description 
+       - [X] Create the .h file
+       - [/] Instantiate at parsing time
+       - [X] Pass it to the JSA at creation time
+
 FIXME
  - [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs.
        This impacts most of the code with the "originator" thing
