@@ -2,6 +2,7 @@
 #define CONTROLMESSAGES_H
 
 #include <wrench-dev.h>
+#include "JobDescription.h"
 
 #define CONTROL_MESSAGE_SIZE 1024 // Size in bytes
 
@@ -10,27 +11,21 @@ namespace wrench {
  * Message to send a job request to a job scheduling agent
  */
 class JobRequestMessage : public ExecutionControllerCustomEventMessage {
+  const std::shared_ptr<JobDescription> job_description_;
+  bool can_forward_;
+
 public:
-  /**
-   *
-   * @param name job name
-   * @param num_compute_nodes number of compute nodes
-   * @param runtime job runtime
-   * @param can_forward whether the job can be forwarded to another batch service controller
-   */
-  JobRequestMessage(const std::string& name, const int num_compute_nodes, const int runtime, const bool can_forward)
+  /// @brief 
+  /// @param job_description job description
+  /// @param can_forward whether the job can be forwarded to another job scheduling agent
+  JobRequestMessage(const std::shared_ptr<JobDescription> job_description, bool can_forward)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
-      , _name(name)
-      , _num_compute_nodes(num_compute_nodes)
-      , _runtime(runtime)
-      , _can_forward(can_forward)
+      , job_description_(job_description)
+      , can_forward_(can_forward)
   {
   }
-
-  std::string _name;
-  int _num_compute_nodes;
-  int _runtime;
-  bool _can_forward;
+  bool can_be_forwarded() const { return can_forward_; }
+  const std::shared_ptr<JobDescription>& get_job_description() const { return job_description_; }
 };
 
 /**
