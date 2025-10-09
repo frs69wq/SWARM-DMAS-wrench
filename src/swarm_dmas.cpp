@@ -1,5 +1,6 @@
 #include <iostream>
 #include <wrench.h>
+#include <simgrid/s4u/Host.hpp>
 
 #include "HPCSystemDescription.h"
 #include "JobSchedulingAgent.h"
@@ -38,6 +39,9 @@ int main(int argc, char** argv)
   // Create the network of job scheduling agents
   std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;    
   for (const auto& c : hpc_systems ) {
+    auto system_has_gpu = wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "has_gpu");
+    WRENCH_INFO("HPCSystem '%s' has GPUs: %s", std::get<0>(c).c_str(), system_has_gpu.c_str());
+
     // Create the HPCSystemDescription
     auto system_description = std::make_shared<HPCSystemDescription>();
     system_description->set_name(std::get<0>(c));
@@ -45,7 +49,7 @@ int main(int argc, char** argv)
     // TODO Complete the instantiation once more information are available in the platform description
 
     std::string head_node = std::get<1>(c).front();
-    std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
+   std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
     WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(), std::get<0>(c).c_str());
     // Instantiate a batch compute service on the computes node of this cluster
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));

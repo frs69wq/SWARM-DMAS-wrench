@@ -29,8 +29,8 @@
     - [x] name: string
     - [ ] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
     - [x] num_nodes: size_t
+    - [x] has_gpu: bool
     - [ ] memory_amount_in_gb: int
-    - [ ] has_gpu: bool
     - [ ] storage_amount_in_gb: int
     - [ ] network_interconnect: string 
   - [ ] Add missing information to the platform description 
@@ -42,4 +42,4 @@
 - [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
 - [X] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
 - [X] Use a proper ctor to fill the job description
-- [ ] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator  
+- [ ] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
