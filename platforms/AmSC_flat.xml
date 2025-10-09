@@ -10,32 +10,68 @@
     <!-- Aurora at ALCF -->
     <cluster id="Aurora" prefix="aurora-" suffix=".alcf.gov"
              radical="0-10624" 
-             speed="312Tf" bw="200Gbps" lat="2us"/>
+             speed="312Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="True"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
 
     <!-- Crux at ALCF -->
     <cluster id="Crux" prefix="crux-" suffix=".alcf.gov"
              radical="0-256"
-             speed="5Tf" bw="200Gbps" lat="2us"/>
+             speed="5Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="False"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
     
     <!-- Perlmutter (Phase 1, GPU nodes) at NERSC -->
     <cluster id="Perlmutter-Phase-1" prefix="perlmutter-gpu-" suffix=".nersc.gov"
              radical="0-1536"
-             speed="4Tf" bw="200Gbps" lat="2us"/>
+             speed="4Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="True"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
 
     <!-- Perlmutter (Phase 2, CPU nodes) at NERSC -->
     <cluster id="Perlmutter-Phase-2" prefix="perlmutter-cpu-" suffix=".nersc.gov" 
              radical="0-3072"
-             speed="4.9Tf" bw="200Gbps" lat="2us"/>
+             speed="4.9Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="False"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
     
     <!-- Frontier at OLCF -->
     <cluster id="Frontier" prefix="frontier-" suffix=".olcf.gov"
              radical="0-9472"
-             speed="83.9Tf" bw="200Gbps" lat="2us"/>
+             speed="83.9Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="True"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
 
     <!-- Andes at OLCF -->
     <cluster id="Andes" prefix="andes-" suffix=".olcf.gov"
              radical="0-704"
-             speed="1.5Tf" bw="200Gbps" lat="2us"/>
+             speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="type" value=""/>  
+      <prop id="memory_amount_in_gb" value=""/>  
+      <prop id="storage_amount_in_gb" value=""/>  
+      <prop id="has_gpu" value="False"/>  
+      <prop id="network_interconnect" value=""/>  
+    </cluster>
   
     <link id="DOE_link" bandwidth="200Gbps" latency="2us"/>
 
