@@ -50,8 +50,8 @@ Each job includes the following attributes:
 | `RequestedGPU` | Boolean | Whether job requires GPU access |
 | `RequestedStorageGB` | Integer | Storage requirement in GB (site-constrained) |
 | `JobType` | String | HPC system type: HPC, AI, HYBRID, GPU, MEMORY, STORAGE |
-| `UserID` | String | User identifier (user_1, user_2, ...) |
-| `GroupID` | String | Group identifier (group_1, group_2, ...) |
+| `UserID` | Integer | User identifier (1, 2, ...) |
+| `GroupID` | Integer | Group identifier (1, 2, ...) |
 | `HPCSite` | String | HPC site name (ALCF, OLCF, NERSC) |
 
 ## Statistical Distributions by Scenario
