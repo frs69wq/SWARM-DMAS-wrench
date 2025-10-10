@@ -1,17 +1,18 @@
-#include <nlohmann/json.hpp>
 #include <fstream>
-#include <vector>
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <vector>
 
-#include "JobSchedulingAgent.h"
 #include "ControlMessages.h"
 #include "JobDescription.h"
+#include "JobSchedulingAgent.h"
 #include "WorkloadSubmissionAgent.h"
 
 using json = nlohmann::json;
 WRENCH_LOG_CATEGORY(workload_submission_agent, "Log category for WorkloadSubmissionAgent");
 
-static std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descriptions(const std::string& filename)
+static std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>>
+extract_job_descriptions(const std::string& filename)
 {
   auto jobs = std::make_shared<std::vector<std::shared_ptr<JobDescription>>>();
   std::ifstream file(filename);
@@ -27,18 +28,11 @@ static std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job
   for (const auto& item : j) {
     // FIXME use a proper ctor to fill the job description
     auto job = std::make_shared<JobDescription>(
-      item.at("JobID").get<int>(),
-      item.at("UserID").get<int>(),
-      item.at("GroupID").get<int>(),
-      JobDescription::string_to_job_type(item.at("JobType").get<std::string>()),
-      item.at("SubmissionTime").get<int>(),
-      item.at("Walltime").get<int>(),
-      item.at("Nodes").get<int>(),
-      item.at("RequestedGPU").get<bool>(),
-      item.at("MemoryGB").get<int>(),
-      item.at("RequestedStorageGB").get<int>(),
-      item.at("HPCSite").get<std::string>(),
-      item.at("HPCSystem").get<std::string>());
+        item.at("JobID").get<int>(), item.at("UserID").get<int>(), item.at("GroupID").get<int>(),
+        JobDescription::string_to_job_type(item.at("JobType").get<std::string>()), item.at("SubmissionTime").get<int>(),
+        item.at("Walltime").get<int>(), item.at("Nodes").get<int>(), item.at("RequestedGPU").get<bool>(),
+        item.at("MemoryGB").get<int>(), item.at("RequestedStorageGB").get<int>(), item.at("HPCSite").get<std::string>(),
+        item.at("HPCSystem").get<std::string>());
 
     jobs->push_back(job);
   }
@@ -62,33 +56,31 @@ int WorkloadSubmissionAgent::main()
   // Main loop
   int next_job_to_submit = 0;
   int num_completed_jobs = 0;
-  
+
   // Set a timer for the arrival of the first job
   this->setTimer(jobs->at(0)->get_submission_time(), "Submit the next job");
-  
+
   while (num_completed_jobs < total_num_jobs) {
-    
+
     // Wait for the next event
     auto event = this->waitForNextEvent();
-    
+
     if (std::dynamic_pointer_cast<TimerEvent>(event)) {
       // It's a timer event, send the job description to the job scheduling agent of the HPC system in the description
-      auto next_job = jobs->at(next_job_to_submit);
-      auto job_name = std::to_string(next_job->get_job_id());
+      auto next_job            = jobs->at(next_job_to_submit);
+      auto job_name            = std::to_string(next_job->get_job_id());
       auto job_submission_time = next_job->get_submission_time();
-      auto job_HPCSystem = next_job->get_hpc_system();
-      
+      auto job_HPCSystem       = next_job->get_hpc_system();
+
       WRENCH_INFO("Sending Job #%s (to start at t = %5d) to Job Submission Agent '%s'", job_name.c_str(),
                   job_submission_time, job_HPCSystem.c_str());
-      
-      auto target_job_scheduling_agent = 
-         *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
-                        [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
-                          return c->get_hpc_system_name() == job_HPCSystem;
-                        })
-          );
+
+      auto target_job_scheduling_agent = *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
+                                                        [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
+                                                          return c->get_hpc_system_name() == job_HPCSystem;
+                                                        }));
       target_job_scheduling_agent->commport->dputMessage(new JobRequestMessage(next_job, true));
-      
+
       // Set the timer for the next job
       next_job_to_submit++;
       if (next_job_to_submit < total_num_jobs) {

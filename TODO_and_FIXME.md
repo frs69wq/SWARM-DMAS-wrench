@@ -4,33 +4,33 @@
   - [x] Option 2: implement a default behavior for a JSA that consists in directly submitting the job to the local HPC system. 
 - [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
   - [ ] Have steps 1 to 3 below as separate functions
-    - [ ] Define a SchedulingPolicy abstract class that requires the following 3 steps.
+    - [x] Define a SchedulingPolicy abstract class that requires the following 3 steps.
       - [ ] Define child classes that implement a specific policy
-        - [ ] Option 1: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
+        - [x] Option 1: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
         - [ ] Option 2: Step 2 can use either heuristic- or LLM-based bidding leading to different policies
     - [ ] Assign the scheduling policy to JSAs at the beginning of the simulation.
       - [ ] add command line argument giving the name of a scheduling policy
       - [ ] parse this command line argument to create the corresponding object
   - [ ] Step 1: Broadcast the jobDescription to the network of JSAs
-      - [X] test the value of can_forward_ to determine if the job is an original submission from the WSA or a forward from a JSA
+      - [x] test the value of can_forward_ to determine if the job is an original submission from the WSA or a forward from a JSA
       - [ ] if true then broadcast the JobDescription to the other agents (with can_forward set to false)
       - [ ] if false
-        - [X] Option 1: Move to step 2
+        - [x] Option 1: Move to step 2
         - [ ] Option 2 (resilient): Send ack to sender (has code modification implications)
           - [ ] this includes adding a step to wait for the acks and handle agents not responding (timeout)
   - [ ] Step 2: Retrieve the current status of the locally managed HPC System
   - [ ] Step 3: Compute my own bid for the job
-      - [ ] Option 1: Do nothing
+      - [x] Option 1: Do nothing
       - [ ] Option 2: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
       - [ ] Option 3: Call a LLM
   - [ ] Step 4: Find a consensus on the winner of the competitive bidding for that job
-      - [ ] Option 1: Do nothing
+      - [x] Option 1: Do nothing
       - [ ] Option 2: Send bid to all other JSAs, then decide of winner locally based on all values
         - [ ] Manage tie breaking
       - [ ] Option 3: ???
-  - [ ] Step 4: Upon winning the competitive bidding, schedule the job on my local HPC system
-- [ ] Create an HPCSystem Class that contains a static high level description of the system
-  - [ ] Decide of the information to have
+  - [x] Step 4: Upon winning the competitive bidding, schedule the job on my local HPC system
+- [x] Create an HPCSystem Class that contains a static high level description of the system
+  - [x] Decide of the information to have
     - [x] name: string
     - [ ] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
     - [x] num_nodes: size_t

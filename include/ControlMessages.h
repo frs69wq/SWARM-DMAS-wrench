@@ -1,8 +1,8 @@
 #ifndef CONTROLMESSAGES_H
 #define CONTROLMESSAGES_H
 
-#include <wrench-dev.h>
 #include "JobDescription.h"
+#include <wrench-dev.h>
 
 #define CONTROL_MESSAGE_SIZE 1024 // Size in bytes
 
@@ -15,7 +15,7 @@ class JobRequestMessage : public ExecutionControllerCustomEventMessage {
   bool can_forward_;
 
 public:
-  /// @brief 
+  /// @brief
   /// @param job_description job description
   /// @param can_forward whether the job can be forwarded to another job scheduling agent
   JobRequestMessage(const std::shared_ptr<JobDescription> job_description, bool can_forward)

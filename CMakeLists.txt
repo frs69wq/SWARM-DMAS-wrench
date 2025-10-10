@@ -20,6 +20,7 @@ set(HEADER_FILES
    include/HPCSystemDescription.h
    include/JobDescription.h
    include/JobSchedulingAgent.h
+   include/HeuristicBiddingSchedulingPolicy.h
    include/PureLocalSchedulingPolicy.h
    include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h
@@ -28,6 +29,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
    src/swarm_dmas.cpp
    src/JobSchedulingAgent.cpp
+   src/SchedulingPolicy.cpp
    src/WorkloadSubmissionAgent.cpp
 )
    

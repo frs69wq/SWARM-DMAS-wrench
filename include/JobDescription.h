@@ -1,7 +1,9 @@
 #ifndef JOB_DESCRIPTION_H
 #define JOB_DESCRIPTION_H
 
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
 
 enum class JobType { HPC, AI, HYBRID, GPU, MEMORY, STORAGE };
 
@@ -20,21 +22,23 @@ class JobDescription {
   std::string hpc_system_;
 
 public:
-  JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, int walltime, 
+  JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, int walltime,
                  int num_nodes, bool needs_gpu, int requested_memory_gb, int requested_storage_gb,
                  const std::string& hpc_site, const std::string& hpc_system)
-    : job_id_(job_id),
-      user_id_(user_id),
-      group_id_(group_id),
-      job_type_(job_type),
-      submission_time_(submission_time),
-      walltime_(walltime),
-      num_nodes_(num_nodes),
-      needs_gpu_(needs_gpu),
-      requested_memory_gb_(requested_memory_gb),
-      requested_storage_gb_(requested_storage_gb),
-      hpc_site_(hpc_site),
-      hpc_system_(hpc_system) {}
+      : job_id_(job_id)
+      , user_id_(user_id)
+      , group_id_(group_id)
+      , job_type_(job_type)
+      , submission_time_(submission_time)
+      , walltime_(walltime)
+      , num_nodes_(num_nodes)
+      , needs_gpu_(needs_gpu)
+      , requested_memory_gb_(requested_memory_gb)
+      , requested_storage_gb_(requested_storage_gb)
+      , hpc_site_(hpc_site)
+      , hpc_system_(hpc_system)
+  {
+  }
 
   // getters
   int get_job_id() const { return job_id_; }
@@ -52,14 +56,9 @@ public:
 
   static JobType string_to_job_type(const std::string& s)
   {
-    static const std::map<std::string, JobType> EnumStrings{
-      {"HPC", JobType::HPC},
-      {"AI", JobType::AI},
-      {"HYBRID", JobType::HYBRID},
-      {"GPU", JobType::GPU},
-      {"MEMORY", JobType::MEMORY},
-      {"STORAGE", JobType::STORAGE}
-    };
+    static const std::unordered_map<std::string, JobType> EnumStrings{
+        {"HPC", JobType::HPC}, {"AI", JobType::AI},         {"HYBRID", JobType::HYBRID},
+        {"GPU", JobType::GPU}, {"MEMORY", JobType::MEMORY}, {"STORAGE", JobType::STORAGE}};
 
     auto it = EnumStrings.find(s);
     if (it != EnumStrings.end()) {
