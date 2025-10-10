@@ -43,10 +43,11 @@ int main(int argc, char** argv)
     WRENCH_INFO("HPCSystem '%s' has GPUs: %s", std::get<0>(c).c_str(), system_has_gpu.c_str());
 
     // Create the HPCSystemDescription
+    // TODO Complete the instantiation (using the ctor) once more information are available in the platform description
+    // FIXME Once the ctor can be used, remove the setters
     auto system_description = std::make_shared<HPCSystemDescription>();
     system_description->set_name(std::get<0>(c));
     system_description->set_num_nodes(std::get<1>(c).size() - 1);
-    // TODO Complete the instantiation once more information are available in the platform description
 
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());

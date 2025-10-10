@@ -15,6 +15,19 @@ class HPCSystemDescription {
   std::string network_interconnect_;
 
 public:
+  HPCSystemDescription() = default;
+  HPCSystemDescription(const std::string& name, HPCSystemType type, size_t num_nodes, int memory_amount_in_gb,
+                       bool has_gpu, int storage_amount_in_gb, const std::string& network_interconnect)
+      : name_(name)
+      , type_(type)
+      , num_nodes_(num_nodes)
+      , memory_amount_in_gb_(memory_amount_in_gb)
+      , has_gpu_(has_gpu)
+      , storage_amount_in_gb_(storage_amount_in_gb)
+      , network_interconnect_(network_interconnect)
+  {
+  }
+
   // Getters
   const std::string& get_name() const { return name_; }
   const char* get_cname() const { return name_.c_str(); }
@@ -25,6 +38,7 @@ public:
   int get_storage_amount_in_gb() const { return storage_amount_in_gb_; }
   const std::string& get_network_interconnect() const { return network_interconnect_; }
 
+  // FIXME Remove once the ctor can be used
   // Setters
   void set_name(const std::string& name) { name_ = name; }
   void set_type(HPCSystemType type) { type_ = type; }
