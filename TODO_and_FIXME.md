@@ -48,4 +48,4 @@
 - [X] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
 - [X] Use a proper ctor to fill the job description
 - [ ] Use a proper ctor to fill the HPC system description
-- [ ] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
+- [X] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
