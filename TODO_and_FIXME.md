@@ -5,10 +5,12 @@
 - [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
   - [ ] Have steps 1 to 3 below as separate functions
     - [ ] Define a SchedulingPolicy abstract class that requires the following 3 steps.
-    - [ ] Define child classe that implement a specific policy
-      - [ ] Option 1: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
-      - [ ] Option 2: Step 2 can use either heuristic- or LLM-based bidding leading to different policies
+      - [ ] Define child classes that implement a specific policy
+        - [ ] Option 1: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
+        - [ ] Option 2: Step 2 can use either heuristic- or LLM-based bidding leading to different policies
     - [ ] Assign the scheduling policy to JSAs at the beginning of the simulation.
+      - [ ] add command line argument giving the name of a scheduling policy
+      - [ ] parse this command line argument to create the corresponding object
   - [ ] Step 1: Broadcast the jobDescription to the network of JSAs
       - [X] test the value of can_forward_ to determine if the job is an original submission from the WSA or a forward from a JSA
       - [ ] if true then broadcast the JobDescription to the other agents (with can_forward set to false)
