@@ -20,6 +20,8 @@ set(HEADER_FILES
    include/HPCSystemDescription.h
    include/JobDescription.h
    include/JobSchedulingAgent.h
+   include/PureLocalSchedulingPolicy.h
+   include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h
 )
 

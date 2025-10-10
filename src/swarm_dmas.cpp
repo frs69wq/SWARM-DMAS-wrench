@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     // TODO Complete the instantiation once more information are available in the platform description
 
     std::string head_node = std::get<1>(c).front();
-   std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
+    std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
     WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(), std::get<0>(c).c_str());
     // Instantiate a batch compute service on the computes node of this cluster
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));

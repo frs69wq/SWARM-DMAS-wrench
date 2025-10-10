@@ -17,6 +17,7 @@ class HPCSystemDescription {
 public:
   // Getters
   const std::string& get_name() const { return name_; }
+  const char* get_cname() const { return name_.c_str(); }
   HPCSystemType get_type() const { return type_; }
   size_t get_num_nodes() const { return num_nodes_; }
   int get_memory_amount_in_gb() const { return memory_amount_in_gb_; }
