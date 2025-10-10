@@ -298,8 +298,8 @@ def generate_synthetic_jobs_v2(**kwargs):
             requested_gpu[i] = False
 
     # Users & groups
-    user_ids = [f"user_{i}" for i in np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)]
-    group_ids = [f"group_{i}" for i in np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)]
+    user_ids = [users for users in np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)]
+    group_ids = [groups for groups in np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)]
 
     df = pd.DataFrame({
         'JobID': job_ids,
