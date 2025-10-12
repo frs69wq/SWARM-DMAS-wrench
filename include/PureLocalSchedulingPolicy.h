@@ -7,7 +7,6 @@ class PureLocalSchedulingPolicy : public SchedulingPolicy {
 
 public:
   void broadcast_job_description(wrench::JobSchedulingAgent* /*self*/,
-                                 const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& /* peers */,
                                  const std::shared_ptr<JobDescription> job_description) override
   {
     // Function is only called upon initial submission, hence init the number of needed and received bids only once
@@ -24,15 +23,13 @@ public:
   }
 
   void broadcast_bid_on_job_(wrench::JobSchedulingAgent* bidder,
-                             const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& peers,
                              const std::shared_ptr<JobDescription> job_description, double bid)
   {
     // Just sends a BidOnJobMessage to itself
     bidder->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
   }
 
-  bool did_win_bid(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& /* peers */,
-                   double /*local_bid*/) const override
+  bool did_win_bid(double /* local_bid */, const std::map<wrench::JobSchedulingAgent*, double>& /* remote_bids */) const override
   {
     return true;
   }

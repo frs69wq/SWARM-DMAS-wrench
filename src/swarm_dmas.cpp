@@ -77,6 +77,9 @@ int main(int argc, char** argv)
       if (src != dst)
         src->add_peer(dst);
     src->setDaemonized(true);
+
+  // Assign the network to the scheduling policy
+  scheduling_policy->set_peers(job_scheduling_agents);
   }
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents

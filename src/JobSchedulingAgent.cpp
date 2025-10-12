@@ -19,7 +19,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     if (job_request_message->can_be_forwarded()) {
       // This is an initial submission
       // Step 1: Broadcast the JobDescription to the network of Job Scheduling Agents
-      scheduling_policy_->broadcast_job_description(this, peers_, job_description);
+      scheduling_policy_->broadcast_job_description(this, job_description);
     }
 
     // TODO Step 2: Retrieve current state of the HPC_system
@@ -34,7 +34,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     local_bids_[job_description->get_job_id()] = local_bid;
 
     // Step 4: Broadcast the local bid to the network of agents
-    scheduling_policy_->broadcast_bid_on_job_(this, peers_, job_description, local_bid);
+    scheduling_policy_->broadcast_bid_on_job_(this, job_description, local_bid);
   }
 
   // Receive a bid for a job
@@ -43,15 +43,18 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     auto job_id          = job_description->get_job_id();
     auto remote_bidder   = bid_on_job_message->get_bidder();
     auto remote_bid      = bid_on_job_message->get_bid();
+    // Increase the number of received bids fot this job
     scheduling_policy_->received_bid_for(job_id);
     WRENCH_INFO("Received a bid (%lu/%lu) for Job #%d from %s: %.2f", scheduling_policy_->get_num_received_bids(job_id),
                 scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
                 remote_bid);
+    // Store this remote bid
+    remote_bids_[job_id].try_emplace(remote_bidder, remote_bid);
 
     if (scheduling_policy_->get_num_received_bids(job_id) == scheduling_policy_->get_num_needed_bids()) {
       // All the bids needed to take a decision in the competitive bidding process have been received
       // Step 5: Determine if this agent won the competitive bidding.
-      if (scheduling_policy_->did_win_bid(peers_, local_bids_[job_id])) {
+      if (scheduling_policy_->did_win_bid(local_bids_[job_id], remote_bids_[job_id])) {
         WRENCH_INFO("Schedule Job #%d (%d compute nodes for %d seconds) on '%s'", job_id,
                     job_description->get_num_nodes(), job_description->get_walltime(),
                     hpc_system_description_->get_cname());

@@ -24,6 +24,7 @@ class JobSchedulingAgent : public ExecutionController {
   std::shared_ptr<WorkloadSubmissionAgent> originator_;
 
   std::unordered_map<int, double> local_bids_;
+  std::unordered_map<int, std::map<JobSchedulingAgent*, double>> remote_bids_;
 
   int main() override;
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;

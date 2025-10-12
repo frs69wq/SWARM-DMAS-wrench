@@ -64,5 +64,5 @@
 - [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
 - [x] Use a proper ctor to fill the job description
 - [x] Use a proper ctor to fill the HPC system description
-- [ ] Refactor: create SchedulingPolicy with the network of agents as a member.
+- [x] Refactor: create SchedulingPolicy with the network of agents as a member.
 - [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
