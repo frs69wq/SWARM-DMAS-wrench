@@ -1,9 +1,11 @@
 #ifndef JOB_SCHEDULING_AGENT_H
 #define JOB_SCHEDULING_AGENT_H
 
+#include <memory>
+#include <wrench-dev.h>
+
 #include "HPCSystemDescription.h"
 #include "SchedulingPolicy.h"
-#include <wrench-dev.h>
 
 namespace wrench {
 
@@ -20,6 +22,8 @@ class JobSchedulingAgent : public ExecutionController {
   const std::shared_ptr<BatchComputeService> batch_compute_service_;
   std::vector<std::shared_ptr<JobSchedulingAgent>> peers_;
   std::shared_ptr<WorkloadSubmissionAgent> originator_;
+
+  std::unordered_map<int, double> local_bids_;
 
   int main() override;
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;

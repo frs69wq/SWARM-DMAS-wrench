@@ -1,6 +1,6 @@
 ## TODO
 - [x] Decide how to enforce local execution when we don't want to use the network of JSAs
-  - [ ] Option 1: use the 'can_forward' member of a JobRequestMessage
+  - [ ] ~~Option 1: use the 'can_forward' member of a JobRequestMessage~~
   - [x] Option 2: implement a default behavior for a JSA that consists in directly submitting the job to the local HPC system. 
 - [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
   - [ ] Have steps 1 to 3 below as separate functions
@@ -8,26 +8,38 @@
       - [ ] Define child classes that implement a specific policy
         - [x] Option 1: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
         - [ ] Option 2: Step 2 can use either heuristic- or LLM-based bidding leading to different policies
-    - [ ] Assign the scheduling policy to JSAs at the beginning of the simulation.
-      - [ ] add command line argument giving the name of a scheduling policy
-      - [ ] parse this command line argument to create the corresponding object
+    - [x] Assign the scheduling policy to JSAs at the beginning of the simulation.
+      - [x] add command line argument giving the name of a scheduling policy
+      - [x] parse this command line argument to create the corresponding object
   - [ ] Step 1: Broadcast the jobDescription to the network of JSAs
       - [x] test the value of can_forward_ to determine if the job is an original submission from the WSA or a forward from a JSA
-      - [ ] if true then broadcast the JobDescription to the other agents (with can_forward set to false)
+      - [x] if true then broadcast the JobDescription to the other agents but myself (with can_forward set to false)
       - [ ] if false
-        - [x] Option 1: Move to step 2
+        - [x] PureLocal: Move to step 2
         - [ ] Option 2 (resilient): Send ack to sender (has code modification implications)
           - [ ] this includes adding a step to wait for the acks and handle agents not responding (timeout)
   - [ ] Step 2: Retrieve the current status of the locally managed HPC System
   - [ ] Step 3: Compute my own bid for the job
-      - [x] Option 1: Do nothing
+      - [x] PureLocal: Do nothing
       - [ ] Option 2: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
       - [ ] Option 3: Call a LLM
-  - [ ] Step 4: Find a consensus on the winner of the competitive bidding for that job
-      - [x] Option 1: Do nothing
-      - [ ] Option 2: Send bid to all other JSAs, then decide of winner locally based on all values
-        - [ ] Manage tie breaking
-      - [ ] Option 3: ???
+      - [x] Store the local bid for the job
+        - [ ] Decide if we clean up when a job is completed or keep all bids for explanability
+  - [x] Step 4: Broadcast my bid to other agents
+      - [x] Create a BidOnJob message
+      - [x] Broadcast it
+        - [x] PureLocal: just send it to myself
+        - [x] Option 2: send it to all other agents (including myself)
+      - [x] Process this new type of message in Step 5
+  - [ ] Step 5: Find a consensus on the winner of the competitive bidding for that job
+      - [x] Need to know how many bids are expected to take a decision
+        - [x] PureLocal: set to 1
+        - [x] Option 2: set to the size of the agent network
+      - [ ] When all the expected bids have been received, take a decision
+        - [x] PureLocal: Do nothing, return true
+        - [ ] Option 2: Compare local bid to all other bids
+          - [ ] Manage tie breaking
+        - [ ] Option 3: ???
   - [x] Step 4: Upon winning the competitive bidding, schedule the job on my local HPC system
 - [x] Create an HPCSystem Class that contains a static high level description of the system
   - [x] Decide of the information to have
@@ -48,4 +60,5 @@
 - [X] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
 - [X] Use a proper ctor to fill the job description
 - [ ] Use a proper ctor to fill the HPC system description
-- [X] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
+- [ ] Refactor: create SchedulingPolicy with the network of agents as a member.
+- [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
