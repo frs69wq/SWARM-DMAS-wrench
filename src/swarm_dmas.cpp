@@ -41,7 +41,7 @@ int main(int argc, char** argv)
   WRENCH_INFO("%lu HPC systems in the platform", hpc_systems.size());
 
   // Create the network of job scheduling agents
-  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agent_network;
   for (const auto& c : hpc_systems) {
     auto system_type = wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "type");
     auto system_memory_amount_in_gb =
@@ -67,28 +67,22 @@ int main(int argc, char** argv)
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
-    job_scheduling_agents.push_back(simulation->add(
-        new wrench::JobSchedulingAgent(system_description, head_node, scheduling_policy, batch_service)));
+    auto new_agent = 
+      simulation->add(new wrench::JobSchedulingAgent(system_description, head_node, scheduling_policy, batch_service));
+    new_agent->setDaemonized(true);
+    job_scheduling_agent_network.push_back(new_agent);
   }
-
-  // Connect the agents in the network
-  for (const auto& src : job_scheduling_agents) {
-    for (const auto& dst : job_scheduling_agents)
-      if (src != dst)
-        src->add_peer(dst);
-    src->setDaemonized(true);
 
   // Assign the network to the scheduling policy
-  scheduling_policy->set_peers(job_scheduling_agents);
-  }
+  scheduling_policy->set_job_scheduling_agent_network(job_scheduling_agent_network);
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =
-      simulation->add(new wrench::WorkloadSubmissionAgent("WSAgent", job_list, job_scheduling_agents));
+      simulation->add(new wrench::WorkloadSubmissionAgent("WSAgent", job_list, job_scheduling_agent_network));
 
   // FIXME This is to allow job scheduling agents to notify the workload scheduling agent of job completion.
   // This may change at some point
-  for (const auto& agent : job_scheduling_agents)
+  for (const auto& agent : job_scheduling_agent_network)
     agent->setJobOriginator(workload_submission_agent);
 
   // Launch the simulation. This call only returns when the simulation is complete

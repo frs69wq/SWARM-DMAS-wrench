@@ -20,7 +20,7 @@ class JobSchedulingAgent : public ExecutionController {
   std::shared_ptr<JobManager> job_manager_;
 
   const std::shared_ptr<BatchComputeService> batch_compute_service_;
-  std::vector<std::shared_ptr<JobSchedulingAgent>> peers_;
+  std::vector<std::shared_ptr<JobSchedulingAgent>> job_scheduling_agent_network_;
   std::shared_ptr<WorkloadSubmissionAgent> originator_;
 
   std::unordered_map<int, double> local_bids_;
@@ -41,7 +41,7 @@ public:
   {
   }
 
-  void add_peer(std::shared_ptr<JobSchedulingAgent> peer) { peers_.push_back(peer); }
+  void add_job_scheduling_agent(std::shared_ptr<JobSchedulingAgent> agent) { job_scheduling_agent_network_.push_back(agent); }
   void setJobOriginator(std::shared_ptr<WorkloadSubmissionAgent> originator) { this->originator_ = originator; }
   const std::string& get_hpc_system_name() const { return this->hpc_system_description_->get_name(); }
 };

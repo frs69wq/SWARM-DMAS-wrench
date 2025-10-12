@@ -13,15 +13,15 @@ class JobSchedulingAgent;
 class SchedulingPolicy {
   size_t num_needed_bids_;
   std::unordered_map<int, size_t> num_received_bids_;
-  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> peers_;
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agent_network;
 
 protected:
   void set_num_needed_bids(size_t value) { num_needed_bids_ = value; }
   void init_num_received_bids(int job_id) { num_received_bids_[job_id] = 0; }
-  const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& get_peers() { return peers_; }
-  size_t get_network_size() const { return peers_.size(); }
+  const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& get_job_scheduling_agent_network() { return job_scheduling_agent_network; }
+  size_t get_job_scheduling_agent_network_size() const { return job_scheduling_agent_network.size(); }
 public:
-  void set_peers(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& peers) { peers_ = peers; }
+  void set_job_scheduling_agent_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network) { job_scheduling_agent_network = network; }
 
   virtual void broadcast_job_description(wrench::JobSchedulingAgent* self,
                                          const std::shared_ptr<JobDescription> job_description) = 0;
