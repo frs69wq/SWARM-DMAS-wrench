@@ -29,7 +29,7 @@ public:
   compute_bid(const std::shared_ptr<JobDescription> job_description,
               const std::shared_ptr<HPCSystemDescription> hpc_system_description /*, hpc_system_status */) = 0;
 
-  virtual void broadcast_bid_on_job_(wrench::JobSchedulingAgent* bidder,
+  virtual void broadcast_bid_on_job(wrench::JobSchedulingAgent* bidder,
                                      const std::shared_ptr<JobDescription> job_description, double bid) = 0;
 
   virtual bool did_win_bid(double local_bid, const std::map<wrench::JobSchedulingAgent*, double>& remote_bids) const = 0;

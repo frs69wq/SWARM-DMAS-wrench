@@ -22,7 +22,7 @@ public:
     return 1.0;
   }
 
-  void broadcast_bid_on_job_(wrench::JobSchedulingAgent* bidder,
+  void broadcast_bid_on_job(wrench::JobSchedulingAgent* bidder,
                              const std::shared_ptr<JobDescription> job_description, double bid)
   {
     // Just sends a BidOnJobMessage to itself

@@ -34,7 +34,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     local_bids_[job_description->get_job_id()] = local_bid;
 
     // Step 4: Broadcast the local bid to the network of agents
-    scheduling_policy_->broadcast_bid_on_job_(this, job_description, local_bid);
+    scheduling_policy_->broadcast_bid_on_job(this, job_description, local_bid);
   }
 
   // Receive a bid for a job

@@ -28,7 +28,7 @@ public:
     return dis(gen);
   }
 
-  void broadcast_bid_on_job_(wrench::JobSchedulingAgent* bidder,
+  void broadcast_bid_on_job(wrench::JobSchedulingAgent* bidder,
                              const std::shared_ptr<JobDescription> job_description, double bid)
   {
     // Set the number of needed bids to the size of the network of job scheduling agents
