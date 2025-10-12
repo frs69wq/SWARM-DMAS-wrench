@@ -14,9 +14,10 @@ class SchedulingPolicy {
   size_t num_needed_bids_;
   std::unordered_map<int, size_t> num_received_bids_;
 
-  protected:
-  void set_num_needed_bids (size_t value) { num_needed_bids_ = value; }
+protected:
+  void set_num_needed_bids(size_t value) { num_needed_bids_ = value; }
   void init_num_received_bids(int job_id) { num_received_bids_[job_id] = 0; }
+
 public:
   virtual void broadcast_job_description(wrench::JobSchedulingAgent* self,
                                          const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& peers,

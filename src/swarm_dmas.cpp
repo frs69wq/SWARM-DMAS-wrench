@@ -43,15 +43,21 @@ int main(int argc, char** argv)
   // Create the network of job scheduling agents
   std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agents;
   for (const auto& c : hpc_systems) {
-    auto system_has_gpu = wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "has_gpu");
-    WRENCH_INFO("HPCSystem '%s' has GPUs: %s", std::get<0>(c).c_str(), system_has_gpu.c_str());
+    auto system_type = wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "type");
+    auto system_memory_amount_in_gb =
+        std::stoi(wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "memory_amount_in_gb"));
+    auto system_storage_amount_in_gb =
+        std::stod(wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "storage_amount_in_gb"));
+    auto system_has_gpu = (wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "has_gpu") == "True");
+    auto system_network_interconnect =
+        wrench::S4U_Simulation::getClusterProperty(std::get<0>(c), "network_interconnect");
 
     // Create the HPCSystemDescription
-    // TODO Complete the instantiation (using the ctor) once more information are available in the platform description
-    // FIXME Once the ctor can be used, remove the setters
-    auto system_description = std::make_shared<HPCSystemDescription>();
-    system_description->set_name(std::get<0>(c));
-    system_description->set_num_nodes(std::get<1>(c).size() - 1);
+    auto system_description = std::make_shared<HPCSystemDescription>(
+        std::get<0>(c) /* name */,
+        HPCSystemDescription::string_to_hpc_system_type(system_type), // type
+        std::get<1>(c).size() - 1 /* num_nodes */, system_memory_amount_in_gb, system_storage_amount_in_gb,
+        system_has_gpu, system_network_interconnect);
 
     std::string head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());

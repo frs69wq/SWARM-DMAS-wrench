@@ -40,14 +40,13 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
   // Receive a bid for a job
   if (auto bid_on_job_message = std::dynamic_pointer_cast<BidOnJobMessage>(event->message)) {
     auto job_description = bid_on_job_message->get_job_description();
-    auto job_id = job_description->get_job_id();
+    auto job_id          = job_description->get_job_id();
     auto remote_bidder   = bid_on_job_message->get_bidder();
     auto remote_bid      = bid_on_job_message->get_bid();
     scheduling_policy_->received_bid_for(job_id);
-    WRENCH_INFO("Received a bid (%lu/%lu) for Job #%d from %s: %.2f",
-                scheduling_policy_->get_num_received_bids(job_id),
-                scheduling_policy_->get_num_needed_bids(), job_id,
-                remote_bidder->get_hpc_system_name().c_str(), remote_bid);
+    WRENCH_INFO("Received a bid (%lu/%lu) for Job #%d from %s: %.2f", scheduling_policy_->get_num_received_bids(job_id),
+                scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
+                remote_bid);
 
     if (scheduling_policy_->get_num_received_bids(job_id) == scheduling_policy_->get_num_needed_bids()) {
       // All the bids needed to take a decision in the competitive bidding process have been received

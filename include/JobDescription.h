@@ -17,13 +17,13 @@ class JobDescription {
   int num_nodes_;
   bool needs_gpu_;
   int requested_memory_gb_;
-  int requested_storage_gb_;
+  double requested_storage_gb_;
   std::string hpc_site_;
   std::string hpc_system_;
 
 public:
   JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, int walltime,
-                 int num_nodes, bool needs_gpu, int requested_memory_gb, int requested_storage_gb,
+                 int num_nodes, bool needs_gpu, int requested_memory_gb, double requested_storage_gb,
                  const std::string& hpc_site, const std::string& hpc_system)
       : job_id_(job_id)
       , user_id_(user_id)

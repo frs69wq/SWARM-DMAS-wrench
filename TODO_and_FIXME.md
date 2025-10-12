@@ -44,21 +44,25 @@
 - [x] Create an HPCSystem Class that contains a static high level description of the system
   - [x] Decide of the information to have
     - [x] name: string
-    - [ ] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
+    - [x] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
+      - Aurora: AI, Crux: STORAGE, Perlmutter: HYBRID, Frontier: HPC, Andes: STORAGE
+      - We have no MEMORY or GPU systems
+        - [ ] Frontier has much more memory than other. Add a second category?
+        - [ ] GPU is redundant with `has_gpu`. Remove it?
     - [x] num_nodes: size_t
     - [x] has_gpu: bool
-    - [ ] memory_amount_in_gb: int
-    - [ ] storage_amount_in_gb: int
-    - [ ] network_interconnect: string 
-  - [ ] Add missing information to the platform description 
+    - [x] memory_amount_in_gb: int
+    - [x] storage_amount_in_gb: double
+    - [x] network_interconnect: string
+  - [x] Add missing information to the platform description
   - [x] Create the .h file
-  - [ ] Instantiate at parsing time
+  - [x] Instantiate at parsing time
   - [x] Pass it to the JSA at creation time
 
 ## FIXME
 - [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
-- [X] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
-- [X] Use a proper ctor to fill the job description
-- [ ] Use a proper ctor to fill the HPC system description
+- [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
+- [x] Use a proper ctor to fill the job description
+- [x] Use a proper ctor to fill the HPC system description
 - [ ] Refactor: create SchedulingPolicy with the network of agents as a member.
 - [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)

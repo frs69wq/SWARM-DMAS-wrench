@@ -38,15 +38,19 @@ public:
   int get_storage_amount_in_gb() const { return storage_amount_in_gb_; }
   const std::string& get_network_interconnect() const { return network_interconnect_; }
 
-  // FIXME Remove once the ctor can be used
-  // Setters
-  void set_name(const std::string& name) { name_ = name; }
-  void set_type(HPCSystemType type) { type_ = type; }
-  void set_num_nodes(size_t num_nodes) { num_nodes_ = num_nodes; }
-  void set_memory_amount_in_gb(int memory_gb) { memory_amount_in_gb_ = memory_gb; }
-  void set_has_gpu(bool has_gpu) { has_gpu_ = has_gpu; }
-  void set_storage_amount_in_gb(int storage_gb) { storage_amount_in_gb_ = storage_gb; }
-  void set_network_interconnect(const std::string& interconnect) { network_interconnect_ = interconnect; }
+  static HPCSystemType string_to_hpc_system_type(const std::string& s)
+  {
+    static const std::unordered_map<std::string, HPCSystemType> EnumStrings{
+        {"HPC", HPCSystemType::HPC}, {"AI", HPCSystemType::AI},         {"HYBRID", HPCSystemType::HYBRID},
+        {"GPU", HPCSystemType::GPU}, {"MEMORY", HPCSystemType::MEMORY}, {"STORAGE", HPCSystemType::STORAGE}};
+
+    auto it = EnumStrings.find(s);
+    if (it != EnumStrings.end()) {
+      return it->second;
+    } else {
+      throw std::out_of_range("Invalid HPCSystemType string: " + s);
+    }
+  }
 };
 
 #endif // HPC_SYSTEM_DESCRIPTION_H
