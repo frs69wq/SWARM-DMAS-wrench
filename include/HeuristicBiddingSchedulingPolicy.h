@@ -22,8 +22,10 @@ public:
   compute_bid(const std::shared_ptr<JobDescription> job_description,
               const std::shared_ptr<HPCSystemDescription> hpc_system_description /*, hpc_system_status */) override
   {
-    // TODO
-    return 1.0;
+    std::mt19937 gen(42);
+    std::uniform_real_distribution<double> dis(0.0, std::nextafter(1.0, 2.0));
+
+    return dis(gen);
   }
 
   void broadcast_bid_on_job_(wrench::JobSchedulingAgent* bidder,
