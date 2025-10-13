@@ -1,5 +1,5 @@
-#ifndef HEURISTIC_BIDDING_SCHEDULING_POLICY_H
-#define HEURISTIC_BIDDING_SCHEDULING_POLICY_H
+#ifndef RANDOM_BIDDING_SCHEDULING_POLICY_H
+#define RANDOM_BIDDING_SCHEDULING_POLICY_H
 
 #include <algorithm>
 
@@ -7,7 +7,7 @@
 #include "JobSchedulingAgent.h"
 #include "SchedulingPolicy.h"
 
-class HeuristicBiddingSchedulingPolicy : public SchedulingPolicy {
+class RandomBiddingSchedulingPolicy : public SchedulingPolicy {
 
 public:
   void broadcast_job_description(const std::string& agent_name,
@@ -24,7 +24,7 @@ public:
   compute_bid(const std::shared_ptr<JobDescription>& job_description,
               const std::shared_ptr<HPCSystemDescription>& hpc_system_description /*, hpc_system_status */) override
   {
-    // TODO replace by a heuristic based on job description, system description, and system status
+
     std::random_device rd;  // Seed
     std::mt19937 gen(rd()); // Mersenne Twister engine
     std::uniform_real_distribution<double> dis(0.0, std::nextafter(1.0, 2.0));
@@ -44,7 +44,6 @@ public:
   std::shared_ptr<wrench::JobSchedulingAgent>
   determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const override
   {
-    // TODO Do we need to replace this by something else?
     if (all_bids.empty())
       return nullptr;
 
@@ -58,4 +57,4 @@ public:
     return max_it->first;
   }
 };
-#endif // HEURISTIC_BIDDING_SCHEDULING_POLICY_H
+#endif // RANDOM_BIDDING_SCHEDULING_POLICY_H

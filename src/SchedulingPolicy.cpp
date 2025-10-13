@@ -1,5 +1,6 @@
 #include "HeuristicBiddingSchedulingPolicy.h"
 #include "PureLocalSchedulingPolicy.h"
+#include "RandomBiddingSchedulingPolicy.h"
 
 #include <stdexcept>
 
@@ -7,6 +8,8 @@ std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(con
 {
   if (policy_name == "PureLocal")
     return std::make_shared<PureLocalSchedulingPolicy>();
+  else if (policy_name == "RandomBidding")
+    return std::make_shared<RandomBiddingSchedulingPolicy>();
   else if (policy_name == "HeuristicBidding")
     return std::make_shared<HeuristicBiddingSchedulingPolicy>();
   else

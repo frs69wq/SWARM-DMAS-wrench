@@ -22,6 +22,7 @@ set(HEADER_FILES
    include/JobDescription.h
    include/JobSchedulingAgent.h
    include/PureLocalSchedulingPolicy.h
+   include/RandomBiddingSchedulingPolicy.h
    include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h
 )
