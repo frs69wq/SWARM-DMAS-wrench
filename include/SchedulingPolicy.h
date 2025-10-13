@@ -32,7 +32,7 @@ public:
   virtual void broadcast_bid_on_job(wrench::JobSchedulingAgent* bidder,
                                      const std::shared_ptr<JobDescription> job_description, double bid) = 0;
 
-  virtual bool did_win_bid(double local_bid, const std::map<wrench::JobSchedulingAgent*, double>& remote_bids) const = 0;
+  virtual wrench::JobSchedulingAgent* determine_bid_winner(const std::map<wrench::JobSchedulingAgent*, double>& all_bids) const = 0;
 
   static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name);
   size_t get_num_needed_bids() const { return num_needed_bids_; }

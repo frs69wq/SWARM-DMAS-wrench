@@ -1,6 +1,8 @@
 #ifndef HEURISTIC_BIDDING_SCHEDULING_POLICY_H
 #define HEURISTIC_BIDDING_SCHEDULING_POLICY_H
 
+#include <algorithm>
+
 #include "ControlMessages.h"
 #include "JobSchedulingAgent.h"
 #include "SchedulingPolicy.h"
@@ -37,10 +39,21 @@ public:
       other_agent->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
   }
 
-  bool did_win_bid(double local_bid, const std::map<wrench::JobSchedulingAgent*, double>& remote_bids) const override
+  wrench::JobSchedulingAgent* determine_bid_winner(const std::map<wrench::JobSchedulingAgent*, double>& all_bids) const override
   {
-    // TODO
-    return true;
+    if (all_bids.empty())
+      return nullptr;
+
+    auto max_it = std::max_element(
+        all_bids.begin(), all_bids.end(),[](const auto& a, const auto& b)
+         {
+            if (a.second != b.second)
+                return a.second < b.second;  // higher value wins
+            else
+                return a.first < b.first;    // tie-breaker: lower pointer address wins
+        });
+
+    return max_it->first;
   }
 };
 #endif // HEURISTIC_BIDDING_SCHEDULING_POLICY_H

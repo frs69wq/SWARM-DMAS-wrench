@@ -29,9 +29,9 @@ public:
     bidder->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
   }
 
-  bool did_win_bid(double /* local_bid */, const std::map<wrench::JobSchedulingAgent*, double>& /* remote_bids */) const override
+   wrench::JobSchedulingAgent* determine_bid_winner(const std::map<wrench::JobSchedulingAgent*, double>& all_bids ) const override
   {
-    return true;
+    return all_bids.begin()->first;
   }
 };
 #endif // PURE_LOCAL_SCHEDULING_POLICY_H
