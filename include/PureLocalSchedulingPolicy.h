@@ -16,8 +16,8 @@ public:
   }
 
   double
-  compute_bid(const std::shared_ptr<JobDescription>& job_description,
-              const std::shared_ptr<HPCSystemDescription>& hpc_system_description /*, hpc_system_status */) override
+  compute_bid(const std::shared_ptr<JobDescription>& /* job_description */,
+              const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/ /*, hpc_system_status */) override
   {
     return 1.0;
   }

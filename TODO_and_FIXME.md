@@ -62,7 +62,9 @@
   - [x] Create the .h file
   - [x] Instantiate at parsing time
   - [x] Pass it to the JSA at creation time
-
+- [ ] Perform job acceptance sanity checks
+- [ ] Test call to the outside world
+  - [ ] has to send full state
 ## FIXME
 - [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
 - [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally

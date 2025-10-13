@@ -32,9 +32,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_); //, system_status);
     // Keep track of my bid ob this job
     local_bids_[job_description->get_job_id()] = local_bid;
-    WRENCH_INFO("%s' computed a bid for Job#%d of %.2f", hpc_system_description_->get_cname(),
+    WRENCH_INFO("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
                 job_description->get_job_id(), local_bid);
-    ;
 
     // Step 4: Broadcast the local bid to the network of agents
     scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid);
@@ -47,19 +46,24 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     auto remote_bidder   = bid_on_job_message->get_bidder();
     auto remote_bid      = bid_on_job_message->get_bid();
     // Increase the number of received bids fot this job
-    scheduling_policy_->received_bid_for(this->getHostname(), job_id);
+    scheduling_policy_->received_bid_for(this->getName(), job_id);
     WRENCH_DEBUG("Received a bid (%lu/%lu) for Job #%d from %s: %.2f",
-                 scheduling_policy_->get_num_received_bids(this->getHostname(), job_id),
+                 scheduling_policy_->get_num_received_bids(this->getName(), job_id),
                  scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
                  remote_bid);
     // Store this remote bid
     all_bids_[job_id].try_emplace(remote_bidder, remote_bid);
 
-    if (scheduling_policy_->get_num_received_bids(this->getHostname(), job_id) ==
+    if (scheduling_policy_->get_num_received_bids(this->getName(), job_id) ==
         scheduling_policy_->get_num_needed_bids()) {
       // All the bids needed to take a decision in the competitive bidding process have been received
       // Step 5: Determine if this agent won the competitive bidding.
       if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
+
+        // TODO perform job acceptance sanity checks. if these checks fail, the job fails
+        // requested num_cores > num_core of the system
+        // request GPU but machine has no GPU
+
         WRENCH_INFO("Schedule Job #%d (%d compute nodes for %d seconds) on '%s'", job_id,
                     job_description->get_num_nodes(), job_description->get_walltime(),
                     hpc_system_description_->get_cname());

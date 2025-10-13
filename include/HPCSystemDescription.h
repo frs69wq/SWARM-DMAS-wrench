@@ -10,8 +10,8 @@ class HPCSystemDescription {
   HPCSystemType type_;
   size_t num_nodes_;
   int memory_amount_in_gb_;
-  bool has_gpu_;
   int storage_amount_in_gb_;
+  bool has_gpu_;
   std::string network_interconnect_;
 
 public:

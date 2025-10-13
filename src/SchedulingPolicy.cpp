@@ -19,5 +19,5 @@ std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(con
 void SchedulingPolicy::init_num_received_bids(int job_id)
 {
   for (const auto& agent : job_scheduling_agent_network_)
-    num_received_bids_[job_id].try_emplace(agent->getHostname(), 0);
+    num_received_bids_[job_id].try_emplace(agent->getName(), 0);
 }
