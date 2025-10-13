@@ -3,11 +3,13 @@
   - [ ] ~~Option 1: use the 'can_forward' member of a JobRequestMessage~~
   - [x] Option 2: implement a default behavior for a JSA that consists in directly submitting the job to the local HPC system. 
 - [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
-  - [ ] Have steps 1 to 3 below as separate functions
+  - [x] Have steps 1 to 5 below as separate functions
     - [x] Define a SchedulingPolicy abstract class that requires the following 3 steps.
       - [x] Define child classes that implement specific policies
-        - [x] PureLocal: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 3 and just perform step 4 directly
-        - [ ] Option 2: Step 2 can use either heuristic- or LLM-based bidding leading to different policies
+        - [x] PureLocal: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 4 and just perform step 4 directly
+        - [x] RandomBidding: skips Step 2, picks a random value for Step 3, exchanges bids in all-to-all fashion, (locally) selects the agent with maximum bid as winner, breaks ties according to the address of the pointer to the agent object.
+        - [ ] HeuristicBidding: use a heuristic in Step 3 
+        - [ ] LLMBidding: calls a LLM for step 3
     - [x] Assign the scheduling policy to JSAs at the beginning of the simulation.
       - [x] add command line argument giving the name of a scheduling policy
       - [x] parse this command line argument to create the corresponding object
@@ -22,7 +24,8 @@
   - [ ] Step 2: Retrieve the current status of the locally managed HPC System
   - [ ] Step 3: Compute my own bid for the job
       - [x] PureLocal: Do nothing
-      - [ ] Option 2: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
+      - [x] RandomBidding: Pick a random value in [0-1]
+      - [ ] HeuristicBidding: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
       - [ ] Option 3: Call a LLM
       - [x] Store the local bid for the job
         - [ ] Decide if we clean up when a job is completed or keep all bids for explanability
@@ -30,7 +33,7 @@
       - [x] Create a BidOnJob message
       - [x] Broadcast it
         - [x] PureLocal: just send it to myself
-        - [x] Option 2: send it to all other agents (including myself)
+        - [x] RandomBidding (and likely all other variants): send it to all other agents (including myself)
       - [x] Process this new type of message in Step 5
   - [ ] Step 5: Find a consensus on the winner of the competitive bidding for that job
       - [x] Need to know how many bids are expected to take a decision
@@ -38,10 +41,10 @@
         - [x] Option 2: set to the size of the agent network
       - [ ] When all the expected bids have been received, take a decision
         - [x] PureLocal: Do nothing, return true
-        - [ ] Option 2: Compare local bid to all other bids
-          - [ ] Manage tie breaking
+        - [x] RandomBidding, HeuristicBidding: Compare local bid to all other bids
+          - [x] Manage tie breaking: agent with smaller pointer address
         - [ ] Option 3: ???
-  - [x] Step 4: Upon winning the competitive bidding, schedule the job on my local HPC system
+  - [x] Step 6: Upon winning the competitive bidding, schedule the job on my local HPC system
 - [x] Create an HPCSystem Class that contains a static high level description of the system
   - [x] Decide of the information to have
     - [x] name: string
