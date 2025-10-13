@@ -2,6 +2,7 @@
 #define SCHEDULING_POLICY_H
 
 #include "HPCSystemDescription.h"
+#include "HPCSystemStatus.h"
 #include "JobDescription.h"
 #include <memory>
 #include <vector>
@@ -34,9 +35,9 @@ public:
 
   virtual void broadcast_job_description(const std::string& agent_name,
                                          const std::shared_ptr<JobDescription>& job_description) = 0;
-  virtual double
-  compute_bid(const std::shared_ptr<JobDescription>& job_description,
-              const std::shared_ptr<HPCSystemDescription>& hpc_system_description /*, hpc_system_status */) = 0;
+  virtual double compute_bid(const std::shared_ptr<JobDescription>& job_description,
+                             const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
+                             const std::shared_ptr<HPCSystemStatus>& hpc_system_status)          = 0;
 
   virtual void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
                                     const std::shared_ptr<JobDescription>& job_description, double bid) = 0;

@@ -19,6 +19,7 @@ set(HEADER_FILES
    include/ControlMessages.h
    include/HeuristicBiddingSchedulingPolicy.h
    include/HPCSystemDescription.h
+   include/HPCSystemStatus.h
    include/JobDescription.h
    include/JobSchedulingAgent.h
    include/PureLocalSchedulingPolicy.h

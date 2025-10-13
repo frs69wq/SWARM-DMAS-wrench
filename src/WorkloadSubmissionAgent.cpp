@@ -1,10 +1,9 @@
+#include "WorkloadSubmissionAgent.h"
 #include "ControlMessages.h"
 #include "JobSchedulingAgent.h"
-#include "WorkloadSubmissionAgent.h"
 #include "utils.h"
 
 WRENCH_LOG_CATEGORY(workload_submission_agent, "Log category for WorkloadSubmissionAgent");
-
 
 namespace wrench {
 

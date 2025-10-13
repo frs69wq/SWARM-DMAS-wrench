@@ -1,6 +1,8 @@
 #include "JobSchedulingAgent.h"
 #include "ControlMessages.h"
+#include "HPCSystemStatus.h"
 #include "WorkloadSubmissionAgent.h"
+#include "utils.h"
 
 WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent");
 
@@ -11,7 +13,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
   // Receive a Job Request message. It can be an initial submission or a forward.
   if (auto job_request_message = std::dynamic_pointer_cast<JobRequestMessage>(event->message)) {
     const auto& job_description = job_request_message->get_job_description();
-    WRENCH_DEBUG("Received a job request message for Job #%d: %d compute nodes for %d seconds",
+    WRENCH_DEBUG("Received a job request message for Job #%d: %lu compute nodes for %llu seconds",
                  job_description->get_job_id(), job_description->get_num_nodes(), job_description->get_walltime());
 
     // Check if this job request is an initial submission from the Workload Submission Agent that can be
@@ -24,12 +26,15 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
 
     // TODO Step 2: Retrieve current state of the HPC_system
     // auto system_status = nullptr;
+    auto current_system_status =
+        std::make_shared<HPCSystemStatus>(get_number_of_available_nodes_on(batch_compute_service_),
+                                          get_job_start_time_estimate_on(job_description, batch_compute_service_));
 
     // Step 3: Compute a bid for this job description. This bid is based on
     // 1) The job description
     // 2) The HPC system description
     // 3) The current state of the HPC system
-    auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_); //, system_status);
+    auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
     // Keep track of my bid ob this job
     local_bids_[job_description->get_job_id()] = local_bid;
     WRENCH_INFO("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
@@ -64,7 +69,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
         // requested num_cores > num_core of the system
         // request GPU but machine has no GPU
 
-        WRENCH_INFO("Schedule Job #%d (%d compute nodes for %d seconds) on '%s'", job_id,
+        WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                     job_description->get_num_nodes(), job_description->get_walltime(),
                     hpc_system_description_->get_cname());
         auto job = job_manager_->createCompoundJob(std::to_string(job_id));

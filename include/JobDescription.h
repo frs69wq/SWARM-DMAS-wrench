@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <wrench/util/UnitParser.h> //sg_size_t
 
 enum class JobType { HPC, AI, HYBRID, GPU, MEMORY, STORAGE };
 
@@ -13,8 +14,8 @@ class JobDescription {
   int group_id_;
   JobType job_type_;
   int submission_time_;
-  int walltime_;
-  int num_nodes_;
+  sg_size_t walltime_;
+  size_t num_nodes_;
   bool needs_gpu_;
   int requested_memory_gb_;
   double requested_storage_gb_;
@@ -22,8 +23,8 @@ class JobDescription {
   std::string hpc_system_;
 
 public:
-  JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, int walltime,
-                 int num_nodes, bool needs_gpu, int requested_memory_gb, double requested_storage_gb,
+  JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, sg_size_t walltime,
+                 size_t num_nodes, bool needs_gpu, int requested_memory_gb, double requested_storage_gb,
                  const std::string& hpc_site, const std::string& hpc_system)
       : job_id_(job_id)
       , user_id_(user_id)
@@ -46,8 +47,8 @@ public:
   int get_group_id() const { return group_id_; }
   JobType get_job_type() const { return job_type_; }
   int get_submission_time() const { return submission_time_; }
-  int get_walltime() const { return walltime_; }
-  int get_num_nodes() const { return num_nodes_; }
+  sg_size_t get_walltime() const { return walltime_; }
+  size_t get_num_nodes() const { return num_nodes_; }
   bool needs_gpu() const { return needs_gpu_; }
   int get_requested_memory_gb() const { return requested_memory_gb_; }
   int get_requested_storage_gb() const { return requested_storage_gb_; }

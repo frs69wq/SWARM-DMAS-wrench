@@ -20,9 +20,9 @@ public:
         other_agent->commport->dputMessage(new wrench::JobRequestMessage(job_description, false));
   }
 
-  double
-  compute_bid(const std::shared_ptr<JobDescription>& job_description,
-              const std::shared_ptr<HPCSystemDescription>& hpc_system_description /*, hpc_system_status */) override
+  double compute_bid(const std::shared_ptr<JobDescription>& /*job_description*/,
+                     const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/,
+                     const std::shared_ptr<HPCSystemStatus>& /*hpc_system_status*/) override
   {
 
     std::random_device rd;  // Seed
