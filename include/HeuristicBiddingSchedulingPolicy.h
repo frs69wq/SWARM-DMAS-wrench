@@ -10,13 +10,13 @@
 class HeuristicBiddingSchedulingPolicy : public SchedulingPolicy {
 
 public:
-  void broadcast_job_description(wrench::JobSchedulingAgent* self,
-                                 const std::shared_ptr<JobDescription> job_description) override
+  void broadcast_job_description(const std::shared_ptr<wrench::JobSchedulingAgent>& self,
+                                 const std::shared_ptr<JobDescription>& job_description) override
   {
     // The broadcast is only called upon initial submission, we thus init the number of received bids only once.
     init_num_received_bids(job_description->get_job_id());
     for (const auto& other_agent : get_job_scheduling_agent_network())
-      if (std::shared_ptr<wrench::JobSchedulingAgent>(self) != other_agent)
+      if (self != other_agent)
         other_agent->commport->dputMessage(new wrench::JobRequestMessage(job_description, false));
   }
 

@@ -10,7 +10,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
 {
   // Receive a Job Request message. It can be an initial submission or a forward.
   if (auto job_request_message = std::dynamic_pointer_cast<JobRequestMessage>(event->message)) {
-    auto job_description = job_request_message->get_job_description();
+    const auto& job_description = job_request_message->get_job_description();
     WRENCH_INFO("Received a job request message for Job #%d: %d compute nodes for %d seconds",
                 job_description->get_job_id(), job_description->get_num_nodes(), job_description->get_walltime());
 
@@ -19,7 +19,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     if (job_request_message->can_be_forwarded()) {
       // This is an initial submission
       // Step 1: Broadcast the JobDescription to the network of Job Scheduling Agents
-      scheduling_policy_->broadcast_job_description(this, job_description);
+      scheduling_policy_->broadcast_job_description(std::shared_ptr<JobSchedulingAgent>(this), job_description);
     }
 
     // TODO Step 2: Retrieve current state of the HPC_system

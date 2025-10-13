@@ -23,8 +23,8 @@ protected:
 public:
   void set_job_scheduling_agent_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network) { job_scheduling_agent_network = network; }
 
-  virtual void broadcast_job_description(wrench::JobSchedulingAgent* self,
-                                         const std::shared_ptr<JobDescription> job_description) = 0;
+  virtual void broadcast_job_description(const std::shared_ptr<wrench::JobSchedulingAgent>& self,
+                                         const std::shared_ptr<JobDescription>& job_description) = 0;
   virtual double
   compute_bid(const std::shared_ptr<JobDescription> job_description,
               const std::shared_ptr<HPCSystemDescription> hpc_system_description /*, hpc_system_status */) = 0;

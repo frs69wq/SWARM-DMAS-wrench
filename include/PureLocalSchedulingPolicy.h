@@ -6,8 +6,8 @@
 class PureLocalSchedulingPolicy : public SchedulingPolicy {
 
 public:
-  void broadcast_job_description(wrench::JobSchedulingAgent* /*self*/,
-                                 const std::shared_ptr<JobDescription> job_description) override
+  void broadcast_job_description(const std::shared_ptr<wrench::JobSchedulingAgent>& /*self*/,
+                                 const std::shared_ptr<JobDescription>& job_description) override
   {
     // Function is only called upon initial submission, hence init the number of needed and received bids only once
     // Set the number of needed bids to 1
