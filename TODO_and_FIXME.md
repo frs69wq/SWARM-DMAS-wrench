@@ -22,6 +22,8 @@
       - [x] if false
         - [x] PureLocal: Move to step 2
   - [ ] Step 2: Retrieve the current status of the locally managed HPC System
+    - [ ] Use getPerHostNumIdleCores (with simulate_it set to false) 
+    - [ ] Use getStartTimeEstimates
   - [ ] Step 3: Compute my own bid for the job
       - [x] PureLocal: Do nothing
       - [x] RandomBidding: Pick a random value in [0-1]

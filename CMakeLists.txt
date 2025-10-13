@@ -25,6 +25,7 @@ set(HEADER_FILES
    include/RandomBiddingSchedulingPolicy.h
    include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h
+   include/utils.h
 )
 
 set(SOURCE_FILES
@@ -32,6 +33,7 @@ set(SOURCE_FILES
    src/SchedulingPolicy.cpp
    src/swarm_dmas.cpp
    src/WorkloadSubmissionAgent.cpp
+   src/utils.cpp
 )
    
 add_executable(swarm_dmas ${SOURCE_FILES})
