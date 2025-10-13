@@ -15,7 +15,6 @@ class HPCSystemDescription {
   std::string network_interconnect_;
 
 public:
-  HPCSystemDescription() = default;
   HPCSystemDescription(const std::string& name, HPCSystemType type, size_t num_nodes, int memory_amount_in_gb,
                        bool has_gpu, int storage_amount_in_gb, const std::string& network_interconnect)
       : name_(name)

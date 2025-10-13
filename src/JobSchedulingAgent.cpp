@@ -19,7 +19,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     if (job_request_message->can_be_forwarded()) {
       // This is an initial submission
       // Step 1: Broadcast the JobDescription to the network of Job Scheduling Agents
-      scheduling_policy_->broadcast_job_description(std::shared_ptr<JobSchedulingAgent>(this), job_description);
+      scheduling_policy_->broadcast_job_description(this->getHostname(), job_description);
     }
 
     // TODO Step 2: Retrieve current state of the HPC_system
@@ -29,6 +29,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 1) The job description
     // 2) The HPC system description
     // 3) The current state of the HPC system
+    WRENCH_INFO("Compute a local bid for Job#%d on '%s'", job_description->get_job_id(),
+                hpc_system_description_->get_cname());
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_); //, system_status);
     // Keep track of my bid ob this job
     local_bids_[job_description->get_job_id()] = local_bid;

@@ -11,14 +11,14 @@ namespace wrench {
 
 /// Message to send a job request to a job scheduling agent
 class JobRequestMessage : public ExecutionControllerCustomEventMessage {
-  const std::shared_ptr<JobDescription> job_description_;
+  std::shared_ptr<JobDescription> job_description_;
   bool can_forward_;
 
 public:
   /// @brief
   /// @param job_description job description
   /// @param can_forward whether the job can be forwarded to another job scheduling agent
-  JobRequestMessage(const std::shared_ptr<JobDescription> job_description, bool can_forward)
+  JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
       , job_description_(job_description)
       , can_forward_(can_forward)
@@ -35,7 +35,7 @@ class BidOnJobMessage : public ExecutionControllerCustomEventMessage {
   double bid_;
 
 public:
-  BidOnJobMessage(JobSchedulingAgent* bidder, const std::shared_ptr<JobDescription> job_description, double bid)
+  BidOnJobMessage(JobSchedulingAgent* bidder, const std::shared_ptr<JobDescription>& job_description, double bid)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
       , bidder_(bidder)
       , job_description_(job_description)

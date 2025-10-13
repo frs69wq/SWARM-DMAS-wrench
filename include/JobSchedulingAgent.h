@@ -15,11 +15,11 @@ class WorkloadSubmissionAgent;
  *  @brief An execution controller implementation
  */
 class JobSchedulingAgent : public ExecutionController {
-  const std::shared_ptr<HPCSystemDescription> hpc_system_description_;
-  const std::shared_ptr<SchedulingPolicy> scheduling_policy_;
+  std::shared_ptr<HPCSystemDescription> hpc_system_description_;
+  std::shared_ptr<SchedulingPolicy> scheduling_policy_;
   std::shared_ptr<JobManager> job_manager_;
 
-  const std::shared_ptr<BatchComputeService> batch_compute_service_;
+  std::shared_ptr<BatchComputeService> batch_compute_service_;
   std::vector<std::shared_ptr<JobSchedulingAgent>> job_scheduling_agent_network_;
   std::shared_ptr<WorkloadSubmissionAgent> originator_;
 
@@ -43,7 +43,7 @@ public:
 
   void add_job_scheduling_agent(std::shared_ptr<JobSchedulingAgent> agent) { job_scheduling_agent_network_.push_back(agent); }
   void setJobOriginator(std::shared_ptr<WorkloadSubmissionAgent> originator) { this->originator_ = originator; }
-  const std::string& get_hpc_system_name() const { return this->hpc_system_description_->get_name(); }
+  const std::string& get_hpc_system_name() const { return hpc_system_description_->get_name(); }
 };
 
 } // namespace wrench
