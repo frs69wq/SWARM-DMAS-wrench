@@ -67,8 +67,8 @@ int main(int argc, char** argv)
     auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
 
     // Instantiate a scheduling agent on the head node of this cluster
-    auto new_agent = 
-      simulation->add(new wrench::JobSchedulingAgent(system_description, head_node, scheduling_policy, batch_service));
+    auto new_agent = simulation->add(
+        new wrench::JobSchedulingAgent(system_description, head_node, scheduling_policy, batch_service));
     new_agent->setDaemonized(true);
     job_scheduling_agent_network.push_back(new_agent);
   }

@@ -30,20 +30,21 @@ public:
 
 /// Message to send a bid
 class BidOnJobMessage : public ExecutionControllerCustomEventMessage {
-  JobSchedulingAgent* bidder_;
+  const std::shared_ptr<wrench::JobSchedulingAgent> bidder_;
   const std::shared_ptr<JobDescription> job_description_;
   double bid_;
 
 public:
-  BidOnJobMessage(JobSchedulingAgent* bidder, const std::shared_ptr<JobDescription>& job_description, double bid)
+  BidOnJobMessage(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
+                  const std::shared_ptr<JobDescription>& job_description, double bid)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
-      , bidder_(bidder)
+      , bidder_(std::static_pointer_cast<JobSchedulingAgent>(bidder))
       , job_description_(job_description)
       , bid_(bid)
   {
   }
 
-  JobSchedulingAgent* get_bidder() const { return bidder_; }
+  const std::shared_ptr<JobSchedulingAgent> get_bidder() const { return bidder_; }
   const std::shared_ptr<JobDescription> get_job_description() const { return job_description_; }
   double get_bid() const { return bid_; }
 };

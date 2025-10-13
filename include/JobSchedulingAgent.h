@@ -24,7 +24,7 @@ class JobSchedulingAgent : public ExecutionController {
   std::shared_ptr<WorkloadSubmissionAgent> originator_;
 
   std::unordered_map<int, double> local_bids_;
-  std::unordered_map<int, std::map<JobSchedulingAgent*, double>> all_bids_;
+  std::unordered_map<int, std::map<std::shared_ptr<JobSchedulingAgent>, double>> all_bids_;
 
   int main() override;
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
@@ -41,7 +41,10 @@ public:
   {
   }
 
-  void add_job_scheduling_agent(std::shared_ptr<JobSchedulingAgent> agent) { job_scheduling_agent_network_.push_back(agent); }
+  void add_job_scheduling_agent(std::shared_ptr<JobSchedulingAgent> agent)
+  {
+    job_scheduling_agent_network_.push_back(agent);
+  }
   void setJobOriginator(std::shared_ptr<WorkloadSubmissionAgent> originator) { this->originator_ = originator; }
   const std::string& get_hpc_system_name() const { return hpc_system_description_->get_name(); }
 };

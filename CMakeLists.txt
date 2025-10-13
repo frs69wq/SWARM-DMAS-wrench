@@ -17,19 +17,19 @@ include_directories(include)
 
 set(HEADER_FILES
    include/ControlMessages.h
+   include/HeuristicBiddingSchedulingPolicy.h
    include/HPCSystemDescription.h
    include/JobDescription.h
    include/JobSchedulingAgent.h
-   include/HeuristicBiddingSchedulingPolicy.h
    include/PureLocalSchedulingPolicy.h
    include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h
 )
 
 set(SOURCE_FILES
-   src/swarm_dmas.cpp
    src/JobSchedulingAgent.cpp
    src/SchedulingPolicy.cpp
+   src/swarm_dmas.cpp
    src/WorkloadSubmissionAgent.cpp
 )
    

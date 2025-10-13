@@ -11,15 +11,15 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
   // Receive a Job Request message. It can be an initial submission or a forward.
   if (auto job_request_message = std::dynamic_pointer_cast<JobRequestMessage>(event->message)) {
     const auto& job_description = job_request_message->get_job_description();
-    WRENCH_INFO("Received a job request message for Job #%d: %d compute nodes for %d seconds",
-                job_description->get_job_id(), job_description->get_num_nodes(), job_description->get_walltime());
+    WRENCH_DEBUG("Received a job request message for Job #%d: %d compute nodes for %d seconds",
+                 job_description->get_job_id(), job_description->get_num_nodes(), job_description->get_walltime());
 
     // Check if this job request is an initial submission from the Workload Submission Agent that can be
     // forwarded (depending on the SchedulingPolicy) to other Job Scheduling Agents.
     if (job_request_message->can_be_forwarded()) {
       // This is an initial submission
       // Step 1: Broadcast the JobDescription to the network of Job Scheduling Agents
-      scheduling_policy_->broadcast_job_description(this->getHostname(), job_description);
+      scheduling_policy_->broadcast_job_description(this->getName(), job_description);
     }
 
     // TODO Step 2: Retrieve current state of the HPC_system
@@ -29,14 +29,15 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 1) The job description
     // 2) The HPC system description
     // 3) The current state of the HPC system
-    WRENCH_INFO("Compute a local bid for Job#%d on '%s'", job_description->get_job_id(),
-                hpc_system_description_->get_cname());
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_); //, system_status);
     // Keep track of my bid ob this job
     local_bids_[job_description->get_job_id()] = local_bid;
+    WRENCH_INFO("%s' computed a bid for Job#%d of %.2f", hpc_system_description_->get_cname(),
+                job_description->get_job_id(), local_bid);
+    ;
 
     // Step 4: Broadcast the local bid to the network of agents
-    scheduling_policy_->broadcast_bid_on_job(this, job_description, local_bid);
+    scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid);
   }
 
   // Receive a bid for a job
@@ -46,17 +47,19 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     auto remote_bidder   = bid_on_job_message->get_bidder();
     auto remote_bid      = bid_on_job_message->get_bid();
     // Increase the number of received bids fot this job
-    scheduling_policy_->received_bid_for(job_id);
-    WRENCH_INFO("Received a bid (%lu/%lu) for Job #%d from %s: %.2f", scheduling_policy_->get_num_received_bids(job_id),
-                scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
-                remote_bid);
+    scheduling_policy_->received_bid_for(this->getHostname(), job_id);
+    WRENCH_DEBUG("Received a bid (%lu/%lu) for Job #%d from %s: %.2f",
+                 scheduling_policy_->get_num_received_bids(this->getHostname(), job_id),
+                 scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
+                 remote_bid);
     // Store this remote bid
     all_bids_[job_id].try_emplace(remote_bidder, remote_bid);
 
-    if (scheduling_policy_->get_num_received_bids(job_id) == scheduling_policy_->get_num_needed_bids()) {
+    if (scheduling_policy_->get_num_received_bids(this->getHostname(), job_id) ==
+        scheduling_policy_->get_num_needed_bids()) {
       // All the bids needed to take a decision in the competitive bidding process have been received
       // Step 5: Determine if this agent won the competitive bidding.
-      if (this == scheduling_policy_->determine_bid_winner(all_bids_[job_id])) {
+      if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
         WRENCH_INFO("Schedule Job #%d (%d compute nodes for %d seconds) on '%s'", job_id,
                     job_description->get_num_nodes(), job_description->get_walltime(),
                     hpc_system_description_->get_cname());
@@ -74,7 +77,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
 void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event)
 {
   auto job_name = event->job->getName();
-  WRENCH_INFO("Job #%s, which I ran locally, has completed. Notifying the Workload Submission Agent", job_name.c_str());
+  WRENCH_DEBUG("Job #%s, which I ran locally, has completed. Notifying the Workload Submission Agent",
+               job_name.c_str());
   originator_->commport->dputMessage(new JobNotificationMessage(job_name));
 }
 
