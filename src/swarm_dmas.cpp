@@ -64,7 +64,8 @@ int main(int argc, char** argv)
     WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(),
                 std::get<0>(c).c_str());
     // Instantiate a batch compute service on the computes node of this cluster
-    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "", {}, {}));
+    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "",
+      {{wrench::BatchComputeServiceProperty::BATCH_SCHEDULING_ALGORITHM, "conservative_bf"}, {}}));
 
     // Instantiate a job scheduling agent on the head node of this cluster
     auto new_agent = simulation->add(

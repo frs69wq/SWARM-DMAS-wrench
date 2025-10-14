@@ -54,7 +54,7 @@ double get_job_start_time_estimate_on(const std::shared_ptr<JobDescription>& job
       std::to_string(job_description->get_job_id()), job_description->get_num_nodes(), 1 /*num_cores*/,
       job_description->get_walltime()};
   auto current_job_start_time_estimate = batch->getStartTimeEstimates({wrench_job_description});
-  return std::max(wrench::S4U_Simulation::getClock(), current_job_start_time_estimate.begin()->second);
+  return current_job_start_time_estimate.begin()->second;
 }
 
 bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_description,
