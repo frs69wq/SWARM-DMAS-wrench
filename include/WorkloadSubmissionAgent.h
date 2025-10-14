@@ -7,9 +7,6 @@ namespace wrench {
 
 class JobSchedulingAgent;
 
-/**
- *  @brief An execution controller implementation
- */
 class WorkloadSubmissionAgent : public ExecutionController {
   const std::string& job_list_;
   std::vector<std::shared_ptr<JobSchedulingAgent>> job_scheduling_agents_;

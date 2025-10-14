@@ -1,7 +1,7 @@
 #include "JobSchedulingAgent.h"
 #include "ControlMessages.h"
 #include "HPCSystemStatus.h"
-#include "WorkloadSubmissionAgent.h"
+#include "JobLifecycleTrackerAgent.h"
 #include "utils.h"
 
 WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent");
@@ -90,7 +90,7 @@ void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr
   auto job_name = event->job->getName();
   WRENCH_DEBUG("Job #%s, which I ran locally, has completed. Notifying the Workload Submission Agent",
                job_name.c_str());
-  originator_->commport->dputMessage(new JobNotificationMessage(job_name));
+  tracker_->commport->dputMessage(new JobNotificationMessage(job_name));
 }
 
 int JobSchedulingAgent::main()

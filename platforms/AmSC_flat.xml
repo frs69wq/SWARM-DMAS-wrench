@@ -4,7 +4,7 @@
   <zone id="AmSC" routing="Full">
     <zone id="DOE" routing="Full">
       <router id="DOE_gw"/>
-      <host id="WSAgent" speed="10Gf"/>
+      <host id="ControlAgents" speed="10Gf" core="2"/>
     </zone>
 
     <!-- Aurora at ALCF -->

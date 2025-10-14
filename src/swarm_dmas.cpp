@@ -3,6 +3,7 @@
 #include <wrench.h>
 
 #include "HPCSystemDescription.h"
+#include "JobLifecycleTrackerAgent.h"
 #include "JobSchedulingAgent.h"
 #include "SchedulingPolicy.h"
 #include "WorkloadSubmissionAgent.h"
@@ -64,8 +65,9 @@ int main(int argc, char** argv)
     WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", compute_nodes.size(),
                 std::get<0>(c).c_str());
     // Instantiate a batch compute service on the computes node of this cluster
-    auto batch_service = simulation->add(new wrench::BatchComputeService(head_node, compute_nodes, "",
-      {{wrench::BatchComputeServiceProperty::BATCH_SCHEDULING_ALGORITHM, "conservative_bf"}, {}}));
+    auto batch_service = simulation->add(new wrench::BatchComputeService(
+        head_node, compute_nodes, "",
+        {{wrench::BatchComputeServiceProperty::BATCH_SCHEDULING_ALGORITHM, "conservative_bf"}, {}}));
 
     // Instantiate a job scheduling agent on the head node of this cluster
     auto new_agent = simulation->add(
@@ -79,12 +81,14 @@ int main(int argc, char** argv)
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =
-      simulation->add(new wrench::WorkloadSubmissionAgent("WSAgent", job_list, job_scheduling_agent_network));
+      simulation->add(new wrench::WorkloadSubmissionAgent("ControlAgents", job_list, job_scheduling_agent_network));
+  workload_submission_agent->setDaemonized(true);
+  // Instantiate a job lifecycle tracker that will be notified at the different stages of a job lifecycle
+  auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ControlAgents", job_list));
 
-  // FIXME This is to allow job scheduling agents to notify the workload scheduling agent of job completion.
-  // This may change at some point
+  // This is to allow job scheduling agents to notify the job lifecycle tracker agent
   for (const auto& agent : job_scheduling_agent_network)
-    agent->setJobOriginator(workload_submission_agent);
+    agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);
 
   // Launch the simulation. This call only returns when the simulation is complete
   try {

@@ -21,6 +21,7 @@ set(HEADER_FILES
    include/HPCSystemDescription.h
    include/HPCSystemStatus.h
    include/JobDescription.h
+   include/JobLifecycleTrackerAgent.h
    include/JobSchedulingAgent.h
    include/PureLocalSchedulingPolicy.h
    include/RandomBiddingSchedulingPolicy.h
@@ -30,6 +31,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+   src/JobLifecycleTrackerAgent.cpp
    src/JobSchedulingAgent.cpp
    src/SchedulingPolicy.cpp
    src/swarm_dmas.cpp
