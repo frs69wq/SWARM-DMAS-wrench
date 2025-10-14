@@ -33,9 +33,9 @@ public:
   HPCSystemType get_type() const { return type_; }
   size_t get_num_nodes() const { return num_nodes_; }
   int get_memory_amount_in_gb() const { return memory_amount_in_gb_; }
-  bool get_has_gpu() const { return has_gpu_; }
   int get_storage_amount_in_gb() const { return storage_amount_in_gb_; }
   const std::string& get_network_interconnect() const { return network_interconnect_; }
+  bool has_gpu() const { return has_gpu_; }
 
   static HPCSystemType string_to_hpc_system_type(const std::string& s)
   {

@@ -21,9 +21,9 @@
           - [ ] this includes adding a step to wait for the acks and handle agents not responding (timeout)
       - [x] if false
         - [x] PureLocal: Move to step 2
-  - [ ] Step 2: Retrieve the current status of the locally managed HPC System
-    - [ ] Use getPerHostNumIdleCores (with simulate_it set to false) 
-    - [ ] Use getStartTimeEstimates
+  - [x] Step 2: Retrieve the current status of the locally managed HPC System
+    - [x] Use getPerHostNumIdleCores (with simulate_it set to false)
+    - [x] Use getStartTimeEstimates
   - [ ] Step 3: Compute my own bid for the job
       - [x] PureLocal: Do nothing
       - [x] RandomBidding: Pick a random value in [0-1]
@@ -64,9 +64,16 @@
   - [x] Create the .h file
   - [x] Instantiate at parsing time
   - [x] Pass it to the JSA at creation time
-- [ ] Perform job acceptance sanity checks
+- [ ] Perform job acceptance tests
+  - [x] job requires GPUs and systems has none
+  - [x] job requires more nodes than the system has
+  - [ ] job requires more memory than the system has
+    - @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
+- [ ] Handle jobs that do not pass acceptance tests
 - [ ] Test call to the outside world
-  - [ ] has to send full state
+  - has to send full state
+
+
 ## FIXME
 - [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
 - [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally

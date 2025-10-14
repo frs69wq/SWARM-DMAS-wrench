@@ -24,8 +24,9 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       scheduling_policy_->broadcast_job_description(this->getName(), job_description);
     }
 
-    // TODO Step 2: Retrieve current state of the HPC_system
-    // auto system_status = nullptr;
+    // Step 2: Retrieve current state of the HPC_system:
+    // 1) number of available node
+    // 2) an estimate of the start time for this particular job
     auto current_system_status =
         std::make_shared<HPCSystemStatus>(get_number_of_available_nodes_on(batch_compute_service_),
                                           get_job_start_time_estimate_on(job_description, batch_compute_service_));
@@ -35,7 +36,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 2) The HPC system description
     // 3) The current state of the HPC system
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
-    // Keep track of my bid ob this job
+
+    // Keep track of my bid on this job
     local_bids_[job_description->get_job_id()] = local_bid;
     WRENCH_INFO("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
                 job_description->get_job_id(), local_bid);
@@ -56,6 +58,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
                  scheduling_policy_->get_num_received_bids(this->getName(), job_id),
                  scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
                  remote_bid);
+
     // Store this remote bid
     all_bids_[job_id].try_emplace(remote_bidder, remote_bid);
 
@@ -64,20 +67,19 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       // All the bids needed to take a decision in the competitive bidding process have been received
       // Step 5: Determine if this agent won the competitive bidding.
       if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
-
-        // TODO perform job acceptance sanity checks. if these checks fail, the job fails
-        // requested num_cores > num_core of the system
-        // request GPU but machine has no GPU
-
-        WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
-                    job_description->get_num_nodes(), job_description->get_walltime(),
-                    hpc_system_description_->get_cname());
-        auto job = job_manager_->createCompoundJob(std::to_string(job_id));
-        job->addSleepAction("", job_description->get_walltime());
-        std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
-                                             {"-t", std::to_string(job_description->get_walltime())},
-                                             {"-c", "1"}};
-        job_manager_->submitJob(job, batch_compute_service_, job_args);
+        if (do_pass_acceptance_tests(job_description, hpc_system_description_)) {
+          WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
+                      job_description->get_num_nodes(), job_description->get_walltime(),
+                      hpc_system_description_->get_cname());
+          auto job = job_manager_->createCompoundJob(std::to_string(job_id));
+          job->addSleepAction("", job_description->get_walltime());
+          std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
+                                               {"-t", std::to_string(job_description->get_walltime())},
+                                               {"-c", "1"}};
+          job_manager_->submitJob(job, batch_compute_service_, job_args);
+        } else {
+          // TODO decide what to do
+        }
       } // if this agent did not win, just proceed.
     } // More bids need to be received
   }
