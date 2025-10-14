@@ -16,13 +16,13 @@ class HPCSystemDescription {
 
 public:
   HPCSystemDescription(const std::string& name, HPCSystemType type, size_t num_nodes, int memory_amount_in_gb,
-                       bool has_gpu, int storage_amount_in_gb, const std::string& network_interconnect)
+                       int storage_amount_in_gb, bool has_gpu, const std::string& network_interconnect)
       : name_(name)
       , type_(type)
       , num_nodes_(num_nodes)
       , memory_amount_in_gb_(memory_amount_in_gb)
-      , has_gpu_(has_gpu)
       , storage_amount_in_gb_(storage_amount_in_gb)
+      , has_gpu_(has_gpu)
       , network_interconnect_(network_interconnect)
   {
   }
