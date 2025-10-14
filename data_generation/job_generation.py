@@ -18,27 +18,25 @@ def generate_synthetic_jobs_v2(**kwargs):
     scenario = kwargs.get('scenario', 'heterogeneous_mix')
     
     # Site and machine-specific resource limits
+        # Site and machine-specific resource limits
     site_configs = {
         'OLCF': {
             'machines': {
-                'Frontier': {'type': 'GPU', 'node_limit': 9472},
-                'Andes': {'type': 'CPU', 'node_limit': 704}
-            },
-            'memory_limit': 128, 'storage_limit': 695
+                'Frontier': {'type': 'GPU', 'node_limit': 9472, 'memory_limit': 12000, 'storage_limit': 700000000},
+                'Andes': {'type': 'CPU', 'node_limit': 704, 'memory_limit': 256, 'storage_limit': 700000000}
+            }
         },
         'ALCF': {
             'machines': {
-                'Aurora': {'type': 'GPU', 'node_limit': 10624},
-                'Crux': {'type': 'CPU', 'node_limit': 256}
-            },
-            'memory_limit': 280, 'storage_limit': 1120
+                'Aurora': {'type': 'GPU', 'node_limit': 10624, 'memory_limit': 984, 'storage_limit': 220000000},
+                'Crux': {'type': 'CPU', 'node_limit': 256, 'memory_limit': 512, 'storage_limit': 220000000}
+            }
         },
         'NERSC': {
             'machines': {
-                'Perlmutter-Phase-1': {'type': 'GPU', 'node_limit': 1536},
-                'Perlmutter-Phase-2': {'type': 'CPU', 'node_limit': 3072}
-            },
-            'memory_limit': 2312, 'storage_limit': 44
+                'Perlmutter-Phase-1': {'type': 'GPU', 'node_limit': 1536, 'memory_limit': 672, 'storage_limit': 35000000},
+                'Perlmutter-Phase-2': {'type': 'CPU', 'node_limit': 3072, 'memory_limit': 512, 'storage_limit': 36000000}
+            }
         }
     }
     hpc_sites = list(site_configs.keys())
@@ -71,117 +69,10 @@ def generate_synthetic_jobs_v2(**kwargs):
     job_type = np.empty(n_jobs, dtype=object)
     machine_names = np.empty(n_jobs, dtype=object)
     
-        # Generate job characteristics based on site and scenario
+    # Generate job characteristics based on site and scenario
     for i in range(n_jobs):
         site = sites[i]
         site_config = site_configs[site]
-        memory_limit = site_config['memory_limit']
-        storage_limit = site_config['storage_limit']
-        # Choose job type first to match machine type
-        # We'll pick job_type first, then select a compatible machine
-
-        # Select job type first
-        if scenario == 'homogeneous_short':
-            job_type[i] = np.random.choice(['HPC', 'AI', 'MEMORY'], p=[0.7, 0.2, 0.1])
-        elif scenario == 'heterogeneous_mix':
-            job_type[i] = np.random.choice(['HPC', 'AI', 'HYBRID', 'GPU', 'MEMORY', 'STORAGE'], p=[0.25, 0.2, 0.15, 0.15, 0.15, 0.1])
-        elif scenario == 'long_job_dominant':
-            is_long = np.random.rand() < 0.2
-            job_type[i] = np.random.choice(['HPC', 'HYBRID', 'MEMORY'], p=[0.6, 0.3, 0.1]) if is_long else np.random.choice(['HPC', 'AI', 'GPU'], p=[0.5, 0.3, 0.2])
-        elif scenario == 'high_parallelism':
-            job_type[i] = np.random.choice(['GPU', 'HYBRID', 'HPC', 'AI'], p=[0.4, 0.3, 0.2, 0.1])
-        elif scenario == 'resource_sparse':
-            job_type[i] = np.random.choice(['HPC', 'MEMORY', 'AI'], p=[0.6, 0.3, 0.1])
-        elif scenario == 'bursty_idle':
-            burst_phase = (i // 100) % 2 == 0
-            job_type[i] = np.random.choice(['AI', 'GPU', 'HYBRID'], p=[0.4, 0.4, 0.2]) if burst_phase else np.random.choice(['HPC', 'MEMORY', 'STORAGE'], p=[0.5, 0.3, 0.2])
-        elif scenario == 'adversarial':
-            job_type[i] = 'HYBRID' if i == 0 else 'HPC'
-
-        # Select compatible machine for job type
-        machine_options = []
-        for mname, mconf in site_config['machines'].items():
-            # GPU jobs must go to GPU machines, CPU jobs to CPU machines
-            if job_type[i] in ['GPU', 'AI', 'HYBRID'] and mconf['type'] == 'GPU':
-                machine_options.append((mname, mconf))
-            elif job_type[i] in ['HPC', 'MEMORY', 'STORAGE'] and mconf['type'] == 'CPU':
-                machine_options.append((mname, mconf))
-        # If no compatible machine, fallback to any
-        if not machine_options:
-            machine_options = list(site_config['machines'].items())
-        chosen_machine, machine_conf = random.choice(machine_options)
-        machine_names[i] = chosen_machine
-        machine_node_limit = machine_conf['node_limit']
-
-        # Now generate job characteristics, respecting machine_node_limit
-        if scenario == 'homogeneous_short':
-            walltimes[i] = np.random.randint(30, 120)
-            nodes[i] = min(2, machine_node_limit)
-            memory[i] = 4
-            requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-            requested_storage[i] = min(int(np.random.gamma(2, 5)), storage_limit)
-        elif scenario == 'heterogeneous_mix':
-            walltimes[i] = int(np.random.gamma(1.5, 300))
-            node_power = np.random.randint(1, min(int(np.log2(machine_node_limit)) + 1, 9))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            mem_power = np.random.randint(1, min(int(np.log2(memory_limit)) + 1, 8))
-            memory[i] = min(2 ** mem_power, memory_limit)
-            requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.3)
-            requested_storage[i] = min(int(np.random.lognormal(3, 1.5)), storage_limit)
-        elif scenario == 'long_job_dominant':
-            is_long = np.random.rand() < 0.2
-            if is_long:
-                walltimes[i] = np.random.randint(10000, 50000)
-                nodes[i] = min(128, machine_node_limit)
-                memory[i] = min(nodes[i] * np.random.randint(2, 8), memory_limit)
-                requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.8)
-                requested_storage[i] = min(int(np.random.gamma(3, 200)), storage_limit)
-            else:
-                walltimes[i] = np.random.randint(100, 500)
-                nodes[i] = min(2, machine_node_limit)
-                memory[i] = min(nodes[i] * np.random.randint(2, 8), memory_limit)
-                requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-                requested_storage[i] = min(int(np.random.gamma(1.5, 10)), storage_limit)
-        elif scenario == 'high_parallelism':
-            walltimes[i] = int(np.random.gamma(1, 800))
-            node_power = np.random.randint(6, min(int(np.log2(machine_node_limit)) + 1, 10))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            memory[i] = min(int(nodes[i] * np.random.uniform(2, 6)), memory_limit)
-            requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.6)
-            requested_storage[i] = min(int(nodes[i] * np.random.uniform(1, 5)), storage_limit)
-        elif scenario == 'resource_sparse':
-            walltimes[i] = np.random.randint(30, 300)
-            nodes[i] = min(1, machine_node_limit)
-            memory[i] = np.random.randint(1, min(8, memory_limit))
-            requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.05)
-            requested_storage[i] = min(int(np.random.exponential(2) + 1), storage_limit)
-        elif scenario == 'bursty_idle':
-            burst_phase = (i // 100) % 2 == 0
-            walltimes[i] = int(np.random.gamma(1, 600))
-            node_power = np.random.randint(1, min(int(np.log2(machine_node_limit)) + 1, 7))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            memory[i] = min(nodes[i] * np.random.randint(1, 4), memory_limit)
-            if burst_phase:
-                requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.4)
-                requested_storage[i] = min(int(np.random.gamma(2, 30)), storage_limit)
-            else:
-                requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-                requested_storage[i] = min(int(np.random.gamma(1, 8)), storage_limit)
-                if i < len(submission_times):
-                    submission_times[i] += 50  # Add idle delay
-        elif scenario == 'adversarial':
-            if i == 0:
-                walltimes[i] = 100000
-                nodes[i] = min(128, machine_node_limit)
-                memory[i] = min(256, memory_limit)
-                requested_gpu[i] = machine_conf['type'] == 'GPU'
-                requested_storage[i] = min(10000, storage_limit)
-            else:
-                walltimes[i] = 60
-                nodes[i] = min(1, machine_node_limit)
-                memory[i] = 4
-                requested_gpu[i] = False
-                requested_storage[i] = 1
         
         # Select job type first
         if scenario == 'homogeneous_short':
@@ -214,78 +105,88 @@ def generate_synthetic_jobs_v2(**kwargs):
             machine_options = list(site_config['machines'].items())
         chosen_machine, machine_conf = random.choice(machine_options)
         machine_names[i] = chosen_machine
+        
+        # Get machine-specific limits
         machine_node_limit = machine_conf['node_limit']
+        memory_limit = machine_conf['memory_limit']
+        storage_limit = machine_conf['storage_limit']
 
-        # Now generate job characteristics, respecting machine_node_limit
+        # Now generate job characteristics for realistic supercomputer sizes
         if scenario == 'homogeneous_short':
             walltimes[i] = np.random.randint(30, 120)
-            nodes[i] = min(2, machine_node_limit)
-            memory[i] = 4
+            # Make jobs larger for supercomputers
+            nodes[i] = min(np.random.randint(128, 513), machine_node_limit)
+            memory[i] = min(nodes[i] * np.random.randint(4, 16), memory_limit)
             requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-            requested_storage[i] = min(int(np.random.gamma(2, 5)), storage_limit)
+            requested_storage[i] = min(int(np.random.gamma(2, 5000)), storage_limit)
+            
         elif scenario == 'heterogeneous_mix':
             walltimes[i] = int(np.random.gamma(1.5, 300))
-            node_power = np.random.randint(1, min(int(np.log2(machine_node_limit)) + 1, 9))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            mem_power = np.random.randint(1, min(int(np.log2(memory_limit)) + 1, 8))
-            memory[i] = min(2 ** mem_power, memory_limit)
+            # Generate realistic supercomputer job sizes (128-2048 nodes)
+            nodes[i] = min(np.random.randint(128, 2049), machine_node_limit)
+            # Memory scales with nodes: 4-32 GB per node
+            memory_per_node = memory_limit / machine_node_limit
+            # memory[i] = min(int(nodes[i] * memory_per_node), memory_limit)
+            memory[i] = nodes[i] * memory_per_node
             requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.3)
-            requested_storage[i] = min(int(np.random.lognormal(3, 1.5)), storage_limit)
+            requested_storage[i] = min(int(np.random.lognormal(10, 1.5)), storage_limit)
+            
         elif scenario == 'long_job_dominant':
             is_long = np.random.rand() < 0.2
             if is_long:
                 walltimes[i] = np.random.randint(10000, 50000)
-                nodes[i] = min(128, machine_node_limit)
-                memory[i] = min(nodes[i] * np.random.randint(2, 8), memory_limit)
+                nodes[i] = min(np.random.randint(512, 2049), machine_node_limit)
+                memory[i] = min(nodes[i] * np.random.randint(8, 32), memory_limit)
                 requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.8)
-                requested_storage[i] = min(int(np.random.gamma(3, 200)), storage_limit)
+                requested_storage[i] = min(int(np.random.gamma(3, 50000)), storage_limit)
             else:
                 walltimes[i] = np.random.randint(100, 500)
-                nodes[i] = min(2, machine_node_limit)
-                memory[i] = min(nodes[i] * np.random.randint(2, 8), memory_limit)
+                nodes[i] = min(np.random.randint(32, 257), machine_node_limit)
+                memory[i] = min(nodes[i] * np.random.randint(4, 16), memory_limit)
                 requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-                requested_storage[i] = min(int(np.random.gamma(1.5, 10)), storage_limit)
+                requested_storage[i] = min(int(np.random.gamma(1.5, 5000)), storage_limit)
+                
         elif scenario == 'high_parallelism':
             walltimes[i] = int(np.random.gamma(1, 800))
-            node_power = np.random.randint(6, min(int(np.log2(machine_node_limit)) + 1, 10))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            memory[i] = min(int(nodes[i] * np.random.uniform(2, 6)), memory_limit)
+            nodes[i] = min(np.random.randint(1024, 4097), machine_node_limit)
+            memory[i] = min(int(nodes[i] * np.random.uniform(8, 32)), memory_limit)
             requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.6)
-            requested_storage[i] = min(int(nodes[i] * np.random.uniform(1, 5)), storage_limit)
+            requested_storage[i] = min(int(nodes[i] * np.random.uniform(1000, 5000)), storage_limit)
+            
         elif scenario == 'resource_sparse':
             walltimes[i] = np.random.randint(30, 300)
-            nodes[i] = min(1, machine_node_limit)
-            memory[i] = np.random.randint(1, min(8, memory_limit))
+            nodes[i] = min(np.random.randint(16, 129), machine_node_limit)
+            memory[i] = min(nodes[i] * np.random.randint(2, 8), memory_limit)
             requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.05)
-            requested_storage[i] = min(int(np.random.exponential(2) + 1), storage_limit)
+            requested_storage[i] = min(int(np.random.exponential(1000) + 1000), storage_limit)
+            
         elif scenario == 'bursty_idle':
             burst_phase = (i // 100) % 2 == 0
             walltimes[i] = int(np.random.gamma(1, 600))
-            node_power = np.random.randint(1, min(int(np.log2(machine_node_limit)) + 1, 7))
-            nodes[i] = min(2 ** node_power, machine_node_limit)
-            memory[i] = min(nodes[i] * np.random.randint(1, 4), memory_limit)
+            nodes[i] = min(np.random.randint(64, 1025), machine_node_limit)
+            memory[i] = min(nodes[i] * np.random.randint(4, 16), memory_limit)
             if burst_phase:
                 requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.4)
-                requested_storage[i] = min(int(np.random.gamma(2, 30)), storage_limit)
+                requested_storage[i] = min(int(np.random.gamma(2, 30000)), storage_limit)
             else:
                 requested_gpu[i] = machine_conf['type'] == 'GPU' and (np.random.rand() < 0.1)
-                requested_storage[i] = min(int(np.random.gamma(1, 8)), storage_limit)
+                requested_storage[i] = min(int(np.random.gamma(1, 8000)), storage_limit)
                 if i < len(submission_times):
                     submission_times[i] += 50  # Add idle delay
+                    
         elif scenario == 'adversarial':
             if i == 0:
                 walltimes[i] = 100000
-                nodes[i] = min(128, machine_node_limit)
-                memory[i] = min(256, memory_limit)
+                nodes[i] = min(np.random.randint(1024, 2049), machine_node_limit)
+                memory[i] = min(nodes[i] * 16, memory_limit)
                 requested_gpu[i] = machine_conf['type'] == 'GPU'
-                requested_storage[i] = min(10000, storage_limit)
+                requested_storage[i] = min(100000000, storage_limit)  # 100GB
             else:
                 walltimes[i] = 60
-                nodes[i] = min(1, machine_node_limit)
-                memory[i] = 4
+                nodes[i] = min(np.random.randint(32, 129), machine_node_limit)
+                memory[i] = min(nodes[i] * 4, memory_limit)
                 requested_gpu[i] = False
-                requested_storage[i] = 1
-
+                requested_storage[i] = 1000000  # 1GB
     # Handle special case for adversarial scenario submission times
     if scenario == 'adversarial':
         submission_times = np.arange(n_jobs)
@@ -321,7 +222,7 @@ def generate_synthetic_jobs_v2(**kwargs):
 def main():
 
     parser = argparse.ArgumentParser(description='Generate synthetic jobs for simulation')
-    parser.add_argument('--n_jobs', type=int, default=1000, help='Total number of jobs to generate')
+    parser.add_argument('--n_jobs', type=int, default=5, help='Total number of jobs to generate')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility, -1 for no seed')
     parser.add_argument('--scenario', type=str, default='heterogeneous_mix',
                     choices=['homogeneous_short', 'heterogeneous_mix', 'long_job_dominant',
