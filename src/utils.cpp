@@ -60,7 +60,7 @@ double get_job_start_time_estimate_on(const std::shared_ptr<JobDescription>& job
 size_t get_queue_length(const std::shared_ptr<wrench::BatchComputeService>& batch)
 {
   return batch->getQueue().size();
-} 
+}
 
 bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_description,
                               const std::shared_ptr<HPCSystemDescription>& hpc_system_description)
@@ -68,11 +68,14 @@ bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_descrip
   bool do_pass = true;
   if (job_description->needs_gpu() && not hpc_system_description->has_gpu())
     do_pass = false;
+
   if (job_description->get_num_nodes() > hpc_system_description->get_num_nodes())
     do_pass = false;
-  if (job_description->get_requested_memory_gb() > 
+
+  if (job_description->get_requested_memory_gb() >
       (hpc_system_description->get_num_nodes() * hpc_system_description->get_memory_amount_in_gb()))
     do_pass = false;
+
   // TODO add test for storage
 
   return do_pass;

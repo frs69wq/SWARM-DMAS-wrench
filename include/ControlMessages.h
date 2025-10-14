@@ -5,7 +5,7 @@
 #include "JobSchedulingAgent.h"
 #include <wrench-dev.h>
 
-#define CONTROL_MESSAGE_SIZE 0 // Size in bytes
+#define CONTROL_MESSAGE_SIZE 0      // Size in bytes
 #define BROADCAST_MESSAGE_SIZE 1024 // Size in bytes
 
 namespace wrench {
@@ -20,7 +20,7 @@ public:
   /// @param job_description job description
   /// @param can_forward whether the job can be forwarded to another job scheduling agent
   JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward)
-      : ExecutionControllerCustomEventMessage(BROADCAST_MESSAGE_SIZE)
+      : ExecutionControllerCustomEventMessage(can_forward ? CONTROL_MESSAGE_SIZE : BROADCAST_MESSAGE_SIZE)
       , job_description_(job_description)
       , can_forward_(can_forward)
   {
@@ -51,11 +51,12 @@ public:
 };
 
 /// Message to send a job lifecycle event notification
-enum class JobLifecycleEventType {SUBMISSION, SCHEDULING, COMPLETION, REJECT};
+enum class JobLifecycleEventType { SUBMISSION, SCHEDULING, START, COMPLETION, REJECT };
 
 class JobLifecycleTrackingMessage : public ExecutionControllerCustomEventMessage {
   std::string job_name_;
   JobLifecycleEventType event_type_;
+
 public:
   JobLifecycleTrackingMessage(const std::string& job_name, JobLifecycleEventType event_type)
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE), job_name_(job_name), event_type_(event_type)

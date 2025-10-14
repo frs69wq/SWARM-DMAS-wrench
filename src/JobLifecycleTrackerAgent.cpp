@@ -10,12 +10,15 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
 {
   if (auto message = std::dynamic_pointer_cast<JobLifecycleTrackingMessage>(event->message)) {
     auto event_type = message->get_event_type();
-    switch(event_type) {
+    switch (event_type) {
       case JobLifecycleEventType::SUBMISSION:
         WRENCH_INFO("Job #%s has been submitted!", message->get_job_cname());
         break;
       case JobLifecycleEventType::SCHEDULING:
         WRENCH_INFO("Job #%s has been scheduled!", message->get_job_cname());
+        break;
+      case JobLifecycleEventType::START:
+        WRENCH_INFO("Job #%s has started!", message->get_job_cname());
         break;
       case JobLifecycleEventType::COMPLETION:
         WRENCH_INFO("Job #%s has completed!", message->get_job_cname());

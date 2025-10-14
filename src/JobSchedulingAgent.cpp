@@ -13,7 +13,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
   // Receive a Job Request message. It can be an initial submission or a forward.
   if (auto job_request_message = std::dynamic_pointer_cast<JobRequestMessage>(event->message)) {
     const auto& job_description = job_request_message->get_job_description();
-    WRENCH_DEBUG("Received a job request message for Job #%d: %lu compute nodes for %llu seconds",
+    WRENCH_DEBUG("Received a initial job request message for Job #%d: %lu compute nodes for %llu seconds",
                  job_description->get_job_id(), job_description->get_num_nodes(), job_description->get_walltime());
 
     // Check if this job request is an initial submission from the Workload Submission Agent that can be
@@ -72,18 +72,27 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
           WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                       job_description->get_num_nodes(), job_description->get_walltime(),
                       hpc_system_description_->get_cname());
-          tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::SCHEDULING));
+          tracker_->commport->dputMessage(
+              new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::SCHEDULING));
 
-          auto job = job_manager_->createCompoundJob(std::to_string(job_id));
-          job->addSleepAction("", job_description->get_walltime());
+          auto job      = job_manager_->createCompoundJob(std::to_string(job_id));
+          auto tracking = job->addCustomAction("", 0, 0,
+                                               [this, job_id](const std::shared_ptr<ActionExecutor>&) {
+                                                 tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
+                                                     std::to_string(job_id), JobLifecycleEventType::START));
+                                               },
+                                               {[](const std::shared_ptr<ActionExecutor>&) {}});
+          auto sleeper  = job->addSleepAction("", job_description->get_walltime());
+          job->addActionDependency(tracking, sleeper);
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
                                                {"-t", std::to_string(job_description->get_walltime())},
                                                {"-c", "1"}};
           job_manager_->submitJob(job, batch_compute_service_, job_args);
         } else {
           WRENCH_INFO("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
-               job_id);
-          tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::REJECT));
+                      job_id);
+          tracker_->commport->dputMessage(
+              new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::REJECT));
         }
       } // if this agent did not win, just proceed.
     } // More bids need to be received
@@ -97,6 +106,14 @@ void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr
                job_name.c_str());
   tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::COMPLETION));
 }
+
+// void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event)
+// {
+//   auto job_name = event->job->getName();
+//   WRENCH_DEBUG("Job #%s, which I'm running locally, has started. Notifying the Job Lifecycle Tracker Agent",
+//                job_name.c_str());
+//   tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::START));
+// }
 
 int JobSchedulingAgent::main()
 {

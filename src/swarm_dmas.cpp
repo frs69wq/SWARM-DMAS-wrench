@@ -65,8 +65,8 @@ int main(int argc, char** argv)
         system_has_gpu, system_network_interconnect);
 
     // Instantiate a batch compute service on the computes node of this HPC system
-    WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'", system_num_compute_nodes,
-                system_name.c_str());
+    WRENCH_INFO("Creating BatchComputeService (with %5lu nodes) and JobSchedulingAgent on '%s'",
+                system_num_compute_nodes, system_name.c_str());
     auto head_node = std::get<1>(c).front();
     std::vector<std::string> compute_nodes(std::get<1>(c).begin() + 1, std::get<1>(c).end());
 
