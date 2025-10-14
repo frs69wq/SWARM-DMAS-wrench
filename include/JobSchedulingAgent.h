@@ -31,7 +31,7 @@ class JobSchedulingAgent : public ExecutionController {
   void processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event) override;
 
 public:
-  JobSchedulingAgent(const std::shared_ptr<HPCSystemDescription>& hpc_system_description, const std::string& hostname,
+  JobSchedulingAgent(const std::string& hostname, const std::shared_ptr<HPCSystemDescription>& hpc_system_description, 
                      const std::shared_ptr<SchedulingPolicy>& scheduling_policy,
                      const std::shared_ptr<BatchComputeService>& batch_compute_service)
       : ExecutionController(hostname, "job_scheduling_agent")
