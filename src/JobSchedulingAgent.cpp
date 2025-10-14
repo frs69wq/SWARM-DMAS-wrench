@@ -79,7 +79,9 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
                                                {"-c", "1"}};
           job_manager_->submitJob(job, batch_compute_service_, job_args);
         } else {
-          // TODO decide what to do
+          WRENCH_INFO("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
+               job_id);
+          tracker_->commport->dputMessage(new JobNotificationMessage(std::to_string(job_id)));
         }
       } // if this agent did not win, just proceed.
     } // More bids need to be received
@@ -89,7 +91,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
 void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event)
 {
   auto job_name = event->job->getName();
-  WRENCH_DEBUG("Job #%s, which I ran locally, has completed. Notifying the Workload Submission Agent",
+  WRENCH_DEBUG("Job #%s, which I ran locally, has completed. Notifying the Job Lifecycle Tracker Agent",
                job_name.c_str());
   tracker_->commport->dputMessage(new JobNotificationMessage(job_name));
 }
