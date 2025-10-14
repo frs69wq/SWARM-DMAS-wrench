@@ -65,7 +65,10 @@ bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_descrip
     do_pass = false;
   if (job_description->get_num_nodes() > hpc_system_description->get_num_nodes())
     do_pass = false;
-  // TODO add test for memory (and maybe storage)
+  if (job_description->get_requested_memory_gb() > 
+      (hpc_system_description->get_num_nodes() * hpc_system_description->get_memory_amount_in_gb()))
+    do_pass = false;
+  // TODO add test for storage
 
   return do_pass;
 }

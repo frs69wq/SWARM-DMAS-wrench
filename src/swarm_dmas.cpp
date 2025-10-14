@@ -16,7 +16,7 @@ int main(int argc, char** argv)
   auto simulation = wrench::Simulation::createSimulation();
   simulation->init(&argc, argv);
   // Override WRENCH log formatting
-  xbt_log_control_set("root.fmt=[%12.6r]%e[%41a]%e[%26h]%e%e%m%n");
+  xbt_log_control_set("root.fmt=[%12.6r]%e[%43a]%e[%26h]%e%e%m%n");
 
   // Parsing of the command-line arguments
   if (argc != 4) {
@@ -81,10 +81,10 @@ int main(int argc, char** argv)
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =
-      simulation->add(new wrench::WorkloadSubmissionAgent("ControlAgents", job_list, job_scheduling_agent_network));
+      simulation->add(new wrench::WorkloadSubmissionAgent("ASCR.doe.gov", job_list, job_scheduling_agent_network));
   workload_submission_agent->setDaemonized(true);
   // Instantiate a job lifecycle tracker that will be notified at the different stages of a job lifecycle
-  auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ControlAgents", job_list));
+  auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ASCR.doe.gov", job_list));
 
   // This is to allow job scheduling agents to notify the job lifecycle tracker agent
   for (const auto& agent : job_scheduling_agent_network)

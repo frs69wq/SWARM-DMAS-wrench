@@ -67,15 +67,16 @@
 - [ ] Perform job acceptance tests
   - [x] job requires GPUs and systems has none
   - [x] job requires more nodes than the system has
-  - [ ] job requires more memory than the system has
-    - @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
+  - [x] job requires more memory than the system has
+    - [x] @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
 - [ ] Handle jobs that do not pass acceptance tests
 - [ ] Test call to the outside world
   - has to send full state
 
 
 ## FIXME
-- [ ] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
+- [x] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
+  - Go for a separate job lifecycle tracker agent (will be used to compute metrics)
 - [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
 - [x] Use a proper ctor to fill the job description
 - [x] Use a proper ctor to fill the HPC system description
