@@ -57,6 +57,11 @@ double get_job_start_time_estimate_on(const std::shared_ptr<JobDescription>& job
   return current_job_start_time_estimate.begin()->second;
 }
 
+size_t get_queue_length(const std::shared_ptr<wrench::BatchComputeService>& batch)
+{
+  return batch->getQueue().size();
+} 
+
 bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_description,
                               const std::shared_ptr<HPCSystemDescription>& hpc_system_description)
 {

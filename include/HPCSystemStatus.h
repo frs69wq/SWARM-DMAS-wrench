@@ -6,16 +6,19 @@
 class HPCSystemStatus {
   size_t current_num_avaibable_nodes_;
   double current_job_start_time_estimate_;
+  size_t queue_length_;
 
 public:
-  HPCSystemStatus(size_t current_num_avaibable_nodes, double current_job_start_time_estimate)
+  HPCSystemStatus(size_t current_num_avaibable_nodes, double current_job_start_time_estimate, size_t queue_length)
       : current_num_avaibable_nodes_(current_num_avaibable_nodes)
       , current_job_start_time_estimate_(current_job_start_time_estimate)
+      , queue_length_(queue_length)
   {
   }
 
   size_t get_current_num_avaibable_nodes() const { return current_num_avaibable_nodes_; }
   double get_current_job_start_time_estimate() const { return current_job_start_time_estimate_; }
+  size_t get_queue_length() const { return queue_length_; }
 };
 
 #endif // HPC_SYSTEM_STATUS_H

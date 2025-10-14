@@ -29,7 +29,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 2) an estimate of the start time for this particular job
     auto current_system_status =
         std::make_shared<HPCSystemStatus>(get_number_of_available_nodes_on(batch_compute_service_),
-                                          get_job_start_time_estimate_on(job_description, batch_compute_service_));
+                                          get_job_start_time_estimate_on(job_description, batch_compute_service_),
+                                          get_queue_length(batch_compute_service_));
 
     // Step 3: Compute a bid for this job description. This bid is based on
     // 1) The job description
