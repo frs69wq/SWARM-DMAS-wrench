@@ -22,21 +22,21 @@ def generate_synthetic_jobs_v2(**kwargs):
         'OLCF': {
             'machines': {
                 'Frontier': {'type': 'GPU', 'node_limit': 9472},
-                'Andes': {'type': 'CPU', 'node_limit': 700}
+                'Andes': {'type': 'CPU', 'node_limit': 704}
             },
             'memory_limit': 128, 'storage_limit': 695
         },
         'ALCF': {
             'machines': {
-                'Aurora': {'type': 'GPU', 'node_limit': 10000},
+                'Aurora': {'type': 'GPU', 'node_limit': 10624},
                 'Crux': {'type': 'CPU', 'node_limit': 256}
             },
             'memory_limit': 280, 'storage_limit': 1120
         },
         'NERSC': {
             'machines': {
-                'Perlmutter-Phase-1': {'type': 'GPU', 'node_limit': 15000},
-                'Perlmutter-Phase-2': {'type': 'CPU', 'node_limit': 3000}
+                'Perlmutter-Phase-1': {'type': 'GPU', 'node_limit': 1536},
+                'Perlmutter-Phase-2': {'type': 'CPU', 'node_limit': 3072}
             },
             'memory_limit': 2312, 'storage_limit': 44
         }
