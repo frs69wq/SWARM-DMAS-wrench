@@ -92,6 +92,8 @@ int main(int argc, char** argv)
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =
       simulation->add(new wrench::WorkloadSubmissionAgent("ASCR.doe.gov", job_list, job_scheduling_agent_network));
+  // Allow this agent to notify the job lifecycle tracker too
+  workload_submission_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);
 
   // Launch the simulation. This call only returns when the simulation is complete
   try {

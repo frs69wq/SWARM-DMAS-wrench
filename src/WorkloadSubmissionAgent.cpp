@@ -1,6 +1,7 @@
 #include "WorkloadSubmissionAgent.h"
 #include "ControlMessages.h"
 #include "JobSchedulingAgent.h"
+#include "JobLifecycleTrackerAgent.h"
 #include "utils.h"
 
 WRENCH_LOG_CATEGORY(workload_submission_agent, "Log category for WorkloadSubmissionAgent");
@@ -43,6 +44,9 @@ int WorkloadSubmissionAgent::main()
                                                           return c->get_hpc_system_name() == job_HPCSystem;
                                                         }));
       target_job_scheduling_agent->commport->dputMessage(new JobRequestMessage(next_job, true));
+
+      // Notify the job lifecycle tracker
+      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::SUBMISSION));
 
       // Set the timer for the next job
       next_job_to_submit++;

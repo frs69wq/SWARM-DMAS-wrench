@@ -72,6 +72,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
           WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                       job_description->get_num_nodes(), job_description->get_walltime(),
                       hpc_system_description_->get_cname());
+          tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::SCHEDULING));
+
           auto job = job_manager_->createCompoundJob(std::to_string(job_id));
           job->addSleepAction("", job_description->get_walltime());
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
@@ -81,7 +83,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
         } else {
           WRENCH_INFO("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
                job_id);
-          tracker_->commport->dputMessage(new JobNotificationMessage(std::to_string(job_id)));
+          tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(std::to_string(job_id), JobLifecycleEventType::REJECT));
         }
       } // if this agent did not win, just proceed.
     } // More bids need to be received
@@ -93,7 +95,7 @@ void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr
   auto job_name = event->job->getName();
   WRENCH_DEBUG("Job #%s, which I ran locally, has completed. Notifying the Job Lifecycle Tracker Agent",
                job_name.c_str());
-  tracker_->commport->dputMessage(new JobNotificationMessage(job_name));
+  tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::COMPLETION));
 }
 
 int JobSchedulingAgent::main()
