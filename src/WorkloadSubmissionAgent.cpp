@@ -23,7 +23,7 @@ int WorkloadSubmissionAgent::main()
   this->setTimer(jobs->at(0)->get_submission_time(), "Submit the next job");
 
   // Main loop
-  while (true) {
+  while (next_job_to_submit < total_num_jobs) {
 
     // Wait for the next event
     auto event = this->waitForNextEvent();
