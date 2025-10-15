@@ -1,10 +1,11 @@
 #include "HeuristicBiddingSchedulingPolicy.h"
 #include "PureLocalSchedulingPolicy.h"
+#include "PythonBiddingSchedulingPolicy.h"
 #include "RandomBiddingSchedulingPolicy.h"
 
 #include <stdexcept>
 
-std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(const std::string& policy_name)
+std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(const std::string& policy_name, const std::string& python_script_name)
 {
   if (policy_name == "PureLocal")
     return std::make_shared<PureLocalSchedulingPolicy>();
@@ -12,6 +13,12 @@ std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(con
     return std::make_shared<RandomBiddingSchedulingPolicy>();
   else if (policy_name == "HeuristicBidding")
     return std::make_shared<HeuristicBiddingSchedulingPolicy>();
+  else if (policy_name == "PythonBidding") {
+    if (not python_script_name.empty())
+      return std::make_shared<PythonBiddingSchedulingPolicy>(python_script_name);
+    else
+      throw std::runtime_error("Python script needed");
+  }
   else
     throw std::invalid_argument("Unknown scheduling policy: " + policy_name);
 }

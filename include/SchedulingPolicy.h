@@ -28,6 +28,12 @@ protected:
   size_t get_job_scheduling_agent_network_size() const { return job_scheduling_agent_network_.size(); }
 
 public:
+  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name, const std::string& python_script_name);
+  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name)
+  {
+    return create_scheduling_policy(policy_name, "");
+  }
+
   void set_job_scheduling_agent_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network)
   {
     job_scheduling_agent_network_ = network;
@@ -45,7 +51,6 @@ public:
   virtual std::shared_ptr<wrench::JobSchedulingAgent>
   determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const = 0;
 
-  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name);
   size_t get_num_needed_bids() const { return num_needed_bids_; }
   size_t get_num_received_bids(const std::string& agent_name, int job_id) const
   {

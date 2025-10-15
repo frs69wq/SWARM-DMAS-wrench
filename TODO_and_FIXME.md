@@ -70,7 +70,7 @@
   - [x] job requires more memory than the system has
     - [x] @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
 - [x] Handle jobs that do not pass acceptance tests
-- [ ] Test call to the outside world
+- [x] Test call to the outside world
   - has to send full state
 - [ ] Implement a job lifecycle tracking agent
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected

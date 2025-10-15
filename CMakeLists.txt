@@ -24,6 +24,7 @@ set(HEADER_FILES
    include/JobLifecycleTrackerAgent.h
    include/JobSchedulingAgent.h
    include/PureLocalSchedulingPolicy.h
+   include/PythonBiddingSchedulingPolicy.h
    include/RandomBiddingSchedulingPolicy.h
    include/SchedulingPolicy.h
    include/WorkloadSubmissionAgent.h

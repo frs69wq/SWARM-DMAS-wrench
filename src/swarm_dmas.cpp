@@ -19,10 +19,13 @@ int main(int argc, char** argv)
   xbt_log_control_set("root.fmt=[%12.6r]%e[%43a]%e[%26h]%e%e%m%n");
 
   // Parsing of the command-line arguments
-  if (argc != 4) {
+  if (argc < 4) {
     std::cerr << "Usage: " << argv[0]
-              << " <json job description list> <xml platform file> <scheduling policy name>"
-                 "[--log=job_scheduling_agent.t=info --log=workload_submission_agent.t=info]"
+              << " <json job description list> <xml platform file> <scheduling policy name> [<python script>]"
+                 "[--log=workload_submission_agent.t:info]"
+                 "[--log=job_lifecycle_tracker_agent.t:info]"
+                 "[--log=job_scheduling_agent.t::info]"
+
               << std::endl;
     exit(1);
   }
@@ -35,7 +38,11 @@ int main(int argc, char** argv)
   simulation->instantiatePlatform(argv[2]);
 
   // Create a Scheduling Policy for this simulation run
-  auto scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3]);
+  std::shared_ptr<SchedulingPolicy> scheduling_policy;
+  if (argc == 5)
+    scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3], argv[4]);
+  else
+    scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3]);
 
   // Instantiate a job lifecycle tracker that will be notified at the different stages of a job lifecycle
   auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ASCR.doe.gov", job_list));
