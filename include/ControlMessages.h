@@ -51,7 +51,7 @@ public:
 };
 
 /// Message to send a job lifecycle event notification
-enum class JobLifecycleEventType { SUBMISSION, SCHEDULING, START, COMPLETION, REJECT };
+enum class JobLifecycleEventType { SUBMISSION, SCHEDULING, REJECT, START, COMPLETION, FAIL };
 
 class JobLifecycleTrackingMessage : public ExecutionControllerCustomEventMessage {
   std::string job_name_;

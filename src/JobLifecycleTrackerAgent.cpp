@@ -17,6 +17,10 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
       case JobLifecycleEventType::SCHEDULING:
         WRENCH_INFO("Job #%s has been scheduled!", message->get_job_cname());
         break;
+      case JobLifecycleEventType::REJECT:
+        WRENCH_INFO("Job #%s was rejected!", message->get_job_cname());
+        num_rejected_jobs_++;
+        break;
       case JobLifecycleEventType::START:
         WRENCH_INFO("Job #%s has started!", message->get_job_cname());
         break;
@@ -24,9 +28,9 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
         WRENCH_INFO("Job #%s has completed!", message->get_job_cname());
         num_completed_jobs_++;
         break;
-      case JobLifecycleEventType::REJECT:
-        WRENCH_INFO("Job #%s was rejected!", message->get_job_cname());
-        num_rejected_jobs_++;
+      case JobLifecycleEventType::FAIL:
+        WRENCH_INFO("Job #%s has completed!", message->get_job_cname());
+        num_failed_jobs_++;
         break;
       default:
         throw std::invalid_argument("Unknown job lifecycle event type");
@@ -42,10 +46,11 @@ int JobLifecycleTrackerAgent::main()
   // Compute and store the total number of jobs in the workload in total_num_jobs
   size_t total_num_jobs = jobs->size();
 
-  while (num_completed_jobs_ + num_rejected_jobs_ < total_num_jobs)
+  while (num_completed_jobs_ + num_rejected_jobs_ + num_failed_jobs_ < total_num_jobs)
     this->waitForAndProcessNextEvent();
 
-  WRENCH_INFO("Summary: %d Completed / %d Rejected jobs", num_completed_jobs_, num_rejected_jobs_);
+  WRENCH_INFO("Summary: %d Completed / %d Failed / %d Rejected jobs", num_completed_jobs_, num_failed_jobs_,
+              num_rejected_jobs_);
   return 0;
 }
 

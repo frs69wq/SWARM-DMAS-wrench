@@ -107,13 +107,13 @@ void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr
   tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::COMPLETION));
 }
 
-// void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event)
-// {
-//   auto job_name = event->job->getName();
-//   WRENCH_DEBUG("Job #%s, which I'm running locally, has started. Notifying the Job Lifecycle Tracker Agent",
-//                job_name.c_str());
-//   tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::START));
-// }
+void JobSchedulingAgent::processEventCompoundJobFailure(const std::shared_ptr<CompoundJobFailedEvent>& event)
+{
+  auto job_name = event->job->getName();
+  WRENCH_DEBUG("Job #%s, which I'm running locally, has failed. Notifying the Job Lifecycle Tracker Agent",
+               job_name.c_str());
+  tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::FAIL));
+}
 
 int JobSchedulingAgent::main()
 {

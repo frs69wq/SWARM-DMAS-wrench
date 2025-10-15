@@ -9,6 +9,7 @@ class JobLifecycleTrackerAgent : public ExecutionController {
   std::string job_list_;
   int num_completed_jobs_ = 0;
   int num_rejected_jobs_  = 0;
+  int num_failed_jobs_  = 0;
 
   int main() override;
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
