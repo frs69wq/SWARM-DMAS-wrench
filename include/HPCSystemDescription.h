@@ -1,6 +1,7 @@
 #ifndef HPC_SYSTEM_DESCRIPTION_H
 #define HPC_SYSTEM_DESCRIPTION_H
 
+#include <nlohmann/json.hpp>
 #include <string>
 
 enum class HPCSystemType { HPC, AI, GPU, HYBRID, MEMORY, STORAGE };
@@ -49,6 +50,31 @@ public:
     } else {
       throw std::out_of_range("Invalid HPCSystemType string: " + s);
     }
+  }
+
+  static const std::string& hpc_system_type_to_string(HPCSystemType type)
+  {
+    static const std::unordered_map<HPCSystemType, std::string> EnumStrings{
+        {HPCSystemType::HPC, "HPC"}, {HPCSystemType::AI, "AI"},         {HPCSystemType::HYBRID, "HYBRID"},
+        {HPCSystemType::GPU, "GPU"}, {HPCSystemType::MEMORY, "MEMORY"}, {HPCSystemType::STORAGE, "STORAGE"}};
+
+   auto it = EnumStrings.find(type);
+    if (it != EnumStrings.end()) {
+      return it->second;
+    } else {
+      throw std::out_of_range("Invalid HPCSystemType enum");
+    }
+  }
+
+  nlohmann::json to_json() const
+  {
+    return {{"name", name_},
+            {"type", hpc_system_type_to_string(type_)},
+            {"num_nodes", num_nodes_},
+            {"memory_amount_in_gb", memory_amount_in_gb_},
+            {"storage_amount_in_gb", storage_amount_in_gb_},
+            {"has_gpu", has_gpu_},
+            {"network_interconnect", network_interconnect_}};
   }
 };
 

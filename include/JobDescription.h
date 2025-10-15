@@ -1,6 +1,7 @@
 #ifndef JOB_DESCRIPTION_H
 #define JOB_DESCRIPTION_H
 
+#include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -67,6 +68,35 @@ public:
     } else {
       throw std::out_of_range("Invalid JobType string: " + s);
     }
+  }
+
+  static const std::string& job_type_to_string(JobType type)
+  {
+    static const std::unordered_map<JobType, std::string> EnumToString{
+        {JobType::HPC, "HPC"}, {JobType::AI, "AI"},         {JobType::HYBRID, "HYBRID"},
+        {JobType::GPU, "GPU"}, {JobType::MEMORY, "MEMORY"}, {JobType::STORAGE, "STORAGE"}};
+
+    auto it = EnumToString.find(type);
+    if (it != EnumToString.end()) {
+      return it->second;
+    } else {
+      throw std::out_of_range("Invalid JobType");
+    }
+  }
+  nlohmann::json to_json() const
+  {
+    return {{"job_id", job_id_},
+            {"user_id", user_id_},
+            {"group_id", group_id_},
+            {"job_type", job_type_to_string(job_type_)},
+            {"submission_time", submission_time_},
+            {"walltime", walltime_},
+            {"num_nodes", num_nodes_},
+            {"needs_gpu", needs_gpu_},
+            {"requested_memory_gb", requested_memory_gb_},
+            {"requested_storage_gb", requested_storage_gb_},
+            {"hpc_site", hpc_site_},
+            {"hpc_system", hpc_system_}};
   }
 };
 #endif // JOB_DESCRIPTION_H
