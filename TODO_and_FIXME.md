@@ -64,16 +64,29 @@
   - [x] Create the .h file
   - [x] Instantiate at parsing time
   - [x] Pass it to the JSA at creation time
-- [ ] Perform job acceptance tests
+- [x] Perform job acceptance tests
   - [x] job requires GPUs and systems has none
   - [x] job requires more nodes than the system has
   - [x] job requires more memory than the system has
     - [x] @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
-- [ ] Handle jobs that do not pass acceptance tests
+- [x] Handle jobs that do not pass acceptance tests
 - [ ] Test call to the outside world
   - has to send full state
-
-
+- [ ] Implement a job lifecycle tracking agent
+  - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
+  - [ ] create a lifecycle summary for each job
+    - Submission date
+    - Scheduling date (i.e., submitted to a batch system)
+    - Decision time = Scheduling date - Submission date
+    - Start date
+    - Waiting time = Start date - Scheduling date
+    - Completion date
+    - Execution time =  Completion date - Start date
+  - [ ] Augment current messages to add needed information
+    - [ ] Inititially submitted on (actually in job description)
+    - [ ] Best bid (or all bids?)
+    - [ ] Scheduling location
+    - [ ] Reason for reject/failure
 ## FIXME
 - [x] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
   - Go for a separate job lifecycle tracker agent (will be used to compute metrics)
@@ -82,3 +95,5 @@
 - [x] Use a proper ctor to fill the HPC system description
 - [x] Refactor: create SchedulingPolicy with the network of agents as a member.
 - [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
+- [ ] have a main `swarm_das` logging category and sub categories for agents
+- [ ] reorg code base (agents/policies/descriptions/...)
