@@ -14,18 +14,18 @@ class JobDescription {
   int user_id_;
   int group_id_;
   JobType job_type_;
-  int submission_time_;
+  double submission_time_;
   sg_size_t walltime_;
   size_t num_nodes_;
   bool needs_gpu_;
-  int requested_memory_gb_;
+  double requested_memory_gb_;
   double requested_storage_gb_;
   std::string hpc_site_;
   std::string hpc_system_;
 
 public:
-  JobDescription(int job_id, int user_id, int group_id, JobType job_type, int submission_time, sg_size_t walltime,
-                 size_t num_nodes, bool needs_gpu, int requested_memory_gb, double requested_storage_gb,
+  JobDescription(int job_id, int user_id, int group_id, JobType job_type, double submission_time, sg_size_t walltime,
+                 size_t num_nodes, bool needs_gpu, double requested_memory_gb, double requested_storage_gb,
                  const std::string& hpc_site, const std::string& hpc_system)
       : job_id_(job_id)
       , user_id_(user_id)
@@ -47,12 +47,12 @@ public:
   int get_user_id() const { return user_id_; }
   int get_group_id() const { return group_id_; }
   JobType get_job_type() const { return job_type_; }
-  int get_submission_time() const { return submission_time_; }
+  double get_submission_time() const { return submission_time_; }
   sg_size_t get_walltime() const { return walltime_; }
   size_t get_num_nodes() const { return num_nodes_; }
   bool needs_gpu() const { return needs_gpu_; }
-  int get_requested_memory_gb() const { return requested_memory_gb_; }
-  int get_requested_storage_gb() const { return requested_storage_gb_; }
+  double get_requested_memory_gb() const { return requested_memory_gb_; }
+  double get_requested_storage_gb() const { return requested_storage_gb_; }
   const std::string& get_hpc_site() const { return hpc_site_; }
   const std::string& get_hpc_system() const { return hpc_system_; }
 
@@ -83,6 +83,7 @@ public:
       throw std::out_of_range("Invalid JobType");
     }
   }
+
   nlohmann::json to_json() const
   {
     return {{"job_id", job_id_},

@@ -36,7 +36,7 @@ int WorkloadSubmissionAgent::main()
       auto job_submission_time = next_job->get_submission_time();
       auto job_HPCSystem       = next_job->get_hpc_system();
 
-      WRENCH_INFO("Sending Job #%s (to start at t = %5d) to Job Submission Agent '%s'", job_name.c_str(),
+      WRENCH_INFO("Sending Job #%s (to start at t = %5f) to Job Submission Agent '%s'", job_name.c_str(),
                   job_submission_time, job_HPCSystem.c_str());
 
       auto target_job_scheduling_agent = *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),

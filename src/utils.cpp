@@ -25,9 +25,9 @@ std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descri
     // FIXME use a proper ctor to fill the job description
     auto job = std::make_shared<JobDescription>(
         item.at("JobID").get<int>(), item.at("UserID").get<int>(), item.at("GroupID").get<int>(),
-        JobDescription::string_to_job_type(item.at("JobType").get<std::string>()), item.at("SubmissionTime").get<int>(),
+        JobDescription::string_to_job_type(item.at("JobType").get<std::string>()), item.at("SubmissionTime").get<double>(),
         item.at("Walltime").get<sg_size_t>(), item.at("Nodes").get<size_t>(), item.at("RequestedGPU").get<bool>(),
-        item.at("MemoryGB").get<int>(), item.at("RequestedStorageGB").get<int>(), item.at("HPCSite").get<std::string>(),
+        item.at("MemoryGB").get<double>(), item.at("RequestedStorageGB").get<double>(), item.at("HPCSite").get<std::string>(),
         item.at("HPCSystem").get<std::string>());
 
     jobs->push_back(job);
