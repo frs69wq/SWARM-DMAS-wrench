@@ -37,9 +37,6 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 2) The HPC system description
     // 3) The current state of the HPC system
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
-
-    // Keep track of my bid on this job
-    local_bids_[job_description->get_job_id()] = local_bid;
     WRENCH_INFO("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
                 job_description->get_job_id(), local_bid);
 
@@ -99,6 +96,9 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
           job_manager_->submitJob(job, batch_compute_service_, job_args);
         }
       } // if this agent did not win, just proceed.
+      // Bids are not needed anymore for this job: a scheduling decision has been taken by one of the agents, and the
+      // values of the bids have been sent to the job lifecycle tracker.
+      all_bids_.erase(job_id);
     } // More bids need to be received
   }
 }

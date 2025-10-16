@@ -23,7 +23,6 @@ class JobSchedulingAgent : public ExecutionController {
   std::vector<std::shared_ptr<JobSchedulingAgent>> job_scheduling_agent_network_;
   std::shared_ptr<JobLifecycleTrackerAgent> tracker_;
 
-  std::unordered_map<int, double> local_bids_;
   std::unordered_map<int, std::map<std::shared_ptr<JobSchedulingAgent>, double>> all_bids_;
 
   int main() override;
