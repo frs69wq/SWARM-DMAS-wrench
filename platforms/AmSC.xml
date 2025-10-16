@@ -32,7 +32,7 @@
     <!-- Perlmutter (Phase 1, GPU nodes) at NERSC -->
     <cluster id="Perlmutter-Phase-1" prefix="perlmutter-gpu-" suffix=".nersc.gov"
              radical="0-1536"
-             speed="4Tf" bw="200Gbps" lat="2us">
+             speed="41Tf" bw="200Gbps" lat="2us">
       <prop id="type" value="HYBRID"/>
       <prop id="memory_amount_in_gb" value="672"/>
       <prop id="storage_amount_in_gb" value="35e6"/>
@@ -65,7 +65,7 @@
     <!-- Andes at OLCF -->
     <cluster id="Andes" prefix="andes-" suffix=".olcf.gov"
              radical="0-704"
-             speed="1.5Tf" bw="200Gbps" lat="2us">
+             speed="1.8Tf" bw="200Gbps" lat="2us">
       <prop id="type" value="STORAGE"/>
       <prop id="memory_amount_in_gb" value="256"/>
       <prop id="storage_amount_in_gb" value="700e6"/>
