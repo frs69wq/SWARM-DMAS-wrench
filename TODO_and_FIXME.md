@@ -1,98 +1,18 @@
-## TODO
-- [x] Decide how to enforce local execution when we don't want to use the network of JSAs
-  - [x] ~~Option 1: use the 'can_forward' member of a JobRequestMessage~~
-  - [x] Option 2: implement a default behavior for a JSA that consists in directly submitting the job to the local HPC system. 
-- [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
-  - [x] Have steps 1 to 5 below as separate functions
-    - [x] Define a SchedulingPolicy abstract class that requires the following 3 steps.
-      - [x] Define child classes that implement specific policies
-        - [x] PureLocal: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 4 and just perform step 4 directly
-        - [x] RandomBidding: skips Step 2, picks a random value for Step 3, exchanges bids in all-to-all fashion, (locally) selects the agent with maximum bid as winner, breaks ties according to the address of the pointer to the agent object.
-        - [x] HeuristicBidding: use a heuristic in Step 3 
-        - [x] PythonBidding: calls a LLM in an extenal python script (name passed on command line) for step 3
-    - [x] Assign the scheduling policy to JSAs at the beginning of the simulation.
-      - [x] add command line argument giving the name of a scheduling policy
-      - [x] parse this command line argument to create the corresponding object
-  - [x] Step 1: Broadcast the jobDescription to the network of JSAs
-      - [x] test the value of can_forward_ to determine if the job is an original submission from the WSA or a forward from a JSA
-      - [x] if true
-        - [x] broadcast the JobDescription to the other agents but myself (with can_forward set to false)
-        - [ ] Resilient variant: Send ack to sender (has code modification implications)
-          - [ ] this includes adding a step to wait for the acks and handle agents not responding (timeout)
-      - [x] if false
-        - [x] PureLocal: Move to step 2
-  - [x] Step 2: Retrieve the current status of the locally managed HPC System
-    - [x] Use getPerHostNumIdleCores (with simulate_it set to false)
-    - [x] Use getStartTimeEstimates
-  - [ ] Step 3: Compute my own bid for the job
-      - [x] PureLocal: Do nothing
-      - [x] RandomBidding: Pick a random value in [0-1]
-      - [ ] HeuristicBidding: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
-        - [ ] @Prachi: improve this heuristic (taking into account job and systems types for instance)
-      - [ ] PythonBidding: Call an external python script, e.g., calling an LLM
-        - [ ] @Prachi: reuse some of the code from the demo
-      - [x] Store the local bid for the job
-        - [ ] Decide if we clean up when a job is completed or keep all bids for explanability
-  - [x] Step 4: Broadcast my bid to other agents
-      - [x] Create a BidOnJob message
-      - [x] Broadcast it
-        - [x] PureLocal: just send it to myself
-        - [x] RandomBidding (and likely all other variants): send it to all other agents (including myself)
-      - [x] Process this new type of message in Step 5
-  - [ ] Step 5: Find a consensus on the winner of the competitive bidding for that job
-      - [x] Need to know how many bids are expected to take a decision
-        - [x] PureLocal: set to 1
-        - [x] Option 2: set to the size of the agent network
-      - [ ] When all the expected bids have been received, take a decision
-        - [x] PureLocal: Do nothing, return true
-        - [x] RandomBidding, HeuristicBidding, PythonBidding: Compare local bid to all other bids
-          - [x] Manage tie breaking: agent with smaller pointer address
-        - [ ] Use a real distributed consensus algorithm 
-  - [x] Step 6: Upon winning the competitive bidding, schedule the job on my local HPC system
-- [x] Create an HPCSystem Class that contains a static high level description of the system
-  - [x] Decide of the information to have
-    - [x] name: string
-    - [x] type: enum whose values are HPC, AI, GPU, HYBRID, MEMORY, STORAGE
-      - Aurora: AI, Crux: STORAGE, Perlmutter: HYBRID, Frontier: HPC, Andes: STORAGE
-      - We have no MEMORY or GPU systems
-        - [ ] Frontier has much more memory than other. Add a second category?
-        - [ ] GPU is redundant with `has_gpu`. Remove it?
-    - [x] num_nodes: size_t
-    - [x] has_gpu: bool
-    - [x] memory_amount_in_gb: int
-    - [x] storage_amount_in_gb: double
-    - [x] network_interconnect: string
-  - [x] Add missing information to the platform description
-  - [x] Create the .h file
-  - [x] Instantiate at parsing time
-  - [x] Pass it to the JSA at creation time
-- [x] Perform job acceptance tests
-  - [x] job requires GPUs and systems has none
-  - [x] job requires more nodes than the system has
-  - [x] job requires more memory than the system has
-    - [x] @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
-- [x] Handle jobs that do not pass acceptance tests
-- [x] Call a python script in the outside world to compute a bid
-  - [x] send full state (job and system descriptions and system status)
-  - [x] capture time taken by external python script and report it as a sleep in the simulation
-- [x] Implement a job lifecycle tracking agent
-  - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
-  - [X] create a lifecycle summary for each job
-  - [x] Augment current messages to add needed information
-    - [x] Inititially submitted on (actually in job description)
-    - [x] ~~Best bid or~~ all bids
-    - [x] Scheduling location
-    - [x] Reason for reject/failure
- - [ ] Replace sleep of walltime value by a duration depending on the processing power of the hpc system
-  - [ ]
+## Remaining TODOs from Phase 1
+- [ ] Step 3: Compute my own bid for the job
+  - [ ] HeuristicBidding: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
+    - [ ] @Prachi: improve this heuristic (taking into account job and systems types for instance)
+  - [ ] PythonBidding: Call an external python script, e.g., calling an LLM
+    - [ ] @Prachi: reuse some of the code from the demo
+- [ ] Step 5: Find a consensus on the winner of the competitive bidding for that job
+  - [ ] Use a real distributed consensus algorithm
+- [ ] HPCSystem description
+  - We have no MEMORY or GPU systems
+    - [ ] Frontier has much more memory than other. Add a second category?
+    - [ ] GPU is redundant with `has_gpu`. Remove it?
+- [ ] Workload generation
+  - [ ] @Prachi check the consistency of the generated JSON files (246/1000 rejected jobs currently)
+
+## TODO -- Phase 2: Resilience!!!
 
 ## FIXME
-- [x] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
-  - Go for a separate job lifecycle tracker agent (will be used to compute metrics)
-- [x] Directly pass the JobDescription in a JobRequestMessage and only parse/transform when needed to submit job locally
-- [x] Use a proper ctor to fill the job description
-- [x] Use a proper ctor to fill the HPC system description
-- [x] Refactor: create SchedulingPolicy with the network of agents as a member.
-- [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
-- [x] ~~have a main `swarm_das` logging category and sub categories for agents~~
-- [x] reorg code base with subdirectories (agents/policies/descriptions/...)
