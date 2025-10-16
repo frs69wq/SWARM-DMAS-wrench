@@ -40,7 +40,10 @@ set(SOURCE_FILES
    src/WorkloadSubmissionAgent.cpp
    src/utils.cpp
 )
-   
+set(PYTHON_SCRIPTS
+   python_scripts/random_bidder.py
+)
+
 add_executable(swarm_dmas ${SOURCE_FILES})
 
 add_custom_target(swarm_dmas-platform-file
@@ -53,8 +56,14 @@ add_custom_target(swarm_dmas-workloads
   VERBATIM
 )
 
+add_custom_target(swarm_dmas-python-scripts
+  COMMAND /bin/sh -c "if [ '${CMAKE_CURRENT_SOURCE_DIR}' != '${CMAKE_CURRENT_BINARY_DIR}' ]; then mkdir -p python_scripts; /bin/cp -f ${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_SCRIPTS} ${CMAKE_CURRENT_BINARY_DIR}/python_scripts/ ; fi ;"
+  VERBATIM
+)
+
 add_dependencies(swarm_dmas swarm_dmas-workloads)
 add_dependencies(swarm_dmas swarm_dmas-platform-file)
+add_dependencies(swarm_dmas swarm_dmas-python-scripts)
 
 if (ENABLE_BATSCHED)
     target_link_libraries(swarm_dmas
