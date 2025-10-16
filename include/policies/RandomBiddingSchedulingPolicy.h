@@ -3,9 +3,9 @@
 
 #include <algorithm>
 
-#include "ControlMessages.h"
-#include "JobSchedulingAgent.h"
-#include "SchedulingPolicy.h"
+#include "agents/JobSchedulingAgent.h"
+#include "messages/ControlMessages.h"
+#include "policies/SchedulingPolicy.h"
 
 class RandomBiddingSchedulingPolicy : public SchedulingPolicy {
 

@@ -1,8 +1,8 @@
-#include "JobSchedulingAgent.h"
-#include "ControlMessages.h"
-#include "HPCSystemStatus.h"
-#include "JobLifecycleTrackerAgent.h"
-#include "utils.h"
+#include "agents/JobLifecycleTrackerAgent.h"
+#include "agents/JobSchedulingAgent.h"
+#include "info/HPCSystemStatus.h"
+#include "messages/ControlMessages.h"
+#include "utils/utils.h"
 
 WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent");
 

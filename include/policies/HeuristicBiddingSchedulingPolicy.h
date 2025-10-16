@@ -3,10 +3,10 @@
 
 #include <algorithm>
 
-#include "ControlMessages.h"
-#include "JobSchedulingAgent.h"
-#include "SchedulingPolicy.h"
-#include "utils.h"
+#include "agents/JobSchedulingAgent.h"
+#include "messages/ControlMessages.h"
+#include "policies/SchedulingPolicy.h"
+#include "utils/utils.h"
 
 class HeuristicBiddingSchedulingPolicy : public SchedulingPolicy {
 

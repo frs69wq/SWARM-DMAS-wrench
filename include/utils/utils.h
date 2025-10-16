@@ -5,9 +5,9 @@
 #include <vector>
 #include <wrench-dev.h>
 
-#include "HPCSystemDescription.h"
-#include "JobDescription.h"
-#include "JobLifecycle.h"
+#include "info/HPCSystemDescription.h"
+#include "info/JobDescription.h"
+#include "info/JobLifecycle.h"
 
 std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descriptions(const std::string& filename);
 std::shared_ptr<std::vector<std::shared_ptr<JobLifecycle>>> create_job_lifecycles(const std::string& filename);

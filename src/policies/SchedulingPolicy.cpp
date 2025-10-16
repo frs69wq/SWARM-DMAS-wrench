@@ -1,7 +1,7 @@
-#include "HeuristicBiddingSchedulingPolicy.h"
-#include "PureLocalSchedulingPolicy.h"
-#include "PythonBiddingSchedulingPolicy.h"
-#include "RandomBiddingSchedulingPolicy.h"
+#include "policies/HeuristicBiddingSchedulingPolicy.h"
+#include "policies/PureLocalSchedulingPolicy.h"
+#include "policies/PythonBiddingSchedulingPolicy.h"
+#include "policies/RandomBiddingSchedulingPolicy.h"
 
 #include <stdexcept>
 

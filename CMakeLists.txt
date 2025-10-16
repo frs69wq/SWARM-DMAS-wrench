@@ -16,32 +16,33 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 include_directories(include)
 
 set(HEADER_FILES
-   include/ControlMessages.h
-   include/HeuristicBiddingSchedulingPolicy.h
-   include/HPCSystemDescription.h
-   include/HPCSystemStatus.h
-   include/JobDescription.h
-   include/JobLifecycle.h
-   include/JobLifecycleTrackerAgent.h
-   include/JobSchedulingAgent.h
-   include/PureLocalSchedulingPolicy.h
-   include/PythonBiddingSchedulingPolicy.h
-   include/RandomBiddingSchedulingPolicy.h
-   include/SchedulingPolicy.h
-   include/WorkloadSubmissionAgent.h
-   include/utils.h
+  include/agents/JobLifecycleTrackerAgent.h
+  include/agents/JobSchedulingAgent.h
+  include/agents/WorkloadSubmissionAgent.h
+  include/policies/PythonBiddingSchedulingPolicy.h
+  include/policies/HeuristicBiddingSchedulingPolicy.h
+  include/policies/PureLocalSchedulingPolicy.h
+  include/policies/RandomBiddingSchedulingPolicy.h
+  include/policies/SchedulingPolicy.h
+  include/ControlMessages.h
+  include/info/HPCSystemDescription.h
+  include/info/HPCSystemStatus.h
+  include/info/JobDescription.h
+  include/info/JobLifecycle.h
+  include/utils.h
 )
 
 set(SOURCE_FILES
-   src/JobLifecycleTrackerAgent.cpp
-   src/JobSchedulingAgent.cpp
-   src/SchedulingPolicy.cpp
-   src/swarm_dmas.cpp
-   src/WorkloadSubmissionAgent.cpp
-   src/utils.cpp
+  src/agents/JobLifecycleTrackerAgent.cpp
+  src/agents/JobSchedulingAgent.cpp
+  src/agents/WorkloadSubmissionAgent.cpp
+  src/policies/SchedulingPolicy.cpp
+  src/swarm_dmas.cpp
+  src/utils.cpp
 )
+
 set(PYTHON_SCRIPTS
-   python_scripts/random_bidder.py
+  python_scripts/random_bidder.py
 )
 
 add_executable(swarm_dmas ${SOURCE_FILES})

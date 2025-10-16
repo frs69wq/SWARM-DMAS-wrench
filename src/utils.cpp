@@ -2,10 +2,10 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-#include "HPCSystemDescription.h"
-#include "JobDescription.h"
-#include "JobLifecycle.h"
-#include "utils.h"
+#include "info/HPCSystemDescription.h"
+#include "info/JobDescription.h"
+#include "info/JobLifecycle.h"
+#include "utils/utils.h"
 
 using json = nlohmann::json;
 

@@ -10,9 +10,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "ControlMessages.h"
-#include "JobSchedulingAgent.h"
-#include "SchedulingPolicy.h"
+#include "agents/JobSchedulingAgent.h"
+#include "messages/ControlMessages.h"
+#include "policies/SchedulingPolicy.h"
 
 class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;

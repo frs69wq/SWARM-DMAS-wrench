@@ -1,6 +1,6 @@
-#include "JobLifecycleTrackerAgent.h"
-#include "ControlMessages.h"
-#include "utils.h"
+#include "agents/JobLifecycleTrackerAgent.h"
+#include "messages/ControlMessages.h"
+#include "utils/utils.h"
 
 WRENCH_LOG_CATEGORY(job_lifecycle_tracker_agent, "Log category for JobLifecycleTrackerAgent");
 

@@ -2,7 +2,7 @@
 #define JOB_LIFECYCLE_TRACKER_AGENT_H
 
 #include <wrench-dev.h>
-#include "JobLifecycle.h"
+#include "info/JobLifecycle.h"
 
 namespace wrench {
 

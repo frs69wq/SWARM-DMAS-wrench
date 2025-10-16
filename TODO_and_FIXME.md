@@ -1,6 +1,6 @@
 ## TODO
 - [x] Decide how to enforce local execution when we don't want to use the network of JSAs
-  - [ ] ~~Option 1: use the 'can_forward' member of a JobRequestMessage~~
+  - [x] ~~Option 1: use the 'can_forward' member of a JobRequestMessage~~
   - [x] Option 2: implement a default behavior for a JSA that consists in directly submitting the job to the local HPC system. 
 - [ ] Implement a flexible workflow in JobSchedulingAgent::processEventCustom
   - [x] Have steps 1 to 5 below as separate functions
@@ -8,8 +8,8 @@
       - [x] Define child classes that implement specific policies
         - [x] PureLocal: A default policy that does not rely on the agent network would have no-op functions for steps 1 to 4 and just perform step 4 directly
         - [x] RandomBidding: skips Step 2, picks a random value for Step 3, exchanges bids in all-to-all fashion, (locally) selects the agent with maximum bid as winner, breaks ties according to the address of the pointer to the agent object.
-        - [ ] HeuristicBidding: use a heuristic in Step 3 
-        - [ ] LLMBidding: calls a LLM for step 3
+        - [x] HeuristicBidding: use a heuristic in Step 3 
+        - [x] PythonBidding: calls a LLM in an extenal python script (name passed on command line) for step 3
     - [x] Assign the scheduling policy to JSAs at the beginning of the simulation.
       - [x] add command line argument giving the name of a scheduling policy
       - [x] parse this command line argument to create the corresponding object
@@ -28,7 +28,9 @@
       - [x] PureLocal: Do nothing
       - [x] RandomBidding: Pick a random value in [0-1]
       - [ ] HeuristicBidding: Use a heuristic, based on JobDescription, HPCSystem Description, and current system state
-      - [ ] Option 3: Call a LLM
+        - [ ] @Prachi: improve this heuristic (taking into account job and systems types for instance)
+      - [ ] PythonBidding: Call an external python script, e.g., calling an LLM
+        - [ ] @Prachi: reuse some of the code from the demo
       - [x] Store the local bid for the job
         - [ ] Decide if we clean up when a job is completed or keep all bids for explanability
   - [x] Step 4: Broadcast my bid to other agents
@@ -43,9 +45,9 @@
         - [x] Option 2: set to the size of the agent network
       - [ ] When all the expected bids have been received, take a decision
         - [x] PureLocal: Do nothing, return true
-        - [x] RandomBidding, HeuristicBidding: Compare local bid to all other bids
+        - [x] RandomBidding, HeuristicBidding, PythonBidding: Compare local bid to all other bids
           - [x] Manage tie breaking: agent with smaller pointer address
-        - [ ] Option 3: ???
+        - [ ] Use a real distributed consensus algorithm 
   - [x] Step 6: Upon winning the competitive bidding, schedule the job on my local HPC system
 - [x] Create an HPCSystem Class that contains a static high level description of the system
   - [x] Decide of the information to have
@@ -76,10 +78,14 @@
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
   - [X] create a lifecycle summary for each job
   - [ ] Augment current messages to add needed information
-    - [X] Inititially submitted on (actually in job description)
+    - [x] Inititially submitted on (actually in job description)
     - [ ] Best bid (or all bids?)
     - [ ] Scheduling location
     - [ ] Reason for reject/failure
+ - [ ] Replace sleep of walltime value by a duration depending on the processing power of the hpc system
+  - [ ]
+ - [ ] capture time taken by external python script and report it as a sleep in the simulation
+
 ## FIXME
 - [x] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing
   - Go for a separate job lifecycle tracker agent (will be used to compute metrics)
@@ -89,4 +95,4 @@
 - [x] Refactor: create SchedulingPolicy with the network of agents as a member.
 - [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
 - [x] ~~have a main `swarm_das` logging category and sub categories for agents~~
-- [ ] reorg code base (agents/policies/descriptions/...)
+- [x] reorg code base with subdirectories (agents/policies/descriptions/...)

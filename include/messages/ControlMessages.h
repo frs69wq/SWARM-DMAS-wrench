@@ -1,8 +1,8 @@
 #ifndef CONTROLMESSAGES_H
 #define CONTROLMESSAGES_H
 
-#include "JobDescription.h"
-#include "JobSchedulingAgent.h"
+#include "info/JobDescription.h"
+#include "agents/JobSchedulingAgent.h"
 #include <wrench-dev.h>
 
 #define CONTROL_MESSAGE_SIZE 0      // Size in bytes

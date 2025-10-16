@@ -1,8 +1,8 @@
-#include "WorkloadSubmissionAgent.h"
-#include "ControlMessages.h"
-#include "JobLifecycleTrackerAgent.h"
-#include "JobSchedulingAgent.h"
-#include "utils.h"
+#include "agents/JobLifecycleTrackerAgent.h"
+#include "agents/JobSchedulingAgent.h"
+#include "agents/WorkloadSubmissionAgent.h"
+#include "messages/ControlMessages.h"
+#include "utils/utils.h"
 
 WRENCH_LOG_CATEGORY(workload_submission_agent, "Log category for WorkloadSubmissionAgent");
 

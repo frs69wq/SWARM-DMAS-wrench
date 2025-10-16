@@ -4,8 +4,8 @@
 #include <memory>
 #include <wrench-dev.h>
 
-#include "HPCSystemDescription.h"
-#include "SchedulingPolicy.h"
+#include "info/HPCSystemDescription.h"
+#include "policies/SchedulingPolicy.h"
 
 namespace wrench {
 

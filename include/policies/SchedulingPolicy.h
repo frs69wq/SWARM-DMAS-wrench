@@ -1,11 +1,12 @@
 #ifndef SCHEDULING_POLICY_H
 #define SCHEDULING_POLICY_H
 
-#include "HPCSystemDescription.h"
-#include "HPCSystemStatus.h"
-#include "JobDescription.h"
 #include <memory>
 #include <vector>
+
+#include "info/HPCSystemDescription.h"
+#include "info/HPCSystemStatus.h"
+#include "info/JobDescription.h"
 
 namespace wrench {
 class JobSchedulingAgent;

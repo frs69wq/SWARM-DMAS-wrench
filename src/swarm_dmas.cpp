@@ -2,11 +2,11 @@
 #include <simgrid/s4u/Host.hpp>
 #include <wrench.h>
 
-#include "HPCSystemDescription.h"
-#include "JobLifecycleTrackerAgent.h"
-#include "JobSchedulingAgent.h"
-#include "SchedulingPolicy.h"
-#include "WorkloadSubmissionAgent.h"
+#include "agents/JobLifecycleTrackerAgent.h"
+#include "agents/JobSchedulingAgent.h"
+#include "agents/WorkloadSubmissionAgent.h"
+#include "info/HPCSystemDescription.h"
+#include "policies/SchedulingPolicy.h"
 
 WRENCH_LOG_CATEGORY(swarm_dmas, "Log category for SWARM Distributed Multi-Agent Scheduling simulator");
 
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
   // Parsing of the command-line arguments
   if (argc < 4) {
     std::cerr << "Usage: " << argv[0]
-              << " <json job description list> <xml platform file> <scheduling policy name> [<python script>]"
+              << " <json job description list> <xml platform file> <scheduling policy name> [<python script name>]"
                  "[--log=workload_submission_agent.t:info]"
                  "[--log=job_lifecycle_tracker_agent.t:info]"
                  "[--log=job_scheduling_agent.t::info]"
