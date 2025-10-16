@@ -39,6 +39,15 @@ public:
       decision_time_ = scheduling_time_ - submission_time_;
   }
 
+  void set_reject_time(double when) 
+  { 
+    end_time_ = when; 
+    if (submission_time_ < 0)
+      throw std::runtime_error("Submission time hasn't been set");
+    else
+      decision_time_ = end_time_ - submission_time_;
+  }
+
   void set_start_time(double when)
   {
     start_time_ = when;
@@ -47,8 +56,6 @@ public:
     else
       waiting_time_ = start_time_ - scheduling_time_;
   }
-
-  void set_reject_time(double when) { end_time_ = when; }
 
   void set_end_time(double when)
   {
