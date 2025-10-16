@@ -72,8 +72,9 @@
   - [x] job requires more memory than the system has
     - [x] @Prachi: in the workload generator, is a job's memory request expressed per node or in total?
 - [x] Handle jobs that do not pass acceptance tests
-- [x] Test call to the outside world
-  - has to send full state
+- [x] Call a python script in the outside world to compute a bid
+  - [x] send full state (job and system descriptions and system status)
+  - [x] capture time taken by external python script and report it as a sleep in the simulation
 - [x] Implement a job lifecycle tracking agent
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
   - [X] create a lifecycle summary for each job
@@ -84,7 +85,6 @@
     - [x] Reason for reject/failure
  - [ ] Replace sleep of walltime value by a duration depending on the processing power of the hpc system
   - [ ]
- - [ ] capture time taken by external python script and report it as a sleep in the simulation
 
 ## FIXME
 - [x] Decide whether job completion notifications are sent to the WSA (current) or handled locally by the JSAs. This impacts most of the code with the "originator" thing

@@ -89,6 +89,11 @@ public:
 
       try {
         nlohmann::json result = nlohmann::json::parse(response);
+        if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number()) {
+          wrench::S4U_Simulation::sleep(result["bid_generation_time_seconds"].get<double>());
+        } else {
+          throw std::runtime_error("Invalid response: 'bid_generation_time_seconds' not found or not a number");
+        }
         if (result.contains("bid") && result["bid"].is_number()) {
           return result["bid"].get<double>();
         } else {
