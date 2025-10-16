@@ -74,14 +74,14 @@
 - [x] Handle jobs that do not pass acceptance tests
 - [x] Test call to the outside world
   - has to send full state
-- [ ] Implement a job lifecycle tracking agent
+- [x] Implement a job lifecycle tracking agent
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
   - [X] create a lifecycle summary for each job
-  - [ ] Augment current messages to add needed information
+  - [x] Augment current messages to add needed information
     - [x] Inititially submitted on (actually in job description)
-    - [ ] Best bid (or all bids?)
-    - [ ] Scheduling location
-    - [ ] Reason for reject/failure
+    - [x] ~~Best bid or~~ all bids
+    - [x] Scheduling location
+    - [x] Reason for reject/failure
  - [ ] Replace sleep of walltime value by a duration depending on the processing power of the hpc system
   - [ ]
  - [ ] capture time taken by external python script and report it as a sleep in the simulation

@@ -28,7 +28,7 @@ public:
     // TODO replace by a heuristic based on job description, system description, and system status
     // 1. Feasibility check: if the job does not pass the acceptance tests, bid is 0.0
     // TODO test storage in acceptance tests
-    if (not do_pass_acceptance_tests(job_description, hpc_system_description))
+    if (do_not_pass_acceptance_tests(job_description, hpc_system_description))
       return 0.0;
 
     // 2. Utilization-based scores

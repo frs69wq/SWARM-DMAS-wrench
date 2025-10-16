@@ -46,8 +46,8 @@ int WorkloadSubmissionAgent::main()
       target_job_scheduling_agent->commport->dputMessage(new JobRequestMessage(next_job, true));
 
       // Notify the job lifecycle tracker
-      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_id, wrench::S4U_Simulation::getClock(),
-                                                                      JobLifecycleEventType::SUBMISSION));
+      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
+          job_id, "WorkloadSubmissionAgent", wrench::S4U_Simulation::getClock(), JobLifecycleEventType::SUBMISSION));
 
       // Set the timer for the next job
       next_job_to_submit++;

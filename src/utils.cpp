@@ -2,6 +2,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "agents/JobSchedulingAgent.h"
 #include "info/HPCSystemDescription.h"
 #include "info/JobDescription.h"
 #include "info/JobLifecycle.h"
@@ -78,21 +79,49 @@ size_t get_queue_length(const std::shared_ptr<wrench::BatchComputeService>& batc
   return batch->getQueue().size();
 }
 
-bool do_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_description,
-                              const std::shared_ptr<HPCSystemDescription>& hpc_system_description)
+int do_not_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_description,
+                                 const std::shared_ptr<HPCSystemDescription>& hpc_system_description)
 {
-  bool do_pass = true;
+  int do_pass = 0;
   if (job_description->needs_gpu() && not hpc_system_description->has_gpu())
-    do_pass = false;
+    do_pass = 1;
 
   if (job_description->get_num_nodes() > hpc_system_description->get_num_nodes())
-    do_pass = false;
+    do_pass = 2;
 
   if (job_description->get_requested_memory_gb() >
       (hpc_system_description->get_num_nodes() * hpc_system_description->get_memory_amount_in_gb()))
-    do_pass = false;
+    do_pass = 3;
 
   // TODO add test for storage
 
   return do_pass;
+}
+
+std::string get_failure_cause_as_string(int failure_code) {
+  switch(failure_code) {
+    case 1:
+      return "Job requires GPU while System has none";
+      break;
+    case 2:
+      return "Job requires more nodes than the System has";
+      break;
+    case 3:
+      return "Job requires more nodes than the System has";
+      break;
+    default:
+      return "Unknown failure code";
+  }
+}
+
+std::string get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids){
+  std::ostringstream oss;
+  oss << std::fixed << std::setprecision(2) << "\"";
+  for (auto it = all_bids.begin(); it != all_bids.end(); ++it) {
+    oss << it->second;
+    if (std::next(it) != all_bids.end())
+      oss << ":";
+  }
+  oss << "\"";
+  return oss.str();
 }

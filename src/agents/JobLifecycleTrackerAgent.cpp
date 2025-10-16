@@ -20,11 +20,16 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
       case JobLifecycleEventType::SCHEDULING:
         WRENCH_INFO("Job #%d has been scheduled!", job_id);
         job_lifecycles_->at(pos)->set_scheduling_time(when);
-        // TODO add set_scheduled_on();
+        job_lifecycles_->at(pos)->set_scheduled_on(message->get_sender());
+        job_lifecycles_->at(pos)->set_bids(message->get_bids());
         break;
       case JobLifecycleEventType::REJECT:
         WRENCH_INFO("Job #%d was rejected!", job_id);
         job_lifecycles_->at(pos)->set_reject_time(when);
+        job_lifecycles_->at(pos)->set_final_status("REJECTED");
+        job_lifecycles_->at(pos)->set_scheduled_on(message->get_sender());
+        job_lifecycles_->at(pos)->set_bids(message->get_bids());
+        job_lifecycles_->at(pos)->set_failure_cause(message->get_failure_cause());
         num_rejected_jobs_++;
         break;
       case JobLifecycleEventType::START:
@@ -34,11 +39,14 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
       case JobLifecycleEventType::COMPLETION:
         WRENCH_INFO("Job #%d has completed!", job_id);
         job_lifecycles_->at(pos)->set_end_time(when);
+        job_lifecycles_->at(pos)->set_final_status("COMPLETED");
         num_completed_jobs_++;
         break;
       case JobLifecycleEventType::FAIL:
         WRENCH_INFO("Job #%d has completed!", job_id);
         job_lifecycles_->at(pos)->set_end_time(when);
+        job_lifecycles_->at(pos)->set_final_status("FAILED");
+        // TODO add set_failure_cause if possible to get it
         num_failed_jobs_++;
         break;
       default:
@@ -60,6 +68,11 @@ int JobLifecycleTrackerAgent::main()
 
   WRENCH_INFO("Summary: %d Completed / %d Failed / %d Rejected jobs", num_completed_jobs_, num_failed_jobs_,
               num_rejected_jobs_);
+  std::cout << "JobId,FinalStatus,SubmittedTo,ScheduledOn,SubmissionTime,SchedulingTime,StartTime,EndTime,DecisionTime,"
+               "WaitingTime,ExecutionTime,Bids,FailureCause"
+            << std::endl;
+  for (const auto& jl : *job_lifecycles_)
+    std::cout << jl->export_to_csv().c_str() << std::endl;
   return 0;
 }
 

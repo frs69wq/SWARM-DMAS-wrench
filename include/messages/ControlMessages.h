@@ -56,19 +56,29 @@ enum class JobLifecycleEventType { SUBMISSION, SCHEDULING, REJECT, START, COMPLE
 class JobLifecycleTrackingMessage : public ExecutionControllerCustomEventMessage {
   int job_id_;
   double when_;
+  std::string sent_from_;
   JobLifecycleEventType event_type_;
+  std::string bids_;
+  std::string failure_cause_;
 
 public:
-  JobLifecycleTrackingMessage(int job_id, double now, JobLifecycleEventType event_type)
+  JobLifecycleTrackingMessage(int job_id, const std::string& sender_name, double now, JobLifecycleEventType event_type,
+                              const std::string& bids = "", const std::string& failure_cause = "")
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
       , job_id_(job_id)
+      , sent_from_(sender_name)
       , when_(now)
       , event_type_(event_type)
+      , bids_(bids)
+      , failure_cause_(failure_cause)
   {
   }
   int get_job_id() const { return job_id_; }
   JobLifecycleEventType get_event_type() const { return event_type_; }
   double get_when() const { return when_; }
+  const std::string& get_sender() const { return sent_from_; }
+  const std::string& get_bids() const { return bids_; }
+  const std::string& get_failure_cause() const { return failure_cause_; }
 };
 
 } // namespace wrench

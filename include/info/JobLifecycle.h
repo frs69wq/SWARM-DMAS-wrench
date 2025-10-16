@@ -1,6 +1,7 @@
 #ifndef JOB_LIFECYCLE_H
 #define JOB_LIFECYCLE_H
 
+#include <sstream>
 #include <wrench-dev.h>
 
 class JobLifecycle {
@@ -19,10 +20,10 @@ class JobLifecycle {
   std::string submitted_to_;
   std::string scheduled_on_;
 
-  std::vector<double> bids_;
+  std::string bids_;
 
   std::string final_status_;
-  std::string failure_cause_;
+  std::string failure_cause_ = "None";
 
 public:
   JobLifecycle(int job_id, const std::string& submitted_to, double submission_time)
@@ -39,9 +40,9 @@ public:
       decision_time_ = scheduling_time_ - submission_time_;
   }
 
-  void set_reject_time(double when) 
-  { 
-    end_time_ = when; 
+  void set_reject_time(double when)
+  {
+    end_time_ = when;
     if (submission_time_ < 0)
       throw std::runtime_error("Submission time hasn't been set");
     else
@@ -68,11 +69,21 @@ public:
 
   void set_scheduled_on(const std::string& hpc_system) { scheduled_on_ = hpc_system; }
 
-  void set_bids(const std::vector<double>& bids) { bids_ = bids; }
+  void set_bids(const std::string& bids) { bids_ = bids; }
   void add_bid(double bid) { bids_.push_back(bid); }
 
   void set_final_status(const std::string& status) { final_status_ = status; }
   void set_failure_cause(const std::string& cause) { failure_cause_ = cause; }
+
+  std::string export_to_csv() const
+  {
+    std::ostringstream oss;
+    oss << job_id_ << ",\"" << final_status_ << "\",\"" << submitted_to_ << "\",\"" << scheduled_on_ << "\","
+        << submission_time_ << "," << scheduling_time_ << "," << start_time_ << "," << end_time_ << ","
+        << decision_time_ << "," << waiting_time_ << "," << execution_time_ << "," << bids_ << ",\"" << failure_cause_
+        << "\"";
+    return oss.str();
+  }
 };
 
 #endif // JOB_LIFECYCLE_HPP
