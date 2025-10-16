@@ -21,6 +21,7 @@ set(HEADER_FILES
    include/HPCSystemDescription.h
    include/HPCSystemStatus.h
    include/JobDescription.h
+   include/JobLifecycle.h
    include/JobLifecycleTrackerAgent.h
    include/JobSchedulingAgent.h
    include/PureLocalSchedulingPolicy.h

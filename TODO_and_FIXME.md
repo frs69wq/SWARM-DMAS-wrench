@@ -74,14 +74,7 @@
   - has to send full state
 - [ ] Implement a job lifecycle tracking agent
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
-  - [ ] create a lifecycle summary for each job
-    - Submission date
-    - Scheduling date (i.e., submitted to a batch system)
-    - Decision time = Scheduling date - Submission date
-    - Start date
-    - Waiting time = Start date - Scheduling date
-    - Completion date
-    - Execution time =  Completion date - Start date
+  - [X] create a lifecycle summary for each job
   - [ ] Augment current messages to add needed information
     - [ ] Inititially submitted on (actually in job description)
     - [ ] Best bid (or all bids?)
@@ -95,5 +88,5 @@
 - [x] Use a proper ctor to fill the HPC system description
 - [x] Refactor: create SchedulingPolicy with the network of agents as a member.
 - [x] @Prachi: Change `user_id` and `group_id` from `string` to `int` in the workload generator (hence removing `user_`, `group_` and the quotes in the values)
-- [ ] have a main `swarm_das` logging category and sub categories for agents
+- [x] ~~have a main `swarm_das` logging category and sub categories for agents~~
 - [ ] reorg code base (agents/policies/descriptions/...)

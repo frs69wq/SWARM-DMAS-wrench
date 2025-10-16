@@ -4,36 +4,52 @@
 
 #include "HPCSystemDescription.h"
 #include "JobDescription.h"
+#include "JobLifecycle.h"
 #include "utils.h"
 
 using json = nlohmann::json;
 
-std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descriptions(const std::string& filename)
+template <typename T>
+std::shared_ptr<std::vector<std::shared_ptr<T>>>
+load_objects_from_json(const std::string& filename,
+                       const std::function<std::shared_ptr<T>(const nlohmann::json&)>& constructor)
 {
-  auto jobs = std::make_shared<std::vector<std::shared_ptr<JobDescription>>>();
+  auto result = std::make_shared<std::vector<std::shared_ptr<T>>>();
   std::ifstream file(filename);
 
   if (!file.is_open()) {
     std::cerr << "Failed to open file: " << filename << std::endl;
-    return jobs;
+    return result;
   }
 
-  json j;
+  nlohmann::json j;
   file >> j;
 
-  for (const auto& item : j) {
-    // FIXME use a proper ctor to fill the job description
-    auto job = std::make_shared<JobDescription>(
+  for (const auto& item : j)
+    result->push_back(constructor(item));
+
+  return result;
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descriptions(const std::string& filename)
+{
+  return load_objects_from_json<JobDescription>(filename, [](const nlohmann::json& item) {
+    return std::make_shared<JobDescription>(
         item.at("JobID").get<int>(), item.at("UserID").get<int>(), item.at("GroupID").get<int>(),
-        JobDescription::string_to_job_type(item.at("JobType").get<std::string>()), item.at("SubmissionTime").get<double>(),
-        item.at("Walltime").get<sg_size_t>(), item.at("Nodes").get<size_t>(), item.at("RequestedGPU").get<bool>(),
-        item.at("MemoryGB").get<double>(), item.at("RequestedStorageGB").get<double>(), item.at("HPCSite").get<std::string>(),
+        JobDescription::string_to_job_type(item.at("JobType").get<std::string>()),
+        item.at("SubmissionTime").get<double>(), item.at("Walltime").get<sg_size_t>(), item.at("Nodes").get<size_t>(),
+        item.at("RequestedGPU").get<bool>(), item.at("MemoryGB").get<double>(),
+        item.at("RequestedStorageGB").get<double>(), item.at("HPCSite").get<std::string>(),
         item.at("HPCSystem").get<std::string>());
+  });
+}
 
-    jobs->push_back(job);
-  }
-
-  return jobs;
+std::shared_ptr<std::vector<std::shared_ptr<JobLifecycle>>> create_job_lifecycles(const std::string& filename)
+{
+  return load_objects_from_json<JobLifecycle>(filename, [](const nlohmann::json& item) {
+    return std::make_shared<JobLifecycle>(item.at("JobID").get<int>(), item.at("HPCSystem").get<std::string>(),
+                                          item.at("SubmissionTime").get<double>());
+  });
 }
 
 size_t get_number_of_available_nodes_on(const std::shared_ptr<wrench::BatchComputeService>& batch)

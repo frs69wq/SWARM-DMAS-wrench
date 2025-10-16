@@ -42,9 +42,9 @@ int JobLifecycleTrackerAgent::main()
 {
   TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_RED);
   WRENCH_INFO("Job Lifecycle Tracker Agent starting");
-  auto jobs = extract_job_descriptions(job_list_);
+  job_lifecycles_ = create_job_lifecycles(job_list_);
   // Compute and store the total number of jobs in the workload in total_num_jobs
-  size_t total_num_jobs = jobs->size();
+  size_t total_num_jobs = job_lifecycles_->size();
 
   while (num_completed_jobs_ + num_rejected_jobs_ + num_failed_jobs_ < total_num_jobs)
     this->waitForAndProcessNextEvent();

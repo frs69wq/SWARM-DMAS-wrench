@@ -7,8 +7,10 @@
 
 #include "HPCSystemDescription.h"
 #include "JobDescription.h"
+#include "JobLifecycle.h"
 
 std::shared_ptr<std::vector<std::shared_ptr<JobDescription>>> extract_job_descriptions(const std::string& filename);
+std::shared_ptr<std::vector<std::shared_ptr<JobLifecycle>>> create_job_lifecycles(const std::string& filename);
 
 size_t get_number_of_available_nodes_on(const std::shared_ptr<wrench::BatchComputeService>& batch);
 double get_job_start_time_estimate_on(const std::shared_ptr<JobDescription>& job_description,

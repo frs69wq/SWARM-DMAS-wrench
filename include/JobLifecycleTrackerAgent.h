@@ -2,11 +2,13 @@
 #define JOB_LIFECYCLE_TRACKER_AGENT_H
 
 #include <wrench-dev.h>
+#include "JobLifecycle.h"
 
 namespace wrench {
 
 class JobLifecycleTrackerAgent : public ExecutionController {
   std::string job_list_;
+  std::shared_ptr<std::vector<std::shared_ptr<JobLifecycle>>> job_lifecycles_;
   int num_completed_jobs_ = 0;
   int num_rejected_jobs_  = 0;
   int num_failed_jobs_  = 0;
