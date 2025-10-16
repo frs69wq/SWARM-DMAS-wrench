@@ -18,8 +18,11 @@ class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;
 
 public:
-  PythonBiddingSchedulingPolicy(const std::string& python_script_name) : SchedulingPolicy(), python_script_name_(python_script_name){}
-  
+  PythonBiddingSchedulingPolicy(const std::string& python_script_name)
+      : SchedulingPolicy(), python_script_name_(python_script_name)
+  {
+  }
+
   void broadcast_job_description(const std::string& agent_name,
                                  const std::shared_ptr<JobDescription>& job_description) override
   {
@@ -38,12 +41,12 @@ public:
     int from_python[2]; // C++ reads from python
 
     if (pipe(to_python) == -1 || pipe(from_python) == -1) {
-        throw std::runtime_error("Failed to create pipes");
+      throw std::runtime_error("Failed to create pipes");
     }
 
     if (access(python_script_name_.c_str(), F_OK) != 0)
-    throw std::runtime_error("Python script not found");
-    
+      throw std::runtime_error("Python script not found");
+
     pid_t pid = fork();
     if (pid == 0) {
       // External Python process
@@ -54,7 +57,7 @@ public:
       close(from_python[0]);
       close(to_python[0]);
       close(from_python[1]);
-      
+
       execlp("python3", "python3", python_script_name_.c_str(), nullptr);
       perror("execlp failed");
       exit(1);

@@ -29,7 +29,8 @@ protected:
   size_t get_job_scheduling_agent_network_size() const { return job_scheduling_agent_network_.size(); }
 
 public:
-  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name, const std::string& python_script_name);
+  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name,
+                                                                    const std::string& python_script_name);
   static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name)
   {
     return create_scheduling_policy(policy_name, "");

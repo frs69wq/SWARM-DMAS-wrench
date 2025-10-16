@@ -1,8 +1,8 @@
 #ifndef CONTROLMESSAGES_H
 #define CONTROLMESSAGES_H
 
-#include "info/JobDescription.h"
 #include "agents/JobSchedulingAgent.h"
+#include "info/JobDescription.h"
 #include <wrench-dev.h>
 
 #define CONTROL_MESSAGE_SIZE 0      // Size in bytes
@@ -54,17 +54,21 @@ public:
 enum class JobLifecycleEventType { SUBMISSION, SCHEDULING, REJECT, START, COMPLETION, FAIL };
 
 class JobLifecycleTrackingMessage : public ExecutionControllerCustomEventMessage {
-  std::string job_name_;
+  int job_id_;
+  double when_;
   JobLifecycleEventType event_type_;
 
 public:
-  JobLifecycleTrackingMessage(const std::string& job_name, JobLifecycleEventType event_type)
-      : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE), job_name_(job_name), event_type_(event_type)
+  JobLifecycleTrackingMessage(int job_id, double now, JobLifecycleEventType event_type)
+      : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
+      , job_id_(job_id)
+      , when_(now)
+      , event_type_(event_type)
   {
   }
-  const std::string& get_job_name() const { return job_name_; }
-  const char* get_job_cname() const { return job_name_.c_str(); }
+  int get_job_id() const { return job_id_; }
   JobLifecycleEventType get_event_type() const { return event_type_; }
+  double get_when() const { return when_; }
 };
 
 } // namespace wrench

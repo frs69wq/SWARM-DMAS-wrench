@@ -21,12 +21,11 @@ public:
   double get_current_job_start_time_estimate() const { return current_job_start_time_estimate_; }
   size_t get_queue_length() const { return queue_length_; }
 
-  nlohmann::json to_json() const {
-    return {
-      {"current_num_available_nodes", current_num_avaibable_nodes_},
-      {"current_job_start_time_estimate", current_job_start_time_estimate_},
-      {"queue_length", queue_length_}
-    };
+  nlohmann::json to_json() const
+  {
+    return {{"current_num_available_nodes", current_num_avaibable_nodes_},
+            {"current_job_start_time_estimate", current_job_start_time_estimate_},
+            {"queue_length", queue_length_}};
   }
 };
 

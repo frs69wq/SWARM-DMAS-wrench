@@ -58,7 +58,7 @@ public:
         {HPCSystemType::HPC, "HPC"}, {HPCSystemType::AI, "AI"},         {HPCSystemType::HYBRID, "HYBRID"},
         {HPCSystemType::GPU, "GPU"}, {HPCSystemType::MEMORY, "MEMORY"}, {HPCSystemType::STORAGE, "STORAGE"}};
 
-   auto it = EnumStrings.find(type);
+    auto it = EnumStrings.find(type);
     if (it != EnumStrings.end()) {
       return it->second;
     } else {

@@ -1,6 +1,6 @@
+#include "agents/WorkloadSubmissionAgent.h"
 #include "agents/JobLifecycleTrackerAgent.h"
 #include "agents/JobSchedulingAgent.h"
-#include "agents/WorkloadSubmissionAgent.h"
 #include "messages/ControlMessages.h"
 #include "utils/utils.h"
 
@@ -32,12 +32,12 @@ int WorkloadSubmissionAgent::main()
     if (std::dynamic_pointer_cast<TimerEvent>(event)) {
       // It's a timer event, send the job description to the job scheduling agent of the HPC system in the description
       auto next_job            = jobs->at(next_job_to_submit);
-      auto job_name            = std::to_string(next_job->get_job_id());
+      auto job_id              = next_job->get_job_id();
       auto job_submission_time = next_job->get_submission_time();
       auto job_HPCSystem       = next_job->get_hpc_system();
 
-      WRENCH_INFO("Sending Job #%s (to start at t = %5f) to Job Submission Agent '%s'", job_name.c_str(),
-                  job_submission_time, job_HPCSystem.c_str());
+      WRENCH_INFO("Sending Job #%d (to start at t = %5f) to Job Submission Agent '%s'", job_id, job_submission_time,
+                  job_HPCSystem.c_str());
 
       auto target_job_scheduling_agent = *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
                                                         [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
@@ -46,7 +46,8 @@ int WorkloadSubmissionAgent::main()
       target_job_scheduling_agent->commport->dputMessage(new JobRequestMessage(next_job, true));
 
       // Notify the job lifecycle tracker
-      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_name, JobLifecycleEventType::SUBMISSION));
+      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_id, wrench::S4U_Simulation::getClock(),
+                                                                      JobLifecycleEventType::SUBMISSION));
 
       // Set the timer for the next job
       next_job_to_submit++;

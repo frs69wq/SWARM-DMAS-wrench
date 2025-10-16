@@ -9,27 +9,36 @@ namespace wrench {
 void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEvent>& event)
 {
   if (auto message = std::dynamic_pointer_cast<JobLifecycleTrackingMessage>(event->message)) {
+    auto job_id     = message->get_job_id();
+    auto pos        = job_id - 1; // jobs are numbered from 1, while the first lifecycle is .at(0), hence shifting.
     auto event_type = message->get_event_type();
+    auto when       = message->get_when();
     switch (event_type) {
       case JobLifecycleEventType::SUBMISSION:
-        WRENCH_INFO("Job #%s has been submitted!", message->get_job_cname());
+        WRENCH_INFO("Job #%d has been submitted!", job_id);
         break;
       case JobLifecycleEventType::SCHEDULING:
-        WRENCH_INFO("Job #%s has been scheduled!", message->get_job_cname());
+        WRENCH_INFO("Job #%d has been scheduled!", job_id);
+        job_lifecycles_->at(pos)->set_scheduling_time(when);
+        // TODO add set_scheduled_on();
         break;
       case JobLifecycleEventType::REJECT:
-        WRENCH_INFO("Job #%s was rejected!", message->get_job_cname());
+        WRENCH_INFO("Job #%d was rejected!", job_id);
+        job_lifecycles_->at(pos)->set_reject_time(when);
         num_rejected_jobs_++;
         break;
       case JobLifecycleEventType::START:
-        WRENCH_INFO("Job #%s has started!", message->get_job_cname());
+        WRENCH_INFO("Job #%d has started!", job_id);
+        job_lifecycles_->at(pos)->set_start_time(when);
         break;
       case JobLifecycleEventType::COMPLETION:
-        WRENCH_INFO("Job #%s has completed!", message->get_job_cname());
+        WRENCH_INFO("Job #%d has completed!", job_id);
+        job_lifecycles_->at(pos)->set_end_time(when);
         num_completed_jobs_++;
         break;
       case JobLifecycleEventType::FAIL:
-        WRENCH_INFO("Job #%s has completed!", message->get_job_cname());
+        WRENCH_INFO("Job #%d has completed!", job_id);
+        job_lifecycles_->at(pos)->set_end_time(when);
         num_failed_jobs_++;
         break;
       default:
