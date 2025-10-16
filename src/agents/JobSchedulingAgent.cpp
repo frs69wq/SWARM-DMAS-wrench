@@ -88,7 +88,9 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
                                                      wrench::S4U_Simulation::getClock(), JobLifecycleEventType::START));
                                                },
                                                {[](const std::shared_ptr<ActionExecutor>&) {}});
-          auto sleeper  = job->addSleepAction("", job_description->get_walltime());
+
+          auto scaling_factor = std::max(50., this->getHost()->get_speed()  / 1.5e12);
+          auto sleeper  = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
           job->addActionDependency(tracking, sleeper);
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
                                                {"-t", std::to_string(job_description->get_walltime())},
