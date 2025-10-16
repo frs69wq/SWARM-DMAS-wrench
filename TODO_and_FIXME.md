@@ -76,7 +76,7 @@
   - [x] Receive messages when a job is submitted, scheduled, started, completed, failed or rejected
   - [X] create a lifecycle summary for each job
   - [ ] Augment current messages to add needed information
-    - [ ] Inititially submitted on (actually in job description)
+    - [X] Inititially submitted on (actually in job description)
     - [ ] Best bid (or all bids?)
     - [ ] Scheduling location
     - [ ] Reason for reject/failure
