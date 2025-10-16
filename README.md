@@ -6,6 +6,7 @@
 
 ## 📁 Codebase Organization
 
+```text
 SWARM-DMAS-wrench/ 
  ├── src/
  │ ├── agents/ # Custom WRENCH agents (e.g., meta-schedulers, local schedulers)
@@ -18,6 +19,7 @@ SWARM-DMAS-wrench/
  │ └── AmSC.xml # Platform description (resources, links, latencies) 
  ├── CMakeLists.txt # Build configuration
  └── README.md # Project documentation
+```
 
  ---
 
@@ -56,7 +58,7 @@ Each agent extends WRENCH's simulation API to implement custom behaviors.
 TBD
 
 
-## 📊 Policy Roles (src/policies/)
+## 📊 Policy Roles (in src/policies/)
 Policies define the decision-making logic used by the meta-scheduler or local schedulers.
 
  - PureLocal: Jobs are scheduled only on the system where they were submitted (baseline).
