@@ -11,7 +11,8 @@
     - [ ] Frontier has much more memory than other. Add a second category?
     - [ ] GPU is redundant with `has_gpu`. Remove it?
 - [ ] Workload generation
-  - [ ] @Prachi check the consistency of the generated JSON files (246/1000 rejected jobs currently)
+  - [ ] @Prachi check the consistency of the generated JSON files (246/1000 rejected jobs currently with PureLocal scheduling policy)
+  - [ ] @Prachi Jobs seems to be submitted by packets of more than 5. Feature or bug? 
 
 ## TODO -- Phase 2: Resilience!!!
 
