@@ -55,11 +55,11 @@ def main():
                 1. Evaluate the incoming job request above.
                 2. Compute your resource-job suitability score [0-1] based on system capabilites and status.
                 3. Share your reasoning and score in JSON block:
-                        {
+                        {{
                             "bid_score": <value>
                             "reasoning": "<justification>"
 
-                        }
+                        }}
                 """
         # Log prompt for debugging
         logger.info(f"Prompt: {prompt}")
