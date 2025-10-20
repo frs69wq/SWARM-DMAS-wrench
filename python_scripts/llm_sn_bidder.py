@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 #################################
 
 def main():
+    response = ""
     try:
         input_data = sys.stdin.read()
         data = json.loads(input_data)
@@ -79,31 +80,32 @@ def main():
 
         # Step3: Get completion
         response = client.invoke(prompt)
-        # Log response for debugging
-        logger.info(f"Response: {response}")
-
-        # End timing
-        end_time = time.perf_counter()
-        elapsed_time = end_time - start_time
-
-        # Step4: Response Parsing
-        bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
-        match = re.search(bid_score_pattern, response)
-
-        # Step5: Heuristic bid if parsing fails
-        heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
-
-        bid = float(match.group(1)) if match else heuristic_bid
-
-        # Do not modify after here
-        result = {
-            "bid": bid,
-            "bid_generation_time_seconds": round(elapsed_time, 6)
-        }
-
-        print(json.dumps(result))
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        logger.info(json.dumps({"error": str(e)}))
+
+    # Log response for debugging
+    logger.info(f"Response: {response}")
+
+    # End timing
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
+
+    # Step4: Response Parsing
+    bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
+    match = re.search(bid_score_pattern, response)
+
+    # Step5: Heuristic bid if parsing fails
+    heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
+
+    bid = float(match.group(1)) if match else heuristic_bid
+
+    # Do not modify after here
+    result = {
+        "bid": bid,
+        "bid_generation_time_seconds": round(elapsed_time, 6)
+    }
+
+    print(json.dumps(result))
 
 if __name__ == "__main__":
     main()
