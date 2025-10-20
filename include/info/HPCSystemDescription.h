@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-enum class HPCSystemType { HPC, AI, GPU, HYBRID, MEMORY, STORAGE };
+enum class HPCSystemType { HPC, AI, HYBRID, STORAGE };
 
 class HPCSystemDescription {
   std::string name_;

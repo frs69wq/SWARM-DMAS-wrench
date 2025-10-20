@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <wrench/util/UnitParser.h> //sg_size_t
 
-enum class JobType { HPC, AI, HYBRID, GPU, MEMORY, STORAGE };
+enum class JobType { HPC, AI, HYBRID, STORAGE };
 
 class JobDescription {
   int job_id_;
