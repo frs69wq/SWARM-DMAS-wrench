@@ -60,7 +60,7 @@ public:
   {
     static const std::unordered_map<std::string, JobType> EnumStrings{
         {"HPC", JobType::HPC}, {"AI", JobType::AI},         {"HYBRID", JobType::HYBRID},
-        {"GPU", JobType::GPU}, {"MEMORY", JobType::MEMORY}, {"STORAGE", JobType::STORAGE}};
+        {"STORAGE", JobType::STORAGE}};
 
     auto it = EnumStrings.find(s);
     if (it != EnumStrings.end()) {
@@ -74,7 +74,7 @@ public:
   {
     static const std::unordered_map<JobType, std::string> EnumToString{
         {JobType::HPC, "HPC"}, {JobType::AI, "AI"},         {JobType::HYBRID, "HYBRID"},
-        {JobType::GPU, "GPU"}, {JobType::MEMORY, "MEMORY"}, {JobType::STORAGE, "STORAGE"}};
+        {JobType::STORAGE, "STORAGE"}};
 
     auto it = EnumToString.find(type);
     if (it != EnumToString.end()) {

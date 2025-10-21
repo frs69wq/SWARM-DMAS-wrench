@@ -42,7 +42,7 @@ public:
   {
     static const std::unordered_map<std::string, HPCSystemType> EnumStrings{
         {"HPC", HPCSystemType::HPC}, {"AI", HPCSystemType::AI},         {"HYBRID", HPCSystemType::HYBRID},
-        {"GPU", HPCSystemType::GPU}, {"MEMORY", HPCSystemType::MEMORY}, {"STORAGE", HPCSystemType::STORAGE}};
+        {"STORAGE", HPCSystemType::STORAGE}};
 
     auto it = EnumStrings.find(s);
     if (it != EnumStrings.end()) {
@@ -56,7 +56,7 @@ public:
   {
     static const std::unordered_map<HPCSystemType, std::string> EnumStrings{
         {HPCSystemType::HPC, "HPC"}, {HPCSystemType::AI, "AI"},         {HPCSystemType::HYBRID, "HYBRID"},
-        {HPCSystemType::GPU, "GPU"}, {HPCSystemType::MEMORY, "MEMORY"}, {HPCSystemType::STORAGE, "STORAGE"}};
+        {HPCSystemType::STORAGE, "STORAGE"}};
 
     auto it = EnumStrings.find(type);
     if (it != EnumStrings.end()) {
