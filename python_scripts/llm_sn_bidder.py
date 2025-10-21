@@ -64,7 +64,7 @@ def main():
                         }}
                 """
         # Log prompt for debugging
-        logger.info(f"Prompt: {prompt}")
+        logger.debug(f"Prompt: {prompt}")
         
         # Step2: Setup SN client
         client = SambaStudio(
@@ -84,7 +84,7 @@ def main():
         logger.info(json.dumps({"error": str(e)}))
 
     # Log response for debugging
-    logger.info(f"Response: {response}")
+    logger.debug(f"Response: {response}")
 
     # End timing
     end_time = time.perf_counter()
