@@ -73,7 +73,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       // Step 5: Determine if this agent won the competitive bidding.
       if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
         if (auto failure_code = do_not_pass_acceptance_tests(job_description, hpc_system_description_)) {
-          WRENCH_INFO("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
+          WRENCH_DEBUG("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
                       job_id);
           tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
