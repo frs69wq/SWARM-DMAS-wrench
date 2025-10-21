@@ -70,16 +70,16 @@ public:
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
-                            const std::shared_ptr<JobDescription>& job_description, double bid)
+                            const std::shared_ptr<JobDescription>& job_description, double bid, double tie_breaker)
   {
     // Set the number of needed bids to the size of the network of job scheduling agents
     set_num_needed_bids(get_job_scheduling_agent_network_size());
     for (const auto& other_agent : get_job_scheduling_agent_network())
-      other_agent->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
+      other_agent->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid, tie_breaker));
   }
 
-  std::shared_ptr<wrench::JobSchedulingAgent>
-  determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const override
+  std::shared_ptr<wrench::JobSchedulingAgent> determine_bid_winner(
+      const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids) const override
   {
     // TODO Do we need to replace this by something else?
     if (all_bids.empty())

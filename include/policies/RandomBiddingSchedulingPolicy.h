@@ -33,25 +33,28 @@ public:
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
-                            const std::shared_ptr<JobDescription>& job_description, double bid)
+                            const std::shared_ptr<JobDescription>& job_description, double bid, double tie_breaker)
   {
     // Set the number of needed bids to the size of the network of job scheduling agents
     set_num_needed_bids(get_job_scheduling_agent_network_size());
     for (const auto& other_agent : get_job_scheduling_agent_network())
-      other_agent->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
+      other_agent->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid, tie_breaker));
   }
 
-  std::shared_ptr<wrench::JobSchedulingAgent>
-  determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const override
+  std::shared_ptr<wrench::JobSchedulingAgent> determine_bid_winner(
+      const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids) const override
   {
     if (all_bids.empty())
       return nullptr;
 
     auto max_it = std::max_element(all_bids.begin(), all_bids.end(), [](const auto& a, const auto& b) {
-      if (a.second != b.second)
-        return a.second < b.second; // higher value wins
+      // All bids contains a pair of double: the bid (first) and a tie_breaker (second)
+      if (a.second.first != b.second.first)
+        return a.second.first < b.second.first; // higher value wins
+      else if (a.second.second != b.second.second)
+        return a.second.second < b.second.second; // tie-breaker: higher value wins
       else
-        return a.first < b.first; // tie-breaker: lower pointer address wins
+        return a.first < b.first; // safety tie-breaker: lower pointer address wins
     });
 
     return max_it->first;

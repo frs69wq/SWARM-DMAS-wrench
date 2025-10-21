@@ -23,14 +23,14 @@ public:
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
-                            const std::shared_ptr<JobDescription>& job_description, double bid)
+                            const std::shared_ptr<JobDescription>& job_description, double bid, double tie_breaker)
   {
     // Just sends a BidOnJobMessage to itself
-    bidder->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid));
+    bidder->commport->dputMessage(new wrench::BidOnJobMessage(bidder, job_description, bid, tie_breaker));
   }
 
-  std::shared_ptr<wrench::JobSchedulingAgent>
-  determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const override
+  std::shared_ptr<wrench::JobSchedulingAgent> determine_bid_winner(
+      const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids) const override
   {
     return all_bids.begin()->first;
   }

@@ -37,28 +37,35 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 2) The HPC system description
     // 3) The current state of the HPC system
     auto local_bid = scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
-    WRENCH_INFO("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
-                job_description->get_job_id(), local_bid);
+    WRENCH_DEBUG("%s computed a bid for Job #%d of %.2f", hpc_system_description_->get_cname(),
+                 job_description->get_job_id(), local_bid);
 
     // Step 4: Broadcast the local bid to the network of agents
-    scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid);
+    std::random_device rd;  // Seed
+    std::mt19937 gen(rd()); // Mersenne Twister engine
+    std::uniform_real_distribution<double> dis(0.0, 100.0);
+    auto tie_breaker = dis(gen);
+
+    scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid, tie_breaker);
   }
 
   // Receive a bid for a job
   if (auto bid_on_job_message = std::dynamic_pointer_cast<BidOnJobMessage>(event->message)) {
-    auto job_description = bid_on_job_message->get_job_description();
-    auto job_id          = job_description->get_job_id();
-    auto remote_bidder   = bid_on_job_message->get_bidder();
-    auto remote_bid      = bid_on_job_message->get_bid();
+    auto job_description    = bid_on_job_message->get_job_description();
+    auto job_id             = job_description->get_job_id();
+    auto remote_bidder      = bid_on_job_message->get_bidder();
+    auto remote_bid         = bid_on_job_message->get_bid();
+    auto remote_tie_breaker = bid_on_job_message->get_tie_breaker();
+
     // Increase the number of received bids fot this job
     scheduling_policy_->received_bid_for(this->getName(), job_id);
-    WRENCH_DEBUG("Received a bid (%lu/%lu) for Job #%d from %s: %.2f",
+    WRENCH_DEBUG("Received a bid (%lu/%lu) for Job #%d from %s: %.2f (tie breaker: %f)",
                  scheduling_policy_->get_num_received_bids(this->getName(), job_id),
                  scheduling_policy_->get_num_needed_bids(), job_id, remote_bidder->get_hpc_system_name().c_str(),
-                 remote_bid);
+                 remote_bid, remote_tie_breaker);
 
     // Store this remote bid
-    all_bids_[job_id].try_emplace(remote_bidder, remote_bid);
+    all_bids_[job_id].try_emplace(remote_bidder, std::make_pair(remote_bid, remote_tie_breaker));
 
     if (scheduling_policy_->get_num_received_bids(this->getName(), job_id) ==
         scheduling_policy_->get_num_needed_bids()) {
@@ -73,9 +80,9 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
               JobLifecycleEventType::REJECT, get_all_bids_as_string(all_bids_[job_id]),
               get_failure_cause_as_string(failure_code)));
         } else {
-          WRENCH_INFO("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
-                      job_description->get_num_nodes(), job_description->get_walltime(),
-                      hpc_system_description_->get_cname());
+          WRENCH_DEBUG("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
+                       job_description->get_num_nodes(), job_description->get_walltime(),
+                       hpc_system_description_->get_cname());
           tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
               JobLifecycleEventType::SCHEDULING, get_all_bids_as_string(all_bids_[job_id])));
@@ -89,8 +96,8 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
                                                },
                                                {[](const std::shared_ptr<ActionExecutor>&) {}});
 
-          auto scaling_factor = std::max(50., this->getHost()->get_speed()  / 1.5e12);
-          auto sleeper  = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
+          auto scaling_factor = std::max(50., this->getHost()->get_speed() / 1.5e12);
+          auto sleeper        = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
           job->addActionDependency(tracking, sleeper);
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
                                                {"-t", std::to_string(job_description->get_walltime())},

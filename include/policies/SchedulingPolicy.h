@@ -48,10 +48,11 @@ public:
                              const std::shared_ptr<HPCSystemStatus>& hpc_system_status)          = 0;
 
   virtual void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
-                                    const std::shared_ptr<JobDescription>& job_description, double bid) = 0;
+                                    const std::shared_ptr<JobDescription>& job_description, double bid,
+                                    double tie_breaker) = 0;
 
-  virtual std::shared_ptr<wrench::JobSchedulingAgent>
-  determine_bid_winner(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids) const = 0;
+  virtual std::shared_ptr<wrench::JobSchedulingAgent> determine_bid_winner(
+      const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids) const = 0;
 
   size_t get_num_needed_bids() const { return num_needed_bids_; }
   size_t get_num_received_bids(const std::string& agent_name, int job_id) const

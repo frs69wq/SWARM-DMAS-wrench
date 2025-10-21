@@ -34,20 +34,23 @@ class BidOnJobMessage : public ExecutionControllerCustomEventMessage {
   const std::shared_ptr<wrench::JobSchedulingAgent> bidder_;
   const std::shared_ptr<JobDescription> job_description_;
   double bid_;
+  double tie_breaker_;
 
 public:
   BidOnJobMessage(const std::shared_ptr<wrench::S4U_Daemon>& bidder,
-                  const std::shared_ptr<JobDescription>& job_description, double bid)
+                  const std::shared_ptr<JobDescription>& job_description, double bid, double tie_breaker)
       : ExecutionControllerCustomEventMessage(BROADCAST_MESSAGE_SIZE)
       , bidder_(std::static_pointer_cast<JobSchedulingAgent>(bidder))
       , job_description_(job_description)
       , bid_(bid)
+      , tie_breaker_(tie_breaker)
   {
   }
 
   const std::shared_ptr<JobSchedulingAgent> get_bidder() const { return bidder_; }
   const std::shared_ptr<JobDescription> get_job_description() const { return job_description_; }
   double get_bid() const { return bid_; }
+  double get_tie_breaker() const { return tie_breaker_; }
 };
 
 /// Message to send a job lifecycle event notification

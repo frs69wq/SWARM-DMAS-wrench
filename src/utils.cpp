@@ -114,11 +114,11 @@ std::string get_failure_cause_as_string(int failure_code) {
   }
 }
 
-std::string get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, double>& all_bids){
+std::string get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids){
   std::ostringstream oss;
   oss << std::fixed << std::setprecision(2) << "\"";
   for (auto it = all_bids.begin(); it != all_bids.end(); ++it) {
-    oss << it->second;
+    oss << it->second.first;
     if (std::next(it) != all_bids.end())
       oss << ":";
   }

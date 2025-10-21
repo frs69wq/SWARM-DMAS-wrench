@@ -40,9 +40,10 @@ public:
 
   static HPCSystemType string_to_hpc_system_type(const std::string& s)
   {
-    static const std::unordered_map<std::string, HPCSystemType> EnumStrings{
-        {"HPC", HPCSystemType::HPC}, {"AI", HPCSystemType::AI},         {"HYBRID", HPCSystemType::HYBRID},
-        {"STORAGE", HPCSystemType::STORAGE}};
+    static const std::unordered_map<std::string, HPCSystemType> EnumStrings{{"HPC", HPCSystemType::HPC},
+                                                                            {"AI", HPCSystemType::AI},
+                                                                            {"HYBRID", HPCSystemType::HYBRID},
+                                                                            {"STORAGE", HPCSystemType::STORAGE}};
 
     auto it = EnumStrings.find(s);
     if (it != EnumStrings.end()) {
@@ -54,9 +55,10 @@ public:
 
   static const std::string& hpc_system_type_to_string(HPCSystemType type)
   {
-    static const std::unordered_map<HPCSystemType, std::string> EnumStrings{
-        {HPCSystemType::HPC, "HPC"}, {HPCSystemType::AI, "AI"},         {HPCSystemType::HYBRID, "HYBRID"},
-        {HPCSystemType::STORAGE, "STORAGE"}};
+    static const std::unordered_map<HPCSystemType, std::string> EnumStrings{{HPCSystemType::HPC, "HPC"},
+                                                                            {HPCSystemType::AI, "AI"},
+                                                                            {HPCSystemType::HYBRID, "HYBRID"},
+                                                                            {HPCSystemType::STORAGE, "STORAGE"}};
 
     auto it = EnumStrings.find(type);
     if (it != EnumStrings.end()) {

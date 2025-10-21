@@ -14,7 +14,6 @@ int WorkloadSubmissionAgent::main()
   WRENCH_INFO("Workload Submission Agent starting");
 
   // Open and parse the JSON file that describes the entire workload
-  WRENCH_INFO("Creating a set of jobs to process:");
   auto jobs = extract_job_descriptions(job_list_);
   // Compute and store the total number of jobs in the workload in total_num_jobs
   size_t total_num_jobs  = jobs->size();
@@ -36,8 +35,8 @@ int WorkloadSubmissionAgent::main()
       auto job_submission_time = next_job->get_submission_time();
       auto job_HPCSystem       = next_job->get_hpc_system();
 
-      WRENCH_INFO("Sending Job #%d (to start at t = %5f) to Job Submission Agent '%s'", job_id, job_submission_time,
-                  job_HPCSystem.c_str());
+      WRENCH_DEBUG("Sending Job #%d (to start at t = %5f) to Job Submission Agent '%s'", job_id, job_submission_time,
+                   job_HPCSystem.c_str());
 
       auto target_job_scheduling_agent = *(std::find_if(job_scheduling_agents_.begin(), job_scheduling_agents_.end(),
                                                         [job_HPCSystem](std::shared_ptr<wrench::JobSchedulingAgent> c) {
@@ -46,8 +45,9 @@ int WorkloadSubmissionAgent::main()
       target_job_scheduling_agent->commport->dputMessage(new JobRequestMessage(next_job, true));
 
       // Notify the job lifecycle tracker
-      tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
-          job_id, "WorkloadSubmissionAgent", wrench::S4U_Simulation::getClock(), JobLifecycleEventType::SUBMISSION));
+      tracker_->commport->dputMessage(
+          new JobLifecycleTrackingMessage(job_id, "WorkloadSubmissionAgent", wrench::S4U_Simulation::getClock(),
+                                          JobLifecycleEventType::SUBMISSION, job_HPCSystem));
 
       // Set the timer for the next job
       next_job_to_submit++;
