@@ -63,7 +63,6 @@ public:
     // base_score = (
     //     (node_score + mem_score + stor_score) / 3.0
     // ) * node_compat * mem_compat * storage_compat * type_score
-    std::cout << "min(1.0, " << node_score << " * " << node_compat << " * " << queue_factor << ")" << std::endl;
     auto final_bid = std::min(1.0, base_score * queue_factor);
 
     return std::trunc(final_bid * 100.0) / 100.0;
