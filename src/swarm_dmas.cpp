@@ -97,6 +97,8 @@ int main(int argc, char** argv)
     // Instantiate a heartbeat monitor agent on the head node of this HPC system
     auto new_hb_agent = simulation->add(new wrench::HeartbeatMonitorAgent(head_node, new_agent, 5., 15.));
     new_hb_agent->setDaemonized(true);
+    // Attach the heartbeat monitor to the job scheduling agent
+    new_agent->set_heartbeat_monitor(new_hb_agent);
 
     // Add the new agent to the network
     heartbeat_monitor_agent_network.push_back(new_hb_agent);

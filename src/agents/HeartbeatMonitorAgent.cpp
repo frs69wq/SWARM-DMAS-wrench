@@ -27,6 +27,9 @@ void HeartbeatMonitorAgent::check_expired_heartbeats()
 int HeartbeatMonitorAgent::main()
 {
   TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_YELLOW);
+  simgrid::s4u::this_actor::on_exit(
+      [](bool /*failed*/) { XBT_DEBUG("My job scheduling agent has been killed! Have to die too!"); });
+
   WRENCH_INFO("Heartbeat Monitor Agent starting");
 
   this->setTimer(period_, "heartbeat_timer");

@@ -74,7 +74,7 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
         if (auto failure_code = do_not_pass_acceptance_tests(job_description, hpc_system_description_)) {
           WRENCH_DEBUG("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
-                      job_id);
+                       job_id);
           tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
               JobLifecycleEventType::REJECT, get_all_bids_as_string(all_bids_[job_id]),
@@ -133,6 +133,10 @@ int JobSchedulingAgent::main()
 {
   TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_CYAN);
   WRENCH_INFO("Job Scheduling Agent starting");
+  simgrid::s4u::this_actor::on_exit([this](bool /*failed*/) {
+    XBT_DEBUG("I have been killed! kill my HeartbeatMonitorAgent too!");
+    heartbeat_monitor_->killActor();
+  });
 
   // Create my job manager
   job_manager_ = this->createJobManager();
