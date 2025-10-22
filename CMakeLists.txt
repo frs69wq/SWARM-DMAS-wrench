@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 include_directories(include)
 
 set(HEADER_FILES
+  include/agents/HeartbeatMonitorAgent.h
   include/agents/JobLifecycleTrackerAgent.h
   include/agents/JobSchedulingAgent.h
   include/agents/WorkloadSubmissionAgent.h
@@ -33,6 +34,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+  src/agents/HeartbeatMonitorAgent.cpp
   src/agents/JobLifecycleTrackerAgent.cpp
   src/agents/JobSchedulingAgent.cpp
   src/agents/WorkloadSubmissionAgent.cpp

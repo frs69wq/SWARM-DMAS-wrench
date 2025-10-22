@@ -1,6 +1,7 @@
 #ifndef CONTROLMESSAGES_H
 #define CONTROLMESSAGES_H
 
+#include "agents/HeartbeatMonitorAgent.h"
 #include "agents/JobSchedulingAgent.h"
 #include "info/JobDescription.h"
 #include <wrench-dev.h>
@@ -84,6 +85,30 @@ public:
   const std::string& get_failure_cause() const { return failure_cause_; }
 };
 
-} // namespace wrench
+class HeartbeatMessage : public ExecutionControllerCustomEventMessage {
+  std::shared_ptr<HeartbeatMonitorAgent> sender_;
 
+public:
+  HeartbeatMessage(const std::shared_ptr<wrench::S4U_Daemon>& sender)
+      : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
+      , sender_(std::static_pointer_cast<HeartbeatMonitorAgent>(sender))
+  {
+  }
+
+  const std::shared_ptr<HeartbeatMonitorAgent>& get_sender() const { return sender_; }
+};
+
+class HeartbeatFailureNotificationMessage : public ExecutionControllerCustomEventMessage {
+  std::shared_ptr<HeartbeatMonitorAgent> failed_agent_;
+
+public:
+  HeartbeatFailureNotificationMessage(const std::shared_ptr<HeartbeatMonitorAgent>& failed_agent)
+      : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE), failed_agent_(failed_agent)
+  {
+  }
+
+  const std::shared_ptr<HeartbeatMonitorAgent>& get_failed_agent() const { return failed_agent_; }
+};
+
+} // namespace wrench
 #endif // CONTROLMESSAGES_H

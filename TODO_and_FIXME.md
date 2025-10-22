@@ -16,5 +16,9 @@
   - [x] @Prachi Jobs seems to be submitted in packets of more than 5. Feature or ~~bug~~? not touching at the moment.
 
 ## TODO -- Phase 2: Resilience!!!
+- [x] Add a heartbeat monitor to control the state of the scheduling agents
+  - [x] `period` and `expiration` are harcoded to 5 and 15 seconds respectively (missing 2 heartbeats and then warn the scheduling agent that an agent is not responding). 
+    - [ ] Could be command line arguments instead
+  - [ ] Do something with it!
 
 ## FIXME

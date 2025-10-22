@@ -2,6 +2,7 @@
 #include <simgrid/s4u/Host.hpp>
 #include <wrench.h>
 
+#include "agents/HeartbeatMonitorAgent.h"
 #include "agents/JobLifecycleTrackerAgent.h"
 #include "agents/JobSchedulingAgent.h"
 #include "agents/WorkloadSubmissionAgent.h"
@@ -51,8 +52,9 @@ int main(int argc, char** argv)
   auto hpc_systems = wrench::Simulation::getHostnameListByCluster();
   WRENCH_INFO("%lu HPC systems in the platform", hpc_systems.size());
 
-  // Create the network of job scheduling agents
+  // Create the networks of job scheduling and hearbeat monitor agents
   std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agent_network;
+  std::vector<std::shared_ptr<wrench::HeartbeatMonitorAgent>> heartbeat_monitor_agent_network;
   for (const auto& c : hpc_systems) {
     // Create the HPCSystemDescription
     auto system_name = std::get<0>(c);
@@ -91,7 +93,20 @@ int main(int argc, char** argv)
 
     // Add the new agent to the network
     job_scheduling_agent_network.push_back(new_agent);
+
+    // Instantiate a heartbeat monitor agent on the head node of this HPC system
+    auto new_hb_agent = simulation->add(new wrench::HeartbeatMonitorAgent(head_node, new_agent, 5., 15.));
+    new_hb_agent->setDaemonized(true);
+
+    // Add the new agent to the network
+    heartbeat_monitor_agent_network.push_back(new_hb_agent);
   }
+
+  // Let the heartbeat monitor agents know each others
+  for (const auto& src : heartbeat_monitor_agent_network)
+    for (const auto& dst : heartbeat_monitor_agent_network)
+      if (src != dst)
+        src->add_heartbeat_monitor_agent(dst);
 
   // Assign the network to the scheduling policy
   scheduling_policy->set_job_scheduling_agent_network(job_scheduling_agent_network);
