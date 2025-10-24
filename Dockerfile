@@ -21,7 +21,10 @@ RUN pip install --break-system-packages jsonref
 
 RUN git config --global http.postBuffer 524288000
 # reinstall SimGrid
-RUN git clone --depth 1 https://github.com/simgrid/simgrid.git && cd simgrid && mkdir build && cd build && cmake .. && make -j12 && make install && cd .. && /bin/rm -rvf simgrid
+RUN git clone https://github.com/simgrid/simgrid.git && cd simgrid && mkdir build && cd build && cmake .. && make -j12 && make install && cd .. && /bin/rm -rvf simgrid
+
+# reinstall FSMod
+RUN git clone https://github.com/simgrid/file-system-module.git && cd file-system-module && mkdir build && cd build && cmake .. && make -j12 && make install && cd .. && /bin/rm -rvf file-system-module
 
 # install WRENCH
 RUN git clone --depth 1 https://github.com/wrench-project/wrench.git && cd wrench && mkdir build && cd build && cmake .. && make -j12 wrench-daemon examples && make install && cp -r ./examples /home/wrench/ && chown -R wrench /home/wrench && cd ../.. && /bin/rm -rf wrench
