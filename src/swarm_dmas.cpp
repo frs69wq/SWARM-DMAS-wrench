@@ -38,13 +38,6 @@ int main(int argc, char** argv)
   // to instantiate the simulated platform
   simulation->instantiatePlatform(argv[2]);
 
-  // Create a Scheduling Policy for this simulation run
-  std::shared_ptr<SchedulingPolicy> scheduling_policy;
-  if (argc == 5)
-    scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3], argv[4]);
-  else
-    scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3]);
-
   // Instantiate a job lifecycle tracker that will be notified at the different stages of a job lifecycle
   auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ASCR.doe.gov", job_list));
 
@@ -56,6 +49,13 @@ int main(int argc, char** argv)
   std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agent_network;
   std::vector<std::shared_ptr<wrench::HeartbeatMonitorAgent>> heartbeat_monitor_agent_network;
   for (const auto& c : hpc_systems) {
+    // Create a Scheduling Policy for this simulation run
+    std::shared_ptr<SchedulingPolicy> scheduling_policy;
+    if (argc == 5)
+      scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3], argv[4]);
+    else
+      scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3]);
+
     // Create the HPCSystemDescription
     auto system_name = std::get<0>(c);
     auto system_type = HPCSystemDescription::string_to_hpc_system_type(
@@ -104,14 +104,15 @@ int main(int argc, char** argv)
     heartbeat_monitor_agent_network.push_back(new_hb_agent);
   }
 
+  // Assign the network to the scheduling policy for each agent
+  for (const auto& agent : job_scheduling_agent_network)
+    agent->set_scheduling_policy_network(job_scheduling_agent_network);
+
   // Let the heartbeat monitor agents know each others
   for (const auto& src : heartbeat_monitor_agent_network)
     for (const auto& dst : heartbeat_monitor_agent_network)
       if (src != dst)
         src->add_heartbeat_monitor_agent(dst);
-
-  // Assign the network to the scheduling policy
-  scheduling_policy->set_job_scheduling_agent_network(job_scheduling_agent_network);
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =

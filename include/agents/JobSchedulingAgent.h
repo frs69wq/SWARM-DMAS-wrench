@@ -21,7 +21,6 @@ class JobSchedulingAgent : public ExecutionController {
   std::shared_ptr<JobManager> job_manager_;
 
   std::shared_ptr<BatchComputeService> batch_compute_service_;
-  std::vector<std::shared_ptr<JobSchedulingAgent>> job_scheduling_agent_network_;
   std::shared_ptr<JobLifecycleTrackerAgent> tracker_;
   std::shared_ptr<HeartbeatMonitorAgent> heartbeat_monitor_;
 
@@ -43,10 +42,11 @@ public:
   {
   }
 
-  void add_job_scheduling_agent(std::shared_ptr<JobSchedulingAgent> agent)
+  void set_scheduling_policy_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network)
   {
-    job_scheduling_agent_network_.push_back(agent);
+    scheduling_policy_->set_job_scheduling_agent_network(network);
   }
+
   void set_job_lifecycle_tracker(std::shared_ptr<JobLifecycleTrackerAgent> tracker) { tracker_ = tracker; }
   void set_heartbeat_monitor(std::shared_ptr<HeartbeatMonitorAgent> monitor) { heartbeat_monitor_ = monitor; }
   const std::string& get_hpc_system_name() const { return hpc_system_description_->get_name(); }
