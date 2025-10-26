@@ -8,6 +8,11 @@ WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent")
 
 namespace wrench {
 
+void JobSchedulingAgent::mark_agent_as_failed(std::shared_ptr<JobSchedulingAgent> agent)
+{
+  scheduling_policy_->mark_agent_as_failed(agent);
+}
+
 void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& event)
 {
   // Receive a Job Request message. It can be an initial submission or a forward.
@@ -110,6 +115,11 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       all_bids_.erase(job_id);
     } // More bids need to be received
   }
+
+  // Receive a heartbeat failure notification
+  if (auto heartbeat_failure_message = std::dynamic_pointer_cast<HeartbeatFailureNotificationMessage>(event->message)) {
+    auto failed_agent = heartbeat_failure_message->get_failed_agent();
+  }
 }
 
 void JobSchedulingAgent::processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event)
@@ -134,7 +144,7 @@ int JobSchedulingAgent::main()
   TerminalOutput::setThisProcessLoggingColor(TerminalOutput::COLOR_CYAN);
   WRENCH_INFO("Job Scheduling Agent starting");
   simgrid::s4u::this_actor::on_exit([this](bool /*failed*/) {
-    XBT_DEBUG("I have been killed! kill my HeartbeatMonitorAgent too!");
+    WRENCH_DEBUG("I have been killed! kill my HeartbeatMonitorAgent too!");
     heartbeat_monitor_->killActor();
   });
 

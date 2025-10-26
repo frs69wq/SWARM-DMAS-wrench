@@ -13,9 +13,12 @@ class JobSchedulingAgent;
 }
 
 class SchedulingPolicy {
+  friend class wrench::JobSchedulingAgent;
+
   size_t num_needed_bids_;
   std::unordered_map<int, std::unordered_map<std::string, size_t>> num_received_bids_;
-  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> job_scheduling_agent_network_;
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> healthy_job_scheduling_agent_network_;
+  std::vector<std::shared_ptr<wrench::JobSchedulingAgent>> failed_job_scheduling_agent_network_;
 
 protected:
   void set_num_needed_bids(size_t value) { num_needed_bids_ = value; }
@@ -24,9 +27,11 @@ protected:
 
   const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& get_job_scheduling_agent_network()
   {
-    return job_scheduling_agent_network_;
+    return healthy_job_scheduling_agent_network_;
   }
-  size_t get_job_scheduling_agent_network_size() const { return job_scheduling_agent_network_.size(); }
+  size_t get_job_scheduling_agent_network_size() const { return healthy_job_scheduling_agent_network_.size(); }
+
+  void mark_agent_as_failed(std::shared_ptr<wrench::JobSchedulingAgent> agent);
 
 public:
   static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name,
@@ -38,7 +43,7 @@ public:
 
   void set_job_scheduling_agent_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network)
   {
-    job_scheduling_agent_network_ = network;
+    healthy_job_scheduling_agent_network_ = network;
   }
 
   virtual void broadcast_job_description(const std::string& agent_name,

@@ -25,6 +25,14 @@ std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(con
 
 void SchedulingPolicy::init_num_received_bids(int job_id)
 {
-  for (const auto& agent : job_scheduling_agent_network_)
+  for (const auto& agent : healthy_job_scheduling_agent_network_)
     num_received_bids_[job_id].try_emplace(agent->getName(), 0);
+}
+
+void SchedulingPolicy::mark_agent_as_failed(std::shared_ptr<wrench::JobSchedulingAgent> agent)
+{
+  healthy_job_scheduling_agent_network_.erase(std::remove(healthy_job_scheduling_agent_network_.begin(),
+                                                          healthy_job_scheduling_agent_network_.end(), agent),
+                                              healthy_job_scheduling_agent_network_.end());
+  failed_job_scheduling_agent_network_.push_back(agent);
 }

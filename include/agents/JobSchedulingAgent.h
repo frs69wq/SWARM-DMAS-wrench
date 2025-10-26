@@ -49,6 +49,7 @@ public:
 
   void set_job_lifecycle_tracker(std::shared_ptr<JobLifecycleTrackerAgent> tracker) { tracker_ = tracker; }
   void set_heartbeat_monitor(std::shared_ptr<HeartbeatMonitorAgent> monitor) { heartbeat_monitor_ = monitor; }
+  void mark_agent_as_failed(std::shared_ptr<JobSchedulingAgent> agent);
   const std::string& get_hpc_system_name() const { return hpc_system_description_->get_name(); }
 };
 
