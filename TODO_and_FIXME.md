@@ -32,8 +32,15 @@
   - [x] `period` and `expiration` are harcoded to 5 and 15 seconds respectively (missing 2 heartbeats and then warn the scheduling agent that an agent is not responding). 
     - [ ] Could be command line arguments instead
   - [X] Warn the scheduling agent when another system doesn't send its hearbeat
-    - [ ] have the scheduling listen for the messages from the heartbeat monitor
+    - [x] have the scheduling agent listen for the messages from the heartbeat monitor
     - [ ] Do something with it! What?
+      - [x] Have the scheduling policy object (now one per agent) maintain two set of agents, healthy and failed ones. 
+      - [x] When a job scheduling agent is notified of missing heartbearts from another agent, it moves it from the healthy set to the failed set. 
     - [ ] Shall we warn the workload submission agent too?
+- [ ] Add a resource switching agent that can turn hardware resources on and off
+  - [ ] 
 
 ## FIXME
+- [ ] gather all the command line arguments of a simulation run into a json file.
+- [ ] Split ControlMessages.h into multiple files. 
+- [ ] Add R stuff to the Dockerfile so that the plots can be generated in the container.
