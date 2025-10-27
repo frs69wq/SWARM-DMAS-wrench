@@ -1,0 +1,14 @@
+[
+    {
+      "type": "cluster",
+      "resource": "Andes",
+      "fraction": 0.1,
+      "off_time": 50.0
+    },
+    {
+      "type": "link",
+      "resource": "Aurora_link",
+      "off_time": 100.0,
+      "on_time": 200.0
+    }
+]
