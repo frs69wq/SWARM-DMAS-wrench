@@ -1,5 +1,12 @@
 def compute_bid(job, machine, current_time=0):
-
+    """Compute a heuristic bid score for a job on a given machine.
+    
+    Args:
+        job (dict): Job characteristics including 'Nodes', 'RequestedGPU', 'SubmissionTime', 'JobType', 'HPCSite', 'HPCSystem'.
+        machine (object): Machine characteristics with attributes 'available_nodes', 'used_nodes', 'node_limit', 'has_gpu', 'queue_length'.
+        current_time (int): Current time in the scheduling system for wait time calculations.
+    """
+    
     # Safely read job fields (job is a dict)
     nodes_req = job.get("Nodes", 0)
     requested_gpu = job.get("RequestedGPU", False)
