@@ -1,0 +1,71 @@
+#!/usr/bin/Rscript --vanilla
+
+# Load required libraries
+library(jsonlite)
+library(ggplot2)
+library(gridExtra)
+
+args = commandArgs(trailingOnly=TRUE)
+
+# Read and parse the JSON file
+data <- as.data.frame(fromJSON(args[1]))
+
+# Clean up escaped characters
+data$HPCSite <- gsub("\\\\-", "-", data$HPCSite)
+data$HPCSystem <- gsub("\\\\-", "-", data$HPCSystem)
+data$HPCGroup <- paste(data$HPCSite, data$HPCSystem, sep = "-")
+
+# Convert RequestedGPU to factor
+data$RequestedGPU <- as.factor(data$RequestedGPU)
+
+# 1. ECDF of SubmissionTime
+p1 <- ggplot(data, aes(x = SubmissionTime)) +
+  stat_ecdf(geom = "step") +
+  ggtitle("ECDF of Submission Time") +
+  theme_bw()
+
+# 2. ECDF of Walltime
+p2 <- ggplot(data, aes(x = Walltime)) +
+  stat_ecdf(geom = "step") +
+  ggtitle("ECDF of Walltime") +
+  theme_bw()
+
+# 3. ECDF of Nodes
+p3 <- ggplot(data, aes(x = Nodes)) +
+  stat_ecdf(geom = "step") +
+  ggtitle("ECDF of Nodes") +
+  theme_bw()
+
+# 4. Scatter plot of Walltime vs Nodes
+p4 <- ggplot(data, aes(x = Walltime, y = Nodes)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  ggtitle("Scatter Plot: Walltime vs Nodes") +
+  theme_bw()
+
+# 5. JobType bar graph
+p5 <- ggplot(data, aes(x = JobType, fill = JobType)) +
+  geom_bar() +
+  ggtitle("JobType Distribution") +
+  theme_bw() +  xlab("") +
+  theme(legend.position = "none")
+
+# 6. HPCGroup bar graph
+p6 <- ggplot(data, aes(x = HPCGroup, fill = HPCGroup)) +
+  geom_bar() +
+  ggtitle("HPCSite-HPCSystem Distribution") +
+  theme_bw() + xlab("") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+
+# 7. RequestedGPU bar graph
+p7 <- ggplot(data, aes(x = RequestedGPU, fill = RequestedGPU)) +
+  geom_bar() +
+  ggtitle("RequestedGPU Distribution") +
+  theme_bw() + xlab("") +
+  theme(legend.position = "none")
+
+# Export all plots to a PDF
+ggsave("workload_profile.pdf", device = cairo_pdf,
+       plot = grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4),
+       width = 24, height = 12, dpi = 300)
+

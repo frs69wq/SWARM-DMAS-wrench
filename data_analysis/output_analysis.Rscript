@@ -1,0 +1,65 @@
+#!/usr/bin/Rscript --vanilla
+
+# Load required libraries
+library(ggplot2)
+library(readr)
+library(gridExtra)
+args = commandArgs(trailingOnly=TRUE)
+
+# Read the CSV file
+data <- read_csv(args[1], show_col_types=FALSE)
+
+# Clean up escaped characters
+data$SubmittedTo <- gsub("\\\\-", "-", data$SubmittedTo)
+data$ScheduledOn <- gsub("\\\\-", "-", data$ScheduledOn)
+
+# Convert ScheduledOn to factor for grouping
+data$ScheduledOn <- as.factor(data$ScheduledOn)
+
+# 1. Bar plot of FinalStatus
+p1 <- ggplot(data, aes(x = FinalStatus, fill = FinalStatus)) +
+  geom_bar() +
+  ggtitle("FinalStatus Distribution") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+# 2. Bar plot of SubmittedTo
+p2 <- ggplot(data, aes(x = SubmittedTo, fill = SubmittedTo)) +
+  geom_bar() +
+  ggtitle("SubmittedTo Distribution") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+
+# 3. Bar plot of ScheduledOn
+p3 <- ggplot(data, aes(x = ScheduledOn, fill = ScheduledOn)) +
+  geom_bar() +
+  ggtitle("ScheduledOn Distribution") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+
+# 4. Boxplot of DecisionTime
+p4 <- ggplot(data, aes(y = DecisionTime)) +
+  geom_boxplot(fill = "steelblue") +
+  ggtitle("Boxplot of DecisionTime") +
+  theme_bw()
+
+# 5. Boxplot of WaitingTime grouped by ScheduledOn
+p5 <- ggplot(data, aes(x = ScheduledOn, y = WaitingTime, fill = ScheduledOn)) +
+  geom_boxplot() +
+  ggtitle("WaitingTime by ScheduledOn") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+# 6. Boxplot of ExecutionTime grouped by ScheduledOn
+p6 <- ggplot(data, aes(x = ScheduledOn, y = ExecutionTime, fill = ScheduledOn)) +
+  geom_boxplot() +
+  ggtitle("ExecutionTime by ScheduledOn") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+# Export to PDF
+ggsave(args[2], device = cairo_pdf,
+       plot = grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 3),
+       width = 16, height = 10, dpi = 300)

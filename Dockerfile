@@ -13,8 +13,24 @@ WORKDIR /tmp
 RUN echo "wrench ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # install libasio-dev
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip python3-venv libasio-dev
+RUN apt-get update && apt-get install -y \ 
+    libasio-dev \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libssl-dev \
+    libtiff5-dev \
+    libxml2-dev \
+    python3 \
+    python3-pip \
+    python3-venv \
+    r-base \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install required R packages
+RUN R -e "install.packages(c('jsonlite', 'ggplot2', 'gridExtra', 'readr'), repos='https://cloud.r-project.org')"
 
 # Upgrade pip to the latest version
 RUN python3 -m venv /opt/venv
