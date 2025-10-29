@@ -36,10 +36,6 @@ protected:
 public:
   static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name,
                                                                     const std::string& python_script_name);
-  static std::shared_ptr<SchedulingPolicy> create_scheduling_policy(const std::string& policy_name)
-  {
-    return create_scheduling_policy(policy_name, "");
-  }
 
   void set_job_scheduling_agent_network(const std::vector<std::shared_ptr<wrench::JobSchedulingAgent>>& network)
   {
