@@ -15,8 +15,10 @@ def compute_bid(job_description, system_description, system_status, current_time
     # COMMENT: OK!
     # FIXME we have an current estimation of the start time of the job, might be interesting to use it. 
     # COMMENT: Can you point out where it is? (I could locate it in utils.cpp line#66)
-   
+    # COMMENT: Part of job status:  current_job_start_time_estimate
+
     # Safely read job fields (job is a dict)
+    # FIXME system_description and system status are also dict, you cannot use properties
     nodes_req = job_description["num_nodes"]
     requested_gpu = job_description["requested_gpu"]
     submission_time = job_description["submission_time"]
@@ -29,6 +31,7 @@ def compute_bid(job_description, system_description, system_status, current_time
     # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible
     # FIXME also check that memory requirement is lower than system_description available memory
     # COMMENT: Please confirm as calculation seems different from the heuristic (in the do_not_pass_acceptance_tests function) based on the hpc_system_description 
+    # FIXME: job expresses a total memory request, the system is described with a memory amount *per node*
     node_per_memory_gb = system_description["memory_amount_in_gb"] / system_description["num_nodes"] 
     if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description.has_gpu and job_description["requested_memoory_gb"] > node_per_memory_gb:
         return 0.0
@@ -38,19 +41,15 @@ def compute_bid(job_description, system_description, system_status, current_time
     node_score = 1 - node_util
 
     # 3. Compatibility (avoid division by zero)
-    # FIXME jobs always have a number of nodes, can't have division by 0
-    #COMMENT: OK!
     node_compat = min(1.0, system_description.current_num_available_nodes / nodes_req) 
 
     # 4. Queue length factor
-    queue_factor = max(0.1, 1 - 0.1 * system_description.queue_length)
+    queue_factor = max(0.1, 1 - 0.1 * system_status.queue_length)
 
     # 5. Time-based priority factor (longer wait = higher priority)
     wait_time = current_time - submission_time
     # Scale wait time: 0-100 time units -> 1.0-2.0 multiplier
-    # FIXME what is the rationale of that formula? 
-    # COMMENT: The rationale is to increase the bid for jobs that have been waiting longer, up to a maximum factor of 2.0.
-    # Do we want to change it or remove it? 
+    # Rationale: increase the bid for jobs that have been waiting longer, up to a maximum factor of 2.0. 
     time_factor = min(2.0, 1.0 + (wait_time / 100.0))
 
     # 6. Job-Resource compatibility factor
@@ -74,25 +73,15 @@ def compute_bid(job_description, system_description, system_status, current_time
 
     system_description_name = getattr(system_description, 'name', job_system)  # Assume system_description knows its name
     
-    # FIXME what the rationale of giving higher preference to local scheduling?
-    # COMMENT: it’s not meant to prioritize local scheduling per se, but rather to capture the additional cost factors 
-    # like network latency and data transfer when a job runs on a remote site. But I see that this cost is different than the bidding logic
-    # Do we want to remove it then?
+    # Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
+    # different system. (rational: account for network latency and data transfer cost)
     if job_site == system_description_site and job_system == system_description_name:
         site_factor = 1.0  # Perfect match: same site and system
     elif job_site == system_description_site:
         site_factor = 0.9  # Same site, different system
     else:
-        # Different sites - consider site characteristics
-        if job_site == 'OLCF' and system_description_site in ['ALCF', 'NERSC']:
-            site_factor = 0.7  # Cross-site compatibility
-        elif job_site == 'ALCF' and system_description_site in ['OLCF', 'NERSC']:
-            site_factor = 0.7  # Cross-site compatibility  
-        elif job_site == 'NERSC' and system_description_site in ['OLCF', 'ALCF']:
-            site_factor = 0.7  # Cross-site compatibility
-        else:
-            site_factor = 0.6  # Default cross-site penalty
-
+        site_factor = 0.7
+        
     # 8. Combine all factors
     base_score = node_score * node_compat * resource_factor * time_factor * site_factor 
     final_bid = min(1.0, base_score * queue_factor)
