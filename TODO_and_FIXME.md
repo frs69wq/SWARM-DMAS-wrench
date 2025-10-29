@@ -4,7 +4,7 @@
     - [ ] @Prachi TODO: improve this heuristic (taking into account job and systems types, the estimated start time of the job, can we use user and group id, ...)
   - [x] PythonBidding: Call an external python script, e.g., calling an LLM
     - [ ] @Prachi IN PROGRESS: reuse some of the code from the demo
-    - [ ] @Prachi indfo vs. debug in python scripts
+    - [ ] @Prachi info vs. debug in python scripts
     - [ ] @Prachi fix Claude bidder (chat -> messages, sensitive info as environment variables, ...)
     - [ ] @Prachi have the same code as in HeuristicBidding in a python script
     - [ ] @Prachi for all LLM-bidding, call this heuristic python script as a fallback
@@ -30,7 +30,7 @@
   - [x] If the job scheduling agent is killed (simulating a software failure), its heartbeat monitor is killed too ... and can thus not send heartbeats anymore
     - [ ] See how to restart both
   - [x] `period` and `expiration` are harcoded to 5 and 15 seconds respectively (missing 2 heartbeats and then warn the scheduling agent that an agent is not responding). 
-    - [ ] Could be command line arguments instead
+    - [x] Could be command line arguments instead
   - [X] Warn the scheduling agent when another system doesn't send its hearbeat
     - [x] have the scheduling agent listen for the messages from the heartbeat monitor
     - [ ] Do something with it! What?
@@ -41,6 +41,6 @@
   - [ ] 
 
 ## FIXME
-- [ ] gather all the command line arguments of a simulation run into a json file.
+- [x] gather all the command line arguments of a simulation run into a json file.
 - [ ] Split ControlMessages.h into multiple files. 
 - [ ] Add R stuff to the Dockerfile so that the plots can be generated in the container.

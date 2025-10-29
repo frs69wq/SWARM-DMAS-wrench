@@ -74,6 +74,15 @@ add_custom_target(swarm_dmas-python-scripts
   VERBATIM
 )
 
+add_custom_target(swarm_dmas-experiments
+  COMMAND /bin/sh -c 
+    "if [ '${CMAKE_CURRENT_SOURCE_DIR}' != '${CMAKE_CURRENT_BINARY_DIR}' ]; then \
+    mkdir -p experiments; \
+    /bin/cp -f ${CMAKE_CURRENT_SOURCE_DIR}/experiments/*.json ${CMAKE_CURRENT_BINARY_DIR}/experiments/ ; \
+    fi ;"
+  VERBATIM
+)
+
 add_custom_target(swarm_dmas-hw-fail-profiles
   COMMAND /bin/sh -c 
     "if [ '${CMAKE_CURRENT_SOURCE_DIR}' != '${CMAKE_CURRENT_BINARY_DIR}' ]; then \
@@ -86,6 +95,7 @@ add_custom_target(swarm_dmas-hw-fail-profiles
 add_dependencies(swarm_dmas swarm_dmas-workloads)
 add_dependencies(swarm_dmas swarm_dmas-platform-file)
 add_dependencies(swarm_dmas swarm_dmas-python-scripts)
+add_dependencies(swarm_dmas swarm_dmas-experiments)
 add_dependencies(swarm_dmas swarm_dmas-hw-fail-profiles)
 
 if (ENABLE_BATSCHED)

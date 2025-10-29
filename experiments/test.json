@@ -1,0 +1,9 @@
+{
+    "workload": "workloads/heterogeneous_mix_10.json",
+    "platform": "platforms/AmSC.xml",
+    "policy": "PythonBidding",
+    "bidder": "python_scripts/random_bidder.py",
+    "hearbeat_period": 5,
+    "heartbeat_expiration": 15,
+    "hardware_failure_profile": "hardware_failure_profiles/test.json"
+}

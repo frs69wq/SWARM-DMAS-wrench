@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <simgrid/s4u/Host.hpp>
 #include <wrench.h>
@@ -20,26 +21,41 @@ int main(int argc, char** argv)
   xbt_log_control_set("root.fmt=[%12.6r]%e[%43a]%e[%26h]%e%e%m%n");
 
   // Parsing of the command-line arguments
-  if (argc < 4) {
+  if (argc < 2) {
     std::cerr << "Usage: " << argv[0]
-              << " <json job description list> <xml platform file> <scheduling policy name> [<python script name>]"
+              << " <experiment_description.json"
                  "[--log=workload_submission_agent.t:info]"
                  "[--log=job_lifecycle_tracker_agent.t:info]"
                  "[--log=job_scheduling_agent.t::info]"
-
               << std::endl;
     exit(1);
   }
+  
+  // Parse the experiment description JSON file
+  std::ifstream file(argv[1]);
+  if (!file.is_open()) {
+    std::cerr << "Failed to open file: " << argv[1] << std::endl;
+    return 1;
+  }
 
-  // The first command-line argument is the name of json file produced by the workload generator
-  std::string job_list = argv[1];
+  nlohmann::json j;
+  file >> j;
 
-  // Reading and parsing the platform description file, written in XML following the SimGrid-defined DTD,
-  // to instantiate the simulated platform
-  simulation->instantiatePlatform(argv[2]);
+  std::string workload = j["workload"];
+  std::string platform = j["platform"];
+  std::string policy = j["policy"];
+  double hearbeat_period = j["hearbeat_period"].get<double>();
+  double heartbeat_expiration = j["heartbeat_expiration"].get<double>();
+  std::string hardware_failure_profile = j["hardware_failure_profile"];
+
+  // Optional field
+  std::string bidder = j.value("bidder", ""); // Default to empty string if not present
+
+  // Instantiate the simulated platform
+  simulation->instantiatePlatform(platform);
 
   // Instantiate a job lifecycle tracker that will be notified at the different stages of a job lifecycle
-  auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ASCR.doe.gov", job_list));
+  auto job_lifecycle_tracker_agent = simulation->add(new wrench::JobLifecycleTrackerAgent("ASCR.doe.gov", workload));
 
   // Retrieve the different hpc_systems from the platform description and create batch services and scheduling agents
   auto hpc_systems = wrench::Simulation::getHostnameListByCluster();
@@ -51,10 +67,10 @@ int main(int argc, char** argv)
   for (const auto& c : hpc_systems) {
     // Create a Scheduling Policy for this simulation run
     std::shared_ptr<SchedulingPolicy> scheduling_policy;
-    if (argc == 5)
-      scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3], argv[4]);
+    if (not bidder.empty())
+      scheduling_policy = SchedulingPolicy::create_scheduling_policy(policy, bidder);
     else
-      scheduling_policy = SchedulingPolicy::create_scheduling_policy(argv[3]);
+      scheduling_policy = SchedulingPolicy::create_scheduling_policy(policy);
 
     // Create the HPCSystemDescription
     auto system_name = std::get<0>(c);
@@ -95,7 +111,8 @@ int main(int argc, char** argv)
     job_scheduling_agent_network.push_back(new_agent);
 
     // Instantiate a heartbeat monitor agent on the head node of this HPC system
-    auto new_hb_agent = simulation->add(new wrench::HeartbeatMonitorAgent(head_node, new_agent, 5., 15.));
+    auto new_hb_agent = 
+      simulation->add(new wrench::HeartbeatMonitorAgent(head_node, new_agent, hearbeat_period, heartbeat_expiration));
     new_hb_agent->setDaemonized(true);
     // Attach the heartbeat monitor to the job scheduling agent
     new_agent->set_heartbeat_monitor(new_hb_agent);
@@ -116,7 +133,7 @@ int main(int argc, char** argv)
 
   // Instantiate an workload submission agent that will generate jobs and assign jobs to scheduling agents
   auto workload_submission_agent =
-      simulation->add(new wrench::WorkloadSubmissionAgent("ASCR.doe.gov", job_list, job_scheduling_agent_network));
+      simulation->add(new wrench::WorkloadSubmissionAgent("ASCR.doe.gov", workload, job_scheduling_agent_network));
   // Allow this agent to notify the job lifecycle tracker too
   workload_submission_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);
 
