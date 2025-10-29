@@ -11,6 +11,7 @@
     <cluster id="Aurora" prefix="aurora-" suffix=".alcf.gov"
              radical="0-50" 
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="ALCF"/>
       <prop id="type" value="AI"/>
       <prop id="memory_amount_in_gb" value="984"/>
       <prop id="storage_amount_in_gb" value="220e6"/>
@@ -22,6 +23,7 @@
     <cluster id="Crux" prefix="crux-" suffix=".alcf.gov"
              radical="0-50"
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="ALCF"/>
       <prop id="type" value="STORAGE"/>
       <prop id="memory_amount_in_gb" value="512"/>
       <prop id="storage_amount_in_gb" value="220e6"/>
@@ -33,6 +35,7 @@
     <cluster id="Perlmutter-Phase-1" prefix="perlmutter-gpu-" suffix=".nersc.gov"
              radical="0-50"
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="NERSC"/>
       <prop id="type" value="HYBRID"/>
       <prop id="memory_amount_in_gb" value="672"/>
       <prop id="storage_amount_in_gb" value="35e6"/>
@@ -44,6 +47,7 @@
     <cluster id="Perlmutter-Phase-2" prefix="perlmutter-cpu-" suffix=".nersc.gov" 
              radical="0-50"
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="NERSC"/>
       <prop id="type" value="HYBRID"/>
       <prop id="memory_amount_in_gb" value="512"/>
       <prop id="storage_amount_in_gb" value="35e6"/>
@@ -55,6 +59,7 @@
     <cluster id="Frontier" prefix="frontier-" suffix=".olcf.gov"
              radical="0-50"
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="OLCF"/>
       <prop id="type" value="HPC"/>
       <prop id="memory_amount_in_gb" value="12000"/>
       <prop id="storage_amount_in_gb" value="700e6"/>
@@ -66,6 +71,7 @@
     <cluster id="Andes" prefix="andes-" suffix=".olcf.gov"
              radical="0-50"
              speed="1.5Tf" bw="200Gbps" lat="2us">
+      <prop id="site" value="OLCF"/>
       <prop id="type" value="STORAGE"/>
       <prop id="memory_amount_in_gb" value="256"/>
       <prop id="storage_amount_in_gb" value="700e6"/>
