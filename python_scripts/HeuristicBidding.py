@@ -2,23 +2,18 @@ def compute_bid(job_description, system_description, system_status, current_time
     """Compute a heuristic bid score for a job on a given system_description.
     
     Args:
-        job (json): JobDescription "job_id", "user_id","group_id", "job_type",
+        job (dict): JobDescription "job_id", "user_id","group_id", "job_type",
             "submission_time", "walltime", "num_nodes", "needs_gpu", "requested_memory_gb", "requested_storage_gb",
             "hpc_site", "hpc_system"
-        hpc_system (json): HPC System description: "name", "type", "num_nodes",
+        hpc_system (dict): HPC System description: "name", "type", "num_nodes",
             "memory_amount_in_gb", "storage_amount_in_gb", "has_gpu", "network_interconnect"
-        system_status (json): HPC System status: "current_num_current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
+        system_status (dict): HPC System status: "current_num_current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
         current_time (int): Current time in the scheduling system for wait time calculations.
     """
 
-    # FIXME we don't send the current time to python, I can fix this
-    # COMMENT: OK!
-    # FIXME we have an current estimation of the start time of the job, might be interesting to use it. 
-    # COMMENT: Can you point out where it is? (I could locate it in utils.cpp line#66)
-    # COMMENT: Part of job status:  current_job_start_time_estimate
-
     # Safely read job fields (job is a dict)
     # FIXME system_description and system status are also dict, you cannot use properties
+    # I've fixed it below
     nodes_req = job_description["num_nodes"]
     requested_gpu = job_description["requested_gpu"]
     submission_time = job_description["submission_time"]
@@ -32,19 +27,21 @@ def compute_bid(job_description, system_description, system_status, current_time
     # FIXME also check that memory requirement is lower than system_description available memory
     # COMMENT: Please confirm as calculation seems different from the heuristic (in the do_not_pass_acceptance_tests function) based on the hpc_system_description 
     # FIXME: job expresses a total memory request, the system is described with a memory amount *per node*
-    node_per_memory_gb = system_description["memory_amount_in_gb"] / system_description["num_nodes"] 
-    if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description.has_gpu and job_description["requested_memoory_gb"] > node_per_memory_gb:
+    # Got it, but in the utils, should it be system_status["current_num_available_nodes"] * system_description["memory_amount_in_gb"]
+    # instead of system_description["num_nodes"] * system_description["memory_amount_in_gb"]? or am I missing something?
+    if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description.has_gpu and job_description["requested_memoory_gb"] > system_description["memory_amount_in_gb"] * system_status["current_num_available_nodes"]:
         return 0.0
 
     # 2. Utilization-based scores
-    node_util = (system_description.used_nodes / system_description.node_limit) if system_description.node_limit else 0.0
+    used_nodes = system_description["num_nodes"] - system_status["current_num_available_nodes"]
+    node_util = (used_nodes / system_description["num_nodes"]) if system_description.node_limit else 0.0
     node_score = 1 - node_util
 
-    # 3. Compatibility (avoid division by zero)
+    # 3. Compatibility 
     node_compat = min(1.0, system_description.current_num_available_nodes / nodes_req) 
 
     # 4. Queue length factor
-    queue_factor = max(0.1, 1 - 0.1 * system_status.queue_length)
+    queue_factor = max(0.1, 1 - 0.1 * system_status["queue_length"])
 
     # 5. Time-based priority factor (longer wait = higher priority)
     wait_time = current_time - submission_time
@@ -73,7 +70,7 @@ def compute_bid(job_description, system_description, system_status, current_time
 
     system_description_name = getattr(system_description, 'name', job_system)  # Assume system_description knows its name
     
-    # Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
+    # 8. Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
     # different system. (rational: account for network latency and data transfer cost)
     if job_site == system_description_site and job_system == system_description_name:
         site_factor = 1.0  # Perfect match: same site and system
@@ -82,8 +79,28 @@ def compute_bid(job_description, system_description, system_status, current_time
     else:
         site_factor = 0.7
         
+    # 9. Delay penalty based on estimated job start time
+    # FIXME we don't send the current time to python, I can fix this
+    # COMMENT: OK!
+    # FIXME we have an current estimation of the start time of the job, might be interesting to use it. 
+    # COMMENT: Can you point out where it is? (I could locate it in utils.cpp line#66)
+    # COMMENT: Part of job status:  current_job_start_time_estimate
+    # COMMENT: OK, It seems part of a system_status
+    job_start_estimation = system_status['current_job_start_time_estimate']
+    
+    # Calculate delay penalty based on estimated start time
+    estimated_delay = job_start_estimation - current_time
+    # Apply penalty for longer delays - systems with longer queues get lower bids
+    # Scale: 0-100 time units delay -> 1.0-0.1 multiplier (exponential decay)
+    # Rationale: This penalty reduces the bid for systems that would start the job much later
+    # Applies a linear penalty: Systems with longer delays get progressively lower bids
+    # Please confirm 
+    delay_penalty = max(0.1, 1.0 - (estimated_delay / 100.0))
+    delay_penalty = max(0.1, delay_penalty)  # Ensure minimum penalty of 0.1
+    
+    
     # 8. Combine all factors
-    base_score = node_score * node_compat * resource_factor * time_factor * site_factor 
+    base_score = node_score * node_compat * resource_factor * time_factor * site_factor * delay_penalty
     final_bid = min(1.0, base_score * queue_factor)
 
     return round(final_bid, 2)
