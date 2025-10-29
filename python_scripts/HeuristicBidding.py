@@ -23,31 +23,27 @@ def compute_bid(job_description, system_description, system_status, current_time
  
 
     # 1. Feasibility check
-    # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible
-    # FIXME also check that memory requirement is lower than system_description available memory
-    # COMMENT: Please confirm as calculation seems different from the heuristic (in the do_not_pass_acceptance_tests function) based on the hpc_system_description 
-    # FIXME: job expresses a total memory request, the system is described with a memory amount *per node*
-    # Got it, but in the utils, should it be system_status["current_num_available_nodes"] * system_description["memory_amount_in_gb"]
-    # instead of system_description["num_nodes"] * system_description["memory_amount_in_gb"]? or am I missing something?
-    if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description.has_gpu and job_description["requested_memoory_gb"] > system_description["memory_amount_in_gb"] * system_status["current_num_available_nodes"]:
+    # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible AND job needs more memory than available
+    # job expresses a total memory request, the system is described with a memory amount *per node*
+    if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description["has_gpu"] and job_description["requested_memoory_gb"] > system_description["memory_amount_in_gb"]* system_description["num_nodes"]:
         return 0.0
 
     # 2. Utilization-based scores
     used_nodes = system_description["num_nodes"] - system_status["current_num_available_nodes"]
-    node_util = (used_nodes / system_description["num_nodes"]) if system_description.node_limit else 0.0
+    node_util = (used_nodes / system_description["num_nodes"]) if system_description["num_nodes"] else 0.0
     node_score = 1 - node_util
 
     # 3. Compatibility 
-    node_compat = min(1.0, system_description.current_num_available_nodes / nodes_req) 
+    node_compat = min(1.0, system_status["current_num_available_nodes"] / nodes_req) 
 
     # 4. Queue length factor
     queue_factor = max(0.1, 1 - 0.1 * system_status["queue_length"])
 
-    # 5. Time-based priority factor (longer wait = higher priority)
-    wait_time = current_time - submission_time
+    # 5. Time-based priority factor (longer wait = higher priority) <-- COMMENT: Removed because the job gets broadcasted as soon as it is submitted
+    # wait_time = current_time - submission_time
     # Scale wait time: 0-100 time units -> 1.0-2.0 multiplier
     # Rationale: increase the bid for jobs that have been waiting longer, up to a maximum factor of 2.0. 
-    time_factor = min(2.0, 1.0 + (wait_time / 100.0))
+    # time_factor = min(2.0, 1.0 + (wait_time / 100.0))
 
     # 6. Job-Resource compatibility factor
     system_description_type = getattr(system_description, 'type', '')
@@ -100,7 +96,7 @@ def compute_bid(job_description, system_description, system_status, current_time
     
     
     # 8. Combine all factors
-    base_score = node_score * node_compat * resource_factor * time_factor * site_factor * delay_penalty
+    base_score = node_score * node_compat * resource_factor * site_factor * delay_penalty
     final_bid = min(1.0, base_score * queue_factor)
 
     return round(final_bid, 2)
