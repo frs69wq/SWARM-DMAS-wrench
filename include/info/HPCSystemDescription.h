@@ -8,6 +8,7 @@ enum class HPCSystemType { HPC, AI, HYBRID, STORAGE };
 
 class HPCSystemDescription {
   std::string name_;
+  std::string site_;
   HPCSystemType type_;
   size_t num_nodes_;
   int memory_amount_in_gb_;
@@ -16,9 +17,11 @@ class HPCSystemDescription {
   std::string network_interconnect_;
 
 public:
-  HPCSystemDescription(const std::string& name, HPCSystemType type, size_t num_nodes, int memory_amount_in_gb,
-                       int storage_amount_in_gb, bool has_gpu, const std::string& network_interconnect)
+  HPCSystemDescription(const std::string& name, const std::string& site, HPCSystemType type, size_t num_nodes,
+                       int memory_amount_in_gb, int storage_amount_in_gb, bool has_gpu,
+                       const std::string& network_interconnect)
       : name_(name)
+      , site_(site)
       , type_(type)
       , num_nodes_(num_nodes)
       , memory_amount_in_gb_(memory_amount_in_gb)
@@ -29,8 +32,9 @@ public:
   }
 
   static std::shared_ptr<HPCSystemDescription> create(const std::string& system_name,
-                                                       const std::vector<std::string>& host_list)
+                                                      const std::vector<std::string>& host_list)
   {
+    auto system_site = wrench::S4U_Simulation::getClusterProperty(system_name, "site");
     auto system_type = HPCSystemDescription::string_to_hpc_system_type(
         wrench::S4U_Simulation::getClusterProperty(system_name, "type"));
     auto system_num_compute_nodes = host_list.size() - 1;
@@ -42,7 +46,7 @@ public:
     auto system_network_interconnect =
         wrench::S4U_Simulation::getClusterProperty(system_name, "network_interconnect");
 
-    return std::make_shared<HPCSystemDescription>(system_name, system_type, system_num_compute_nodes,
+    return std::make_shared<HPCSystemDescription>(system_name, system_site, system_type, system_num_compute_nodes,
                                                   system_memory_amount_in_gb, system_storage_amount_in_gb,
                                                   system_has_gpu, system_network_interconnect);
   }
@@ -50,6 +54,7 @@ public:
   // Getters
   const std::string& get_name() const { return name_; }
   const char* get_cname() const { return name_.c_str(); }
+  const std::string& get_site() const { return site_; }
   HPCSystemType get_type() const { return type_; }
   size_t get_num_nodes() const { return num_nodes_; }
   int get_memory_amount_in_gb() const { return memory_amount_in_gb_; }
@@ -90,6 +95,7 @@ public:
   nlohmann::json to_json() const
   {
     return {{"name", name_},
+            {"site", site_},
             {"type", hpc_system_type_to_string(type_)},
             {"num_nodes", num_nodes_},
             {"memory_amount_in_gb", memory_amount_in_gb_},
