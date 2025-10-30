@@ -1,4 +1,4 @@
-def compute_bid(job_description, system_description, system_status, current_time=0):
+def compute_bid(job_description, system_description, system_status, current_simulated_time=0):
     """Compute a heuristic bid score for a job on a given system_description.
     
     Args:
@@ -78,12 +78,10 @@ def compute_bid(job_description, system_description, system_status, current_time
         site_factor = 0.7
         
     # 9. Delay penalty based on estimated job start time
-    # FIXME we don't send the current time to python, I can fix this
-    # COMMENT: OK!
     job_start_estimate = system_status['current_job_start_time_estimate']
     
     # Calculate delay penalty based on estimated start time
-    estimated_delay = job_start_estimate - current_time
+    estimated_delay = job_start_estimate - current_simulated_time
     # Apply penalty for longer delays - systems with longer queues get lower bids
     # Scale: 0-100 time units delay -> 1.0-0.1 multiplier (exponential decay)
     # Rationale: This penalty reduces the bid for systems that would start the job much later
@@ -98,6 +96,3 @@ def compute_bid(job_description, system_description, system_status, current_time
     final_bid = min(1.0, base_score * queue_factor)
 
     return round(final_bid, 2)
-
-# bid = compute_bid(job_description, system_description, system_status, current_time=0)
-# print("Computed bid with user/group factors:", bid)
