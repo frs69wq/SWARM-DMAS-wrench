@@ -12,6 +12,7 @@ def main():
         job = data["job_description"]
         desc = data["hpc_system_description"]
         status = data["hpc_system_status"]
+        current_simulated_time = data["current_simulated_time"]
 
         # Start timing
         start_time = time.perf_counter()

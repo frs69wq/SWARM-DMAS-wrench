@@ -43,7 +43,7 @@
 ## FIXME
 - [x] gather all the command line arguments of a simulation run into a json file.
 - [x] Add R stuff to the Dockerfile so that the plots can be generated in the container.
-- [ ] Split ControlMessages.h into multiple files.
-- [ ] Send current simulated time to python
+- [x] Send current simulated time to python
 - [x] add HPC site to system description
   - [x] through a new 'site' property in the XML description
+- [ ] Split ControlMessages.h into multiple files.

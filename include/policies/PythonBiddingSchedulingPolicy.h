@@ -71,6 +71,7 @@ public:
       j["job_description"]        = job_description->to_json();
       j["hpc_system_description"] = hpc_system_description->to_json();
       j["hpc_system_status"]      = hpc_system_status->to_json();
+      j["current_simulated_time"] = wrench::S4U_Simulation::getClock();
 
       std::string jsonStr = j.dump();
       write(to_python[1], jsonStr.c_str(), jsonStr.size());
