@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 import time
 import logging
@@ -10,9 +11,9 @@ from anthropic import AnthropicVertex
 from google.oauth2 import service_account
 #################################
 # Model Setup
-LOCATION = ""
-PROJECT_ID = ""
-MODEL = ""       
+CLAUDE_LOCATION   = os.getenv("CLAUDE_LOCATION")
+CLAUDE_PROJECT_ID = os.getenv("CLAUDE_PROJECT_ID")
+CLAUDE_MODEL      = os.getenv("CLAUDE_MODEL")
 TEMP = 0
 MAX_TOKENS = 5000
 #################################
@@ -71,11 +72,11 @@ def main():
         prompt = [{"role": "user", "content": prompt}]
 
         # Step3: Setup Openai client
-        client = AnthropicVertex(region=LOCATION, project_id=PROJECT_ID)
+        client = AnthropicVertex(region=CLAUDE_LOCATION, project_id=CLAUDE_PROJECT_ID)
 
         # Step4: Get completion
         response = client.chat.completions.create(
-            model=MODEL,
+            model=CLAUDE_MODEL,
             messages=prompt,
             max_completion_tokens=MAX_TOKENS,
             temperature=TEMP,

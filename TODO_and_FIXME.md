@@ -5,7 +5,7 @@
   - [x] PythonBidding: Call an external python script, e.g., calling an LLM
     - [ ] @Prachi IN PROGRESS: reuse some of the code from the demo
     - [ ] @Prachi info vs. debug in python scripts
-    - [ ] @Prachi fix Claude bidder (chat -> messages, sensitive info as environment variables, ...)
+    - [x] @Prachi fix Claude bidder (chat -> messages, sensitive info as environment variables, ...)
     - [ ] @Prachi have the same code as in HeuristicBidding in a python script
     - [ ] @Prachi for all LLM-bidding, call this heuristic python script as a fallback
 

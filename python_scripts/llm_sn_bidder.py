@@ -6,13 +6,12 @@ import os
 import re
 
 ##### sambanova imports ######
-# !pip install langchain langchain-community
 from langchain_community.llms.sambanova import SambaStudio
 
 #################################
-SAMBASTUDIO_URL= os.getenv('SAMBASTUDIO_URL')
-SAMBASTUDIO_API_KEY= os.getenv('SAMBASTUDIO_API_KEY')
-MODEL = "Llama-4-Maverick-17B-128E-Instruct" # "Meta-Llama-3-8B-Instruct" # "Meta-Llama-3-70B-Instruct"
+SAMBASTUDIO_URL     = os.getenv('SAMBASTUDIO_URL')
+SAMBASTUDIO_API_KEY = os.getenv('SAMBASTUDIO_API_KEY')
+SAMBASTUDIO_MODEL   = os.getenv('SAMBASTUDIO_MODEL')
 MAX_TOKENS = 100000
 #################################
 # Logs
