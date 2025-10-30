@@ -12,8 +12,6 @@ def compute_bid(job_description, system_description, system_status, current_time
     """
 
     # Safely read job fields (job is a dict)
-    # FIXME system_description and system status are also dict, you cannot use properties
-    # I've fixed it below
     nodes_req = job_description["num_nodes"]
     requested_gpu = job_description["requested_gpu"]
     submission_time = job_description["submission_time"]
@@ -21,11 +19,17 @@ def compute_bid(job_description, system_description, system_status, current_time
     job_site = job_description["hpc_site"]
     job_system = job_description["hpc_system"]
  
-
     # 1. Feasibility check
-    # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible AND job needs more memory than available
-    # job expresses a total memory request, the system is described with a memory amount *per node*
-    if nodes_req > system_description["current_num_available_nodes"] and requested_gpu and not system_description["has_gpu"] and job_description["requested_memoory_gb"] > system_description["memory_amount_in_gb"]* system_description["num_nodes"]:
+    # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible AND job
+    # needs more memory than available.
+    # Note: job expresses a total memory request, the system is described with a memory amount *per node*
+    if (
+        nodes_req > system_description["current_num_available_nodes"] 
+        and requested_gpu 
+        and not system_description["has_gpu"] 
+        and job_description["requested_memoory_gb"] 
+            > system_description["memory_amount_in_gb"] * system_description["num_nodes"]
+    ):
         return 0.0
 
     # 2. Utilization-based scores
@@ -46,7 +50,7 @@ def compute_bid(job_description, system_description, system_status, current_time
     # time_factor = min(2.0, 1.0 + (wait_time / 100.0))
 
     # 6. Job-Resource compatibility factor
-    system_description_type = getattr(system_description, 'type', '')
+    system_description_type = system_description["type"]
     if job_type == system_description_type:
         resource_factor = 1.0  # Perfect match
     elif (job_type == 'HPC' and system_description_type in ['AI', 'HYBRID']) or \
@@ -61,13 +65,11 @@ def compute_bid(job_description, system_description, system_status, current_time
         resource_factor = 0.5  # Default compatibility
 
     # 7. Site/System preference factor
-    system_description_site = getattr(system_description, 'site', job_site)  # Assume system_description knows its site
-    # FIXME that is not the case for the one above, I can fix it. 
-
-    system_description_name = getattr(system_description, 'name', job_system)  # Assume system_description knows its name
+    system_description_site = system_description["site"]
+    system_description_name = system_description["name"]
     
     # 8. Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
-    # different system. (rational: account for network latency and data transfer cost)
+    # different system. (rationale: account for network latency and data transfer cost)
     if job_site == system_description_site and job_system == system_description_name:
         site_factor = 1.0  # Perfect match: same site and system
     elif job_site == system_description_site:
@@ -78,22 +80,18 @@ def compute_bid(job_description, system_description, system_status, current_time
     # 9. Delay penalty based on estimated job start time
     # FIXME we don't send the current time to python, I can fix this
     # COMMENT: OK!
-    # FIXME we have an current estimation of the start time of the job, might be interesting to use it. 
-    # COMMENT: Can you point out where it is? (I could locate it in utils.cpp line#66)
-    # COMMENT: Part of job status:  current_job_start_time_estimate
-    # COMMENT: OK, It seems part of a system_status
-    job_start_estimation = system_status['current_job_start_time_estimate']
+    job_start_estimate = system_status['current_job_start_time_estimate']
     
     # Calculate delay penalty based on estimated start time
-    estimated_delay = job_start_estimation - current_time
+    estimated_delay = job_start_estimate - current_time
     # Apply penalty for longer delays - systems with longer queues get lower bids
     # Scale: 0-100 time units delay -> 1.0-0.1 multiplier (exponential decay)
     # Rationale: This penalty reduces the bid for systems that would start the job much later
     # Applies a linear penalty: Systems with longer delays get progressively lower bids
-    # Please confirm 
+    # Please confirm
+    # FIXME is exponential decay really computed here? Plus, the same max is computed twice
     delay_penalty = max(0.1, 1.0 - (estimated_delay / 100.0))
     delay_penalty = max(0.1, delay_penalty)  # Ensure minimum penalty of 0.1
-    
     
     # 8. Combine all factors
     base_score = node_score * node_compat * resource_factor * site_factor * delay_penalty
