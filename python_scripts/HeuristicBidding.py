@@ -34,7 +34,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
 
     # 2. Utilization-based scores
     used_nodes = system_description["num_nodes"] - system_status["current_num_available_nodes"]
-    node_util = (used_nodes / system_description["num_nodes"]) if system_description["num_nodes"] else 0.0
+    node_util = used_nodes / system_description["num_nodes"]
     node_score = 1 - node_util
 
     # 3. Compatibility 
@@ -65,19 +65,19 @@ def compute_bid(job_description, system_description, system_status, current_simu
         resource_factor = 0.5  # Default compatibility
 
     # 7. Site/System preference factor
+    # Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
+    # different system. (rationale: account for network latency and data transfer cost)
     system_description_site = system_description["site"]
     system_description_name = system_description["name"]
     
-    # 8. Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
-    # different system. (rationale: account for network latency and data transfer cost)
     if job_site == system_description_site and job_system == system_description_name:
         site_factor = 1.0  # Perfect match: same site and system
     elif job_site == system_description_site:
         site_factor = 0.9  # Same site, different system
     else:
-        site_factor = 0.7
+        site_factor = 0.7 # Different sites
         
-    # 9. Delay penalty based on estimated job start time
+    # 8. Delay penalty based on estimated job start time
     job_start_estimate = system_status['current_job_start_time_estimate']
     
     # Calculate delay penalty based on estimated start time
@@ -91,7 +91,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
     delay_penalty = max(0.1, 1.0 - (estimated_delay / 100.0))
     delay_penalty = max(0.1, delay_penalty)  # Ensure minimum penalty of 0.1
     
-    # 8. Combine all factors
+    # 9. Combine all factors
     base_score = node_score * node_compat * resource_factor * site_factor * delay_penalty
     final_bid = min(1.0, base_score * queue_factor)
 

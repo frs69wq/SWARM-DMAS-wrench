@@ -25,44 +25,63 @@ public:
                      const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
                      const std::shared_ptr<HPCSystemStatus>& hpc_system_status) override
   {
-    // TODO replace by a heuristic based on job description, system description, and system status
     // 1. Feasibility check: if the job does not pass the acceptance tests, bid is 0.0
     // TODO test storage in acceptance tests
     if (do_not_pass_acceptance_tests(job_description, hpc_system_description))
       return 0.0;
 
     // 2. Utilization-based scores
-    auto node_score =
-        1 - (hpc_system_description->get_num_nodes() - hpc_system_status->get_current_num_avaibable_nodes()) /
-                (1.0 * hpc_system_description->get_num_nodes());
-    // FIXME: this is equivalent to the previous score
-    // mem_score  = 1 - (machine.used_memory / machine.total_memory)
-    // TODO see if we can add storage (not a the moment)
-    // stor_score = 1- (machine.used_storage / machine.total_storage)
+    auto used_nodes = hpc_system_description->get_num_nodes() - hpc_system_status->get_current_num_avaibable_nodes();
+    auto node_util = used_nodes / (1.0 * hpc_system_description->get_num_nodes());
+    auto node_score = 1 - node_util;
 
     // 3. Compatibility
     auto node_compat =
         std::min(1.0, hpc_system_status->get_current_num_avaibable_nodes() / (1.0 * job_description->get_num_nodes()));
-    // FIXME: again this is equivalent to the previous score
-    // mem_compat  = min(1.0, machine.available_memory / job.memory)
-    // TODO see if we can add storage (not a the moment)
-    // storage_compat = min(1.0, machine.available_storage / job.storage)
-
-    // 4. Machine type compatibility
-    // FIXME this is part of the acceptance tests and leads to 0.0 (job cannot execute)
-    // if job.requires_gpu and not machine.has_gpu:
-    //     type_score = 0.2
-    // else:
-    //     type_score = 1.0
 
     // 5. Queue length factor
     auto queue_factor = std::max(0.1, 1 - 0.1 * hpc_system_status->get_queue_length());
 
-    // 6. Combine (basic multiplicative form)
-    auto base_score = node_score * node_compat;
-    // base_score = (
-    //     (node_score + mem_score + stor_score) / 3.0
-    // ) * node_compat * mem_compat * storage_compat * type_score
+    // 6. Job-Resource compatibility factor
+    double resource_factor;
+    auto system_type = HPCSystemDescription::hpc_system_type_to_string(hpc_system_description->get_type());
+    auto job_type    = JobDescription::job_type_to_string(job_description->get_job_type());
+    if (system_type == job_type)
+      resource_factor = 1.0;  // Perfect match
+    else if ((job_type == "HPC" && system_type != "HPC") ||
+             (job_type == "AI" && system_type != "AI") ||
+             (job_type == "HYBRID" && system_type != "HYBRID"))
+      resource_factor = 0.8;  // Good compatibility
+    else if (job_type == "STORAGE" and system_type != "STORAGE")
+        resource_factor = 0.3;  // Storage jobs prefer storage system_descriptions
+    else if (system_type == "STORAGE" and job_type != "STORAGE")
+        resource_factor = 0.5;  // Storage system_descriptions can handle other jobs but not optimal
+    else
+        resource_factor = 0.5;  // Default compatibility
+
+    // 7. Site/System preference factor
+    // Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
+    // different system. (rationale: account for network latency and data transfer cost)
+    double site_factor;
+    if (job_description->get_hpc_site() == hpc_system_description->get_site()) {
+      if (job_description->get_hpc_system() == hpc_system_description->get_name())
+        site_factor = 1.0; // Perfect match: same site and system
+      else
+        site_factor = 0.9; // Same site, different system
+    } else
+        site_factor = 0.7; // Different sites
+
+    // 8. Delay penalty based on estimated job start time
+    auto estimated_delay = hpc_system_status-> get_current_job_start_time_estimate() - wrench::S4U_Simulation::getClock();
+    // Apply penalty for longer delays - systems with longer queues get lower bids
+    // Scale: 0-100 time units delay -> 1.0-0.1 multiplier (exponential decay)
+    // Rationale: This penalty reduces the bid for systems that would start the job much later
+    // Applies a linear penalty: Systems with longer delays get progressively lower bids
+    // FIXME is exponential decay really computed here?
+    auto delay_penalty = std::max(0.1, 1.0 - (estimated_delay / 100.0)); //Ensure ??? penalty of 0.1
+
+    // 9. Combine all factors
+    auto base_score =  node_score * node_compat * resource_factor * site_factor * delay_penalty;
     auto final_bid = std::min(1.0, base_score * queue_factor);
 
     return std::trunc(final_bid * 100.0) / 100.0;
