@@ -8,17 +8,25 @@
 
 ```text
 SWARM-DMAS-wrench/ 
+ ├── include/
  ├── src/
- │ ├── agents/ # Custom WRENCH agents (e.g., meta-schedulers, local schedulers)
- │ ├── policies/ # Scheduling policies (e.g., PureLocal, Cooperative) 
- │ └── swar_dmas.cpp # Entry point for simulation
+ │ ├── agents/       # Custom WRENCH agents (e.g., job scheduling, hearbeat monitor, workload submission)
+ │ ├── info/         # Data structures (Job and system descriptions, system status, job lifecycle)
+ │ ├── policies/     # Scheduling policies (e.g., Local, Heuristic, LLM-based)
+ │ ├── utils/        # Utility functions
  ├── data_generation/
  │ ├── data/ # Workload traces and input datasets 
  │ └── scripts/ # Scripts to generate synthetic workloads 
+ ├── hardware_failure_profiles/ 
+ │ └── 
+ ├── experiments/ 
+ │ └── 
  ├── platforms/ 
- │ └── AmSC.xml # Platform description (resources, links, latencies) 
- ├── CMakeLists.txt # Build configuration
- └── README.md # Project documentation
+ │ └── AmSC.xml # Platform description (resources, links, latencies)
+ ├── python_scripts/ 
+ │ └──  
+ └── swar_dmas.cpp # Entry point for simulation
+ 
 ```
 
  ---
@@ -45,11 +53,24 @@ cd ..
 
 ## 🚀 Running the Simulation
 
-To run the simulation using the PureLocal policy on the smallest workload:
+To run the simulation:
 
 ```bash
 cd build
-./swarm_dmas workloads/heterogeneous_mix_10.json platforms/AmSC.xml PureLocal
+./swarm_dmas experiments/scenario.json
+```
+A JSOn file describing an experimental scenario is structured as follows:
+
+```json
+{
+    "workload": "workloads/heterogeneous_mix_10.json",
+    "platform": "platforms/AmSC.xml",
+    "policy": "PythonBidding",
+    "bidder": "python_scripts/random_bidder.py",
+    "hearbeat_period": 5,
+    "heartbeat_expiration": 15,
+    "hardware_failure_profile": "hardware_failure_profiles/test.json"
+}
 ```
 
 ## 🧠 Agent Roles (in src/agents/)
@@ -63,3 +84,6 @@ Policies define the decision-making logic used by the meta-scheduler or local sc
 
  - PureLocal: Jobs are scheduled only on the system where they were submitted (baseline).
  - RandomBidding: Jobs are randomly assigned to another system.
+ - HeuristicBidding:
+ - PythonBidding:
+    - ``llm_claude_bidder.py``
