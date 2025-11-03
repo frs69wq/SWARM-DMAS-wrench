@@ -1,3 +1,5 @@
+import math
+
 def compute_bid(job_description, system_description, system_status, current_simulated_time=0):
     """Compute a heuristic bid score for a job on a given system_description.
     
@@ -82,14 +84,10 @@ def compute_bid(job_description, system_description, system_status, current_simu
     
     # Calculate delay penalty based on estimated start time
     estimated_delay = job_start_estimate - current_simulated_time
-    # Apply penalty for longer delays - systems with longer queues get lower bids
-    # Scale: 0-100 time units delay -> 1.0-0.1 multiplier (exponential decay)
-    # Rationale: This penalty reduces the bid for systems that would start the job much later
-    # Applies a linear penalty: Systems with longer delays get progressively lower bids
-    # Please confirm
     # FIXME is exponential decay really computed here? Plus, the same max is computed twice
-    delay_penalty = max(0.1, 1.0 - (estimated_delay / 100.0))
-    delay_penalty = max(0.1, delay_penalty)  # Ensure minimum penalty of 0.1
+    # Fixed the line below, its not the exponential decay, just a linear scaling
+    alpha = 0.05 # decay rate: gives a smoother falloff
+    delay_penalty = max(0.1, math.exp(-alpha * estimated_delay))
     
     # 9. Combine all factors
     base_score = node_score * node_compat * resource_factor * site_factor * delay_penalty
