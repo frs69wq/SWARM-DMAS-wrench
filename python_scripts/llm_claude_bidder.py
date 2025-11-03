@@ -4,6 +4,7 @@ import json
 import time
 import logging
 import re
+from HeuristicBidding import compute_bid
 
 #################################
 # Claude OpenAI imports 
@@ -90,14 +91,15 @@ def main():
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
 
-        # Step5: Response Parsing
+        # Step5: Successful Response Parsing
         bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
         match = re.search(bid_score_pattern, response)
 
         # Step6: Heuristic bid if parsing fails
-        heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
+        heuristic_bid = compute_bid(job_description, system_description, system_status) 
 
         bid = float(match.group(1)) if match else heuristic_bid
+        logger.debug(f"Final bid score: {bid} (using {'LLM' if match else 'heuristic'})")
 
         # Do not modify after here
         result = {

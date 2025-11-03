@@ -4,6 +4,7 @@ import time
 import logging
 import os
 import re
+from HeuristicBidding import compute_bid
 
 ##### sambanova imports ######
 from langchain_community.llms.sambanova import SambaStudio
@@ -72,7 +73,7 @@ def main():
                 "max_tokens":MAX_TOKENS,
                 "temperature":0,
                 "process_prompt":False,
-                "model":MODEL,
+                "model":SAMBASTUDIO_MODEL,
             },
         )
 
@@ -94,10 +95,11 @@ def main():
     match = re.search(bid_score_pattern, response)
 
     # Step5: Heuristic bid if parsing fails
-    heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
+    heuristic_bid = compute_bid(job_description, system_description, system_status)
 
     bid = float(match.group(1)) if match else heuristic_bid
-
+    logger.debug(f"Final bid score: {bid} (using {'LLM' if match else 'heuristic'})")
+    
     # Do not modify after here
     result = {
         "bid": bid,
