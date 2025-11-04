@@ -3,7 +3,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# check for hpc site and system consistency
+# silent warnings
+import warnings
+warnings.filterwarnings("ignore")
+
 
 def validate_jobs(jobs_df):
     for idx, row in jobs_df.iterrows():
