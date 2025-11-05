@@ -9,7 +9,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
             "hpc_site", "hpc_system"
         hpc_system (dict): HPC System description: "name", "type", "num_nodes",
             "memory_amount_in_gb", "storage_amount_in_gb", "has_gpu", "network_interconnect"
-        system_status (dict): HPC System status: "current_num_current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
+        system_status (dict): HPC System status: "current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
         current_time (int): Current time in the scheduling system for wait time calculations.
     """
 
@@ -26,7 +26,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
     # needs more memory than available.
     # Note: job expresses a total memory request, the system is described with a memory amount *per node*
     if (
-        nodes_req > system_description["current_num_available_nodes"] 
+        nodes_req > system_status["current_num_available_nodes"] 
         and (requested_gpu and not system_description["has_gpu"]) 
         and (job_description["requested_memory_gb"] > system_description["memory_amount_in_gb"] * system_description["num_nodes"])
     ):
