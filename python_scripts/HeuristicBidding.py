@@ -26,9 +26,9 @@ def compute_bid(job_description, system_description, system_status, current_simu
     # needs more memory than available.
     # Note: job expresses a total memory request, the system is described with a memory amount *per node*
     if (
-        nodes_req > system_status["current_num_available_nodes"] 
-        and (requested_gpu and not system_description["has_gpu"]) 
-        and (job_description["requested_memory_gb"] > system_description["memory_amount_in_gb"] * system_description["num_nodes"])
+        nodes_req > system_description["num_nodes"]
+        or (requested_gpu and not system_description["has_gpu"]) 
+        or (job_description["requested_memory_gb"] > system_description["memory_amount_in_gb"] * system_description["num_nodes"])
     ):
         return 0.0
 
