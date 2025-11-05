@@ -28,7 +28,7 @@ public:
     // 1. Feasibility check: if the job does not pass the acceptance tests, bid is 0.0
     // TODO test storage in acceptance tests
     if (do_not_pass_acceptance_tests(job_description, hpc_system_description))
-      return 0.0;
+      return -1.0;
 
     // 2. Utilization-based scores
     auto used_nodes = hpc_system_description->get_num_nodes() - hpc_system_status->get_current_num_avaibable_nodes();
