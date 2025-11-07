@@ -42,17 +42,13 @@ RUN /opt/venv/bin/pip install --break-system-packages jsonref -r requirements.tx
 
 RUN git config --global http.postBuffer 524288000
 # reinstall SimGrid
-RUN git clone https://github.com/simgrid/simgrid.git && cd simgrid && mkdir build && cd build && cmake .. && make -j12 && make install && cd .. && /bin/rm -rvf simgrid
+RUN git clone https://github.com/simgrid/simgrid.git && cd simgrid && mkdir build && cd build && cmake .. -Denable_lto=off && make -j1 && make install && cd .. && /bin/rm -rvf simgrid
 
 # reinstall FSMod
-RUN git clone https://github.com/simgrid/file-system-module.git && cd file-system-module && mkdir build && cd build && cmake .. && make -j12 && make install && cd .. && /bin/rm -rvf file-system-module
+RUN git clone https://github.com/simgrid/file-system-module.git && cd file-system-module && mkdir build && cd build && cmake .. && make -j1 && make install && cd .. && /bin/rm -rvf file-system-module
 
 # install WRENCH
-RUN git clone https://github.com/wrench-project/wrench.git && cd wrench && mkdir build && cd build && cmake .. && make -j12 wrench-daemon examples && make install && cp -r ./examples /home/wrench/ && chown -R wrench /home/wrench && cd ../.. && /bin/rm -rf wrench
-
-# fix the run_all_examples.sh script
-RUN sed -i "s/INSTALL_DIR=.*/INSTALL_DIR=\/home\/wrench\/examples/" /home/wrench/examples/run_all_examples.sh
-
+RUN git clone https://github.com/wrench-project/wrench.git && cd wrench && mkdir build && cd build && cmake .. && make -j1 wrench-daemon examples && make install && cp -r ./examples /home/wrench/ && chown -R wrench /home/wrench && cd ../.. && /bin/rm -rf wrench
 
 #################################################
 # WRENCH's user
@@ -60,9 +56,8 @@ RUN sed -i "s/INSTALL_DIR=.*/INSTALL_DIR=\/home\/wrench\/examples/" /home/wrench
 USER wrench
 WORKDIR /home/wrench
 
-RUN cd
-RUN git clone https://github.com/frs69wq/SWARM-DMAS-wrench.git && cd SWARM-DMAS-wrench && mkdir build && cd build && cmake .. && make -j && cd ..
-
+RUN cd && git clone https://github.com/frs69wq/SWARM-DMAS-wrench.git && cd SWARM-DMAS-wrench && mkdir build && cd build && cmake .. && make -j
+WORKDIR /home/wrench/SWARM-DMAS-wrench/build
 
 # set user's environment variable
 ENV PATH="/opt/venv/bin:$PATH"
