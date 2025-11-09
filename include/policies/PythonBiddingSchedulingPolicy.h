@@ -9,10 +9,13 @@
 #include <string>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <xbt/log.h>
 
 #include "agents/JobSchedulingAgent.h"
 #include "messages/ControlMessages.h"
 #include "policies/SchedulingPolicy.h"
+
+XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 
 class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;
@@ -90,6 +93,7 @@ public:
 
       try {
         nlohmann::json result = nlohmann::json::parse(response);
+        XBT_CVERB(swarm_dmas, "%s",result.dump().c_str());
         if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number()) {
           wrench::S4U_Simulation::sleep(result["bid_generation_time_seconds"].get<double>());
         } else {
