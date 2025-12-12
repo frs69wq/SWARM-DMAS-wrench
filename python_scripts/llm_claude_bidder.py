@@ -1,10 +1,9 @@
 import sys
-import os
 import json
+import os
 import time
 import logging
 import re
-from HeuristicBidding import compute_bid
 
 #################################
 # Claude OpenAI imports 
@@ -24,6 +23,7 @@ logger = logging.getLogger(__name__)
 #################################
 
 def main():
+    response = ""
     try:
         input_data = sys.stdin.read()
         data = json.loads(input_data)
@@ -70,16 +70,16 @@ def main():
         logger.debug(f"Prompt: {prompt}")
 
         # Step2: Format prompt
-        prompt = [{"role": "user", "content": prompt}]
+        message = [{"role": "user", "content": prompt}]
 
         # Step3: Setup Openai client
         client = AnthropicVertex(region=CLAUDE_LOCATION, project_id=CLAUDE_PROJECT_ID)
 
         # Step4: Get completion
-        response = client.chat.completions.create(
+        response = client.messages.create(
             model=CLAUDE_MODEL,
-            messages=prompt,
-            max_completion_tokens=MAX_TOKENS,
+            messages=message,
+            max_tokens=MAX_TOKENS,
             temperature=TEMP,
         )
         for content_block in response.content:
@@ -87,29 +87,29 @@ def main():
         # Log response for debugging
         logger.debug(f"Response: {response}")
 
-        # End timing
-        end_time = time.perf_counter()
-        elapsed_time = end_time - start_time
-
-        # Step5: Successful Response Parsing
-        bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
-        match = re.search(bid_score_pattern, response)
-
-        # Step6: Heuristic bid if parsing fails
-        heuristic_bid = compute_bid(job_description, system_description, system_status) 
-
-        bid = float(match.group(1)) if match else heuristic_bid
-        logger.debug(f"Final bid score: {bid} (using {'LLM' if match else 'heuristic'})")
-
-        # Do not modify after here
-        result = {
-            "bid": bid,
-            "bid_generation_time_seconds": round(elapsed_time, 6)
-        }
-
-        print(json.dumps(result))
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        print(json.dump({"error" : str(e)}))
+
+    # End timing
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
+
+    # Step5: Response Parsing
+    bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
+    match = re.search(bid_score_pattern, response)
+
+    # Step6: Heuristic bid if parsing fails
+    heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
+
+    bid = float(match.group(1)) if match else heuristic_bid
+
+    # Do not modify after here
+    result = {
+      "bid": bid,
+      "bid_generation_time_seconds": round(elapsed_time, 6)
+    }
+    logger.info(json.dumps(result))
+    print(json.dumps(result))
 
 if __name__ == "__main__":
     main()
