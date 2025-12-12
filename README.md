@@ -12,7 +12,7 @@ SWARM-DMAS-wrench/
  ├── src/
  │ ├── agents/       # Custom WRENCH agents (e.g., job scheduling, hearbeat monitor, workload submission)
  │ ├── info/         # Data structures (Job and system descriptions, system status, job lifecycle)
- │ ├── policies/     # Scheduling policies (e.g., Local, Heuristic, LLM-based)
+ │ ├── policies/     # Scheduling policies (e.g., Local, Random, External Python Scripts)
  │ ├── utils/        # Utility functions
  ├── data_generation/
  │ ├── data/ # Workload traces and input datasets 
@@ -84,6 +84,5 @@ Policies define the decision-making logic used by the meta-scheduler or local sc
 
  - PureLocal: Jobs are scheduled only on the system where they were submitted (baseline).
  - RandomBidding: Jobs are randomly assigned to another system.
- - HeuristicBidding:
  - PythonBidding:
     - ``llm_claude_bidder.py``

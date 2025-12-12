@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <wrench.h>
 
 #include "info/HPCSystemDescription.h"
 #include "info/HPCSystemStatus.h"

@@ -1,6 +1,7 @@
 #ifndef PURE_LOCAL_SCHEDULING_POLICY_H
 #define PURE_LOCAL_SCHEDULING_POLICY_H
 
+#include "messages/ControlMessages.h"
 #include "policies/SchedulingPolicy.h"
 
 class PureLocalSchedulingPolicy : public SchedulingPolicy {

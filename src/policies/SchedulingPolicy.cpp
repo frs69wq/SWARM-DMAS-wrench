@@ -1,4 +1,3 @@
-#include "policies/HeuristicBiddingSchedulingPolicy.h"
 #include "policies/PureLocalSchedulingPolicy.h"
 #include "policies/PythonBiddingSchedulingPolicy.h"
 #include "policies/RandomBiddingSchedulingPolicy.h"
@@ -12,8 +11,6 @@ std::shared_ptr<SchedulingPolicy> SchedulingPolicy::create_scheduling_policy(con
     return std::make_shared<PureLocalSchedulingPolicy>();
   else if (policy_name == "RandomBidding")
     return std::make_shared<RandomBiddingSchedulingPolicy>();
-  else if (policy_name == "HeuristicBidding")
-    return std::make_shared<HeuristicBiddingSchedulingPolicy>();
   else if (policy_name == "PythonBidding") {
     if (not python_script_name.empty())
       return std::make_shared<PythonBiddingSchedulingPolicy>(python_script_name);

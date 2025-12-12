@@ -40,6 +40,10 @@ def main():
         prompt = f"""
                 You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. 
 
+                IMPORTANT:
+                - The fields hpc_site and hpc_system in JOB_REQUEST indicate only where the job was SUBMITTED (origin), NOT where it must run.
+                - You MUST NOT reward or penalize this system just because its site/system matches or differs from the job’s origin.
+
                 JOB_REQUEST (MASSIVE SCALE):
                 {
                     job_description

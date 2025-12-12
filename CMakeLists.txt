@@ -20,9 +20,9 @@ set(HEADER_FILES
   include/agents/JobLifecycleTrackerAgent.h
   include/agents/JobSchedulingAgent.h
   include/agents/ResourceSwitchingAgent.h
+  #include/agents/WorkloadCentralizedSubmissionAgent.h
   include/agents/WorkloadSubmissionAgent.h
   include/policies/PythonBiddingSchedulingPolicy.h
-  include/policies/HeuristicBiddingSchedulingPolicy.h
   include/policies/PureLocalSchedulingPolicy.h
   include/policies/RandomBiddingSchedulingPolicy.h
   include/policies/SchedulingPolicy.h
@@ -39,6 +39,7 @@ set(SOURCE_FILES
   src/agents/JobLifecycleTrackerAgent.cpp
   src/agents/JobSchedulingAgent.cpp
   src/agents/ResourceSwitchingAgent.cpp
+  #src/agents/WorkloadCentralizedSubmissionAgent.cpp
   src/agents/WorkloadSubmissionAgent.cpp
   src/policies/SchedulingPolicy.cpp
   src/swarm_dmas.cpp
