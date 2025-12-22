@@ -11,84 +11,103 @@ def compute_bid(job_description, system_description, system_status, current_simu
             "memory_amount_in_gb", "storage_amount_in_gb", "has_gpu", "network_interconnect"
         system_status (dict): HPC System status: "current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
         current_time (int): Current time in the scheduling system for wait time calculations.
+    Returns:
+        float 0.0 to 1.0.
     """
+    # Job details
+    nodes_req = job_description.get("num_nodes")
+    req_gpu = job_description.get("needs_gpu")
+    req_mem = job_description.get("requested_memory_gb")
+    req_storage = job_description.get("requested_storage_gb")
+    req_walltime = job_description.get("walltime") 
+    job_type = job_description.get("job_type")
+    job_site = job_description.get("hpc_site") 
 
-    # Safely read job fields (job is a dict)
-    nodes_req = job_description["num_nodes"]
-    requested_gpu = job_description["requested_gpu"]
-    submission_time = job_description["submission_time"]
-    job_type = job_description["job_type"]
-    job_site = job_description["hpc_site"]
-    job_system = job_description["hpc_system"]
- 
-    # 1. Feasibility check
-    # if job needs more nodes than available AND requests GPU but system_description has no GPU => infeasible AND job
-    # needs more memory than available.
-    # Note: job expresses a total memory request, the system is described with a memory amount *per node*
-    if (
-        nodes_req > system_description["num_nodes"]
-        or (requested_gpu and not system_description["has_gpu"]) 
-        or (job_description["requested_memory_gb"] > system_description["memory_amount_in_gb"] * system_description["num_nodes"])
-    ):
+    # System configuration
+    sys_nodes = system_description.get("num_nodes")
+    sys_has_gpu = system_description.get("has_gpu")
+    sys_type = system_description.get("type")
+    sys_site = system_description.get("site") 
+    # Performance Index for each machine: 
+    # Usually, the standard CPU partition is the baseline in our case is the Perlmutter (Phase 2, CPU nodes, 4.9Tf) as a Baseline 1.0
+    # E.g., Aurora (312Tf) gets a score of 63.6 (it is 63x faster than the CPU node). 
+    # Andes gets 0.36 (it is slower).)
+    sys_speed = system_description.get("node_speed") # in TFLOPS
+    base_sys_speed = 4900000000000.0 # Baseline system speed in FLOPS (Perlmutter CPU nodes)
+    sys_perf = round(sys_speed / base_sys_speed, 2)
+    # system_description["network_gbps"] by default is 200 Gbps for each one described in AmSC.xml
+    sys_network_gbps = 200 
+    
+    # System status
+    sys_avail_nodes = system_status.get("current_num_available_nodes")
+    # Get a estimated start time
+    est_start_time = system_status.get("current_job_start_time_estimate")
+
+    # --- 1. Feasibility ---
+    # Note: Adding a check for storage capacity if the system defines it
+    sys_total_storage = system_description.get("storage_amount_in_gb", float('inf'))
+    
+    if (nodes_req > sys_nodes):
         return 0.0
-
-    # 2. Utilization-based scores
-    used_nodes = system_description["num_nodes"] - system_status["current_num_available_nodes"]
-    node_util = used_nodes / (1.0 * system_description["num_nodes"])
-    node_score = 1 - node_util
-
-    # 3. Compatibility 
-    node_compat = min(1.0, system_status["current_num_available_nodes"] / nodes_req) 
-
-    # 4. Queue length factor
-    queue_factor = max(0.1, 1 - 0.1 * system_status["queue_length"])
-
-    # 5. Time-based priority factor (longer wait = higher priority) <-- COMMENT: Removed because the job gets broadcasted as soon as it is submitted
-    # wait_time = current_time - submission_time
-    # Scale wait time: 0-100 time units -> 1.0-2.0 multiplier
-    # Rationale: increase the bid for jobs that have been waiting longer, up to a maximum factor of 2.0. 
-    # time_factor = min(2.0, 1.0 + (wait_time / 100.0))
-
-    # 6. Job-Resource compatibility factor
-    system_description_type = system_description["type"]
-    if job_type == system_description_type:
-        resource_factor = 1.0  # Perfect match
-    elif (job_type == 'HPC' and system_description_type in ['AI', 'HYBRID']) or \
-         (job_type == 'AI' and system_description_type in ['HPC', 'HYBRID']) or \
-         (job_type == 'HYBRID' and system_description_type in ['HPC', 'AI']):
-        resource_factor = 0.8  # Good compatibility
-    elif job_type == 'STORAGE' and system_description_type != 'STORAGE':
-        resource_factor = 0.3  # Storage jobs prefer storage system_descriptions
-    elif system_description_type == 'STORAGE' and job_type != 'STORAGE':
-        resource_factor = 0.5  # Storage system_descriptions can handle other jobs but not optimal
-    else:
-        resource_factor = 0.5  # Default compatibility
-
-    # 7. Site/System preference factor
-    # Apply penalty for moving a job from its initial submission site. Higher if moved to a different site than to a
-    # different system. (rationale: account for network latency and data transfer cost)
-    system_description_site = system_description["site"]
-    system_description_name = system_description["name"]
-    
-    if job_site == system_description_site and job_system == system_description_name:
-        site_factor = 1.0  # Perfect match: same site and system
-    elif job_site == system_description_site:
-        site_factor = 0.9  # Same site, different system
-    else:
-        site_factor = 0.7 # Different sites
+    if (req_gpu and not sys_has_gpu):
+        return 0.0
+    if (req_mem > system_description["memory_amount_in_gb"] * system_description["num_nodes"]): 
+        return 0.0
+    if (req_storage > sys_total_storage):
+        return 0.0
         
-    # 8. Delay penalty based on estimated job start time
-    job_start_estimate = system_status['current_job_start_time_estimate']
+    # --- 2. Utilization Score (Preference for availability) ---
+    # Goal: Prefer systems that aren't hammered, but don't kill busy systems if they are fast.
+    used_nodes = sys_nodes - sys_avail_nodes
+    node_util = used_nodes / max(1.0, float(sys_nodes))
+    score_util = 1.0 - node_util 
     
-    # Calculate delay penalty based on estimated start time
-    estimated_delay = job_start_estimate - current_simulated_time
-    # FIXME is exponential decay really computed here? Plus, the same max is computed twice
-    # Fixed the line below, its not the exponential decay, just a linear scaling
-    alpha = 0.05 # decay rate: gives a smoother falloff
-    delay_penalty = max(0.1, math.exp(-alpha * estimated_delay))
+    # --- 3. Resource Compatibility (Type Matching) ---
+    if job_type == sys_type:
+        score_resource = 1.0 # Perfect match
+    elif (job_type in ['HPC', 'AI', 'HYBRID'] and sys_type in ['HPC', 'AI', 'HYBRID']):
+        score_resource = 0.8 # Reasonable compatibility
+    elif (job_type == 'STORAGE' or sys_type == 'STORAGE'):
+        # Storage jobs prefer storage systems, but can run elsewhere with 70% penalty to showcase inefficiency 
+        score_resource = 0.3 if job_type != sys_type else 1.0
+    else:
+        score_resource = 0.5 # Neutral compatibility, if new job types appear
     
-    # 9. Combine all factors
-    base_score = node_score * node_compat * resource_factor * site_factor * delay_penalty
-    final_bid = min(1.0, base_score * queue_factor)
+    # --- 4. Time Cost Calculation ---
+    # A. Queue Wait Time
+    wait_time = max(0, est_start_time - current_simulated_time) 
+    
+    # B. Execution Time (adjusted for hardware speed)
+    pred_exec_time = req_walltime / sys_perf
+    
+    # C. Data Transfer Time
+    if job_site and sys_site and (job_site != sys_site):
+        # Convert Gbps to GB
+        sys_bw_gb_per_unit = (sys_network_gbps / 8.0) 
+        transfer_time = (req_storage / sys_bw_gb_per_unit) + 5.0 # 5 time units overhead
+    else:
+        transfer_time = 0.0
 
-    return round(final_bid, 2)
+    total_time_cost = wait_time + pred_exec_time + transfer_time
+    
+    # Protect against divide by zero
+    total_time_cost = max(1.0, total_time_cost)
+    # Speed Score (Sigmoid)
+    slowdown = total_time_cost / req_walltime
+    alpha = 1.0
+    score_speed = math.exp(-alpha * slowdown) 
+
+    # --- 6. Weighted Aggregation ---
+    # Define importance of each factor
+    w_util = 0.33      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
+    w_resource = 0.33  # Change to Medium: Prefer correct hardware types ~ 0.3
+    w_speed = 0.33    # Change to High: User cares most about "When is my job done?" ~ 0.6
+
+    # Normalization
+    final_score = (
+        (score_util * w_util) + 
+        (score_resource * w_resource) + 
+        (score_speed * w_speed)
+    ) / (w_util + w_resource + w_speed)
+    
+    return round(final_score, 4)
