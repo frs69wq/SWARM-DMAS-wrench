@@ -46,24 +46,12 @@ def validate_jobs(jobs_df):
         limits = site_resource_limits[site][system]
         if nodes > limits['node_limit']:
             raise ValueError(f"Node request exceeds limit for JobID {row['JobID']}: {nodes} > {limits['node_limit']}")
-        if memory > limits['memory_limit']:
-            raise ValueError(f"Memory request exceeds limit for JobID {row['JobID']}: {memory} > {limits['memory_limit']}")
+        if memory > limits['memory_limit'] * nodes:
+            raise ValueError(f"Memory request exceeds limit for JobID {row['JobID']}: {memory} > {limits['memory_limit']}*{nodes}")
         if storage > limits['storage_limit']:
             raise ValueError(f"Storage request exceeds limit for JobID {row['JobID']}: {storage} > {limits['storage_limit']}")
     
-    # check for jobtype and system compatibility
-    jobtype_system_map = {
-        'HPC': ['Frontier'],
-        'AI': ['Aurora'],
-        'HYBRID': ['Perlmutter-Phase-1', 'Perlmutter-Phase-2'],
-        'STORAGE': ['Andes', 'Crux']
-    }
-    for idx, row in jobs_df.iterrows():
-        job_type = row['JobType']
-        system = row['HPCSystem']
-        if system not in jobtype_system_map[job_type]:
-            raise ValueError(f"Incompatible JobType and HPCSystem for JobID {row['JobID']}: {job_type} - {system}")    
-
+ 
     # check for has_gpu requirement
     for idx, row in jobs_df.iterrows():
         system = row['HPCSystem']
@@ -83,9 +71,6 @@ def validate_jobs(jobs_df):
                 'Perlmutter-Phase-2': {'has_gpu' : False}
             }
         }
-        has_gpu = site_configs[site][system]['has_gpu']
-        if requested_gpu and not has_gpu:
-            raise ValueError(f"GPU requested but not available for JobID {row['JobID']}: {system}")
         
     # check if walltime, nodes, memory are positive
     for idx, row in jobs_df.iterrows():
@@ -124,13 +109,86 @@ def visualize_job_distributions(jobs_df):
     plt.savefig('job_distributions.png')
     plt.show()
 
-# ...existing code...
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# ...existing code...
+def visualize_submission_times_by_timezone(jobs_df):
+    """Visualize job submission times across different timezones."""
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    
+    # 1. Timeline view of all submissions
+    ax1 = axes[0, 0]
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        ax1.hist(site_jobs['SubmissionTime'], bins=30, alpha=0.5, label=f'{site}')
+    ax1.axvline(x=12, color='red', linestyle='--', alpha=0.3, label='OLCF noon (EST)')
+    ax1.axvline(x=13, color='green', linestyle='--', alpha=0.3, label='ALCF noon (CST)')
+    ax1.axvline(x=15, color='blue', linestyle='--', alpha=0.3, label='NERSC noon (PST)')
+    ax1.set_xlabel('Time (hours from start)')
+    ax1.set_ylabel('Number of Jobs')
+    ax1.set_title('Job Submissions Across 27-Hour Period')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # 2. Density plot
+    ax2 = axes[0, 1]
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        site_jobs['SubmissionTime'].plot(kind='density', ax=ax2, label=site, linewidth=2)
+    ax2.set_xlabel('Time (hours from start)')
+    ax2.set_ylabel('Density')
+    ax2.set_title('Submission Time Density by Site')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    # 3. Box plot by site
+    ax3 = axes[1, 0]
+    sites_data = [jobs_df[jobs_df['HPCSite'] == site]['SubmissionTime'].values 
+                  for site in ['OLCF', 'ALCF', 'NERSC']]
+    bp = ax3.boxplot(sites_data, labels=['OLCF (EST)', 'ALCF (CST)', 'NERSC (PST)'])
+    ax3.set_ylabel('Submission Time (hours)')
+    ax3.set_title('Submission Time Distribution by Site')
+    ax3.grid(True, alpha=0.3, axis='y')
+    
+    # 4. Cumulative distribution
+    ax4 = axes[1, 1]
+    for site, color in zip(['OLCF', 'ALCF', 'NERSC'], ['red', 'green', 'blue']):
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site].sort_values('SubmissionTime')
+        ax4.plot(site_jobs['SubmissionTime'], 
+                np.arange(1, len(site_jobs)+1) / len(site_jobs),
+                label=site, linewidth=2, color=color)
+    ax4.set_xlabel('Time (hours from start)')
+    ax4.set_ylabel('Cumulative Proportion')
+    ax4.set_title('Cumulative Job Arrivals by Site')
+    ax4.legend()
+    ax4.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    # plt.savefig('./data/submission_times_by_timezone.png', dpi=300, bbox_inches='tight')
+    # print("Saved submission time visualization to ./data/submission_times_by_timezone.png")
+    plt.show()
+    # plt.close()
+    
+    # Print statistics
+    print("\nSubmission Time Statistics by Site:")
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        print(f"\n{site}:")
+        print(f"  Count: {len(site_jobs)}")
+        print(f"  Mean: {site_jobs['SubmissionTime'].mean():.2f}h")
+        print(f"  Std: {site_jobs['SubmissionTime'].std():.2f}h")
+        print(f"  Min: {site_jobs['SubmissionTime'].min():.2f}h")
+        print(f"  Max: {site_jobs['SubmissionTime'].max():.2f}h")
+        print(f"  Median: {site_jobs['SubmissionTime'].median():.2f}h")
 
+
+##################### 
+# deprecated function
+#####################
 def visualize_submission_times(jobs_df, save_path=None):
     """Visualize submission time distributions across timezones"""
     
@@ -258,3 +316,73 @@ def visualize_submission_times(jobs_df, save_path=None):
         if hour_jobs > len(jobs_df) * 0.05:  # Show hours with >5% of jobs
             print(f"  {hour:02d}:00-{hour+1:02d}:00: {hour_jobs} jobs ({100*hour_jobs/len(jobs_df):.1f}%)")
 
+
+    """Visualize job submission times across different timezones."""
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    
+    # 1. Timeline view of all submissions
+    ax1 = axes[0, 0]
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        ax1.hist(site_jobs['SubmissionTime'], bins=30, alpha=0.5, label=f'{site}')
+    ax1.axvline(x=12, color='red', linestyle='--', alpha=0.3, label='OLCF noon (EST)')
+    ax1.axvline(x=13, color='green', linestyle='--', alpha=0.3, label='ALCF noon (CST)')
+    ax1.axvline(x=15, color='blue', linestyle='--', alpha=0.3, label='NERSC noon (PST)')
+    ax1.set_xlabel('Time (hours from start)')
+    ax1.set_ylabel('Number of Jobs')
+    ax1.set_title('Job Submissions Across 27-Hour Period')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # 2. Density plot
+    ax2 = axes[0, 1]
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        site_jobs['SubmissionTime'].plot(kind='density', ax=ax2, label=site, linewidth=2)
+    ax2.set_xlabel('Time (hours from start)')
+    ax2.set_ylabel('Density')
+    ax2.set_title('Submission Time Density by Site')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    # 3. Box plot by site
+    ax3 = axes[1, 0]
+    sites_data = [jobs_df[jobs_df['HPCSite'] == site]['SubmissionTime'].values 
+                  for site in ['OLCF', 'ALCF', 'NERSC']]
+    bp = ax3.boxplot(sites_data, labels=['OLCF (EST)', 'ALCF (CST)', 'NERSC (PST)'])
+    ax3.set_ylabel('Submission Time (hours)')
+    ax3.set_title('Submission Time Distribution by Site')
+    ax3.grid(True, alpha=0.3, axis='y')
+    
+    # 4. Cumulative distribution
+    ax4 = axes[1, 1]
+    for site, color in zip(['OLCF', 'ALCF', 'NERSC'], ['red', 'green', 'blue']):
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site].sort_values('SubmissionTime')
+        ax4.plot(site_jobs['SubmissionTime'], 
+                np.arange(1, len(site_jobs)+1) / len(site_jobs),
+                label=site, linewidth=2, color=color)
+    ax4.set_xlabel('Time (hours from start)')
+    ax4.set_ylabel('Cumulative Proportion')
+    ax4.set_title('Cumulative Job Arrivals by Site')
+    ax4.legend()
+    ax4.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('./data/submission_times_by_timezone.png', dpi=300, bbox_inches='tight')
+    print("Saved submission time visualization to ./data/submission_times_by_timezone.png")
+    plt.close()
+    
+    # Print statistics
+    print("\nSubmission Time Statistics by Site:")
+    for site in ['OLCF', 'ALCF', 'NERSC']:
+        site_jobs = jobs_df[jobs_df['HPCSite'] == site]
+        print(f"\n{site}:")
+        print(f"  Count: {len(site_jobs)}")
+        print(f"  Mean: {site_jobs['SubmissionTime'].mean():.2f}h")
+        print(f"  Std: {site_jobs['SubmissionTime'].std():.2f}h")
+        print(f"  Min: {site_jobs['SubmissionTime'].min():.2f}h")
+        print(f"  Max: {site_jobs['SubmissionTime'].max():.2f}h")
+        print(f"  Median: {site_jobs['SubmissionTime'].median():.2f}h")
