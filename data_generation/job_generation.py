@@ -19,7 +19,7 @@ def generate_synthetic_jobs_v2(**kwargs):
     # Job templates defining typical job characteristics
     job_templates = [{
         'type': 'HPC',
-        'walltime': (1*60,24*60),         # in minutes (hourXminutes)
+        'walltime': (1,24),         # in hours
         'node_range': (64, 2048),
         'requested_gpu': [False],
         'storage': (500, 50_000),   # in GB
@@ -28,7 +28,7 @@ def generate_synthetic_jobs_v2(**kwargs):
         'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
     }, {
         'type': 'AI',
-        'walltime': (4*60,120*60), # in minutes
+        'walltime': (4,120), # in hours
         'node_range': (4,256),   
         'requested_gpu': [True],
         'storage': (1000,100_000), # in GB
@@ -36,7 +36,7 @@ def generate_synthetic_jobs_v2(**kwargs):
         'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
     }, {
         'type': 'STORAGE',
-        'walltime': (1*60, 72*60),
+        'walltime': (1, 72),
         'node_range': (32, 512),
         'requested_gpu': [False],
         'storage': (10_000, 500_000),
@@ -44,7 +44,7 @@ def generate_synthetic_jobs_v2(**kwargs):
         'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
     }, {
         'type': 'HYBRID',
-        'walltime': (8*60,120*60),
+        'walltime': (8,120),
         'node_range': (8, 512),
         # requested GPU for hybrid jobs could be either True or False
         'requested_gpu': [True, False],
@@ -185,7 +185,8 @@ def generate_synthetic_jobs_v2(**kwargs):
                 break
                
         # 3.2 Walltime and other parameters
-        job_walltime = random.uniform(*template['walltime'])
+        job_walltime_hours = random.randint(*template['walltime'])
+        job_walltime = job_walltime_hours * 60                      # converted to minutes
         job_requested_gpu = random.choice(template['requested_gpu'])
         
         # Find the site for the selected system
