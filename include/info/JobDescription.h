@@ -42,6 +42,22 @@ public:
   {
   }
 
+  explicit JobDescription(const nlohmann::json& j)
+      : job_id_(j["job_id"])
+      , user_id_(j["user_id"])
+      , group_id_(j["group_id"])
+      , job_type_(string_to_job_type(j["job_type"]))
+      , submission_time_(j["submission_time"])
+      , walltime_(j["walltime"])
+      , num_nodes_(j["num_nodes"])
+      , needs_gpu_(j["needs_gpu"])
+      , requested_memory_gb_(j["requested_memory_gb"])
+      , requested_storage_gb_(j["requested_storage_gb"])
+      , hpc_site_(j["hpc_site"])
+      , hpc_system_(j["hpc_system"])
+  {
+  }
+
   // getters
   int get_job_id() const { return job_id_; }
   int get_user_id() const { return user_id_; }

@@ -16,11 +16,11 @@ public:
     init_num_received_bids(job_description->get_job_id());
   }
 
-  double compute_bid(const std::shared_ptr<JobDescription>& /*job_description*/,
-                     const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/,
-                     const std::shared_ptr<HPCSystemStatus>& /*hpc_system_status*/) override
+  std::pair<double, double> compute_bid(const std::shared_ptr<JobDescription>& /*job_description*/,
+                                        const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/,
+                                        const std::shared_ptr<HPCSystemStatus>& /*hpc_system_status*/) override
   {
-    return 1.0;
+    return std::make_pair(1.0, 0.0);
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,

@@ -36,9 +36,9 @@ public:
         other_agent->commport->dputMessage(new wrench::JobRequestMessage(job_description, false));
   }
 
-  double compute_bid(const std::shared_ptr<JobDescription>& job_description,
-                     const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
-                     const std::shared_ptr<HPCSystemStatus>& hpc_system_status) override
+  std::pair<double, double> compute_bid(const std::shared_ptr<JobDescription>& job_description,
+                                        const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
+                                        const std::shared_ptr<HPCSystemStatus>& hpc_system_status) override
   {
     int to_python[2];   // C++ writes to python
     int from_python[2]; // C++ reads from python
@@ -94,13 +94,10 @@ public:
       try {
         nlohmann::json result = nlohmann::json::parse(response);
         XBT_CVERB(swarm_dmas, "%s",result.dump().c_str());
-        if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number()) {
-          wrench::S4U_Simulation::sleep(result["bid_generation_time_seconds"].get<double>());
-        } else {
+        if (not result.contains("bid_generation_time_seconds") || not result["bid_generation_time_seconds"].is_number())
           throw std::runtime_error("Invalid response: 'bid_generation_time_seconds' not found or not a number");
-        }
         if (result.contains("bid") && result["bid"].is_number()) {
-          return result["bid"].get<double>();
+          return std::make_pair(result["bid"].get<double>(), result["bid_generation_time_seconds"].get<double>());
         } else {
           throw std::runtime_error("Invalid response: 'bid' not found or not a number");
         }

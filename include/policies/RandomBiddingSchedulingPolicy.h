@@ -20,16 +20,16 @@ public:
         other_agent->commport->dputMessage(new wrench::JobRequestMessage(job_description, false));
   }
 
-  double compute_bid(const std::shared_ptr<JobDescription>& /*job_description*/,
-                     const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/,
-                     const std::shared_ptr<HPCSystemStatus>& /*hpc_system_status*/) override
+  std::pair<double, double> compute_bid(const std::shared_ptr<JobDescription>& /*job_description*/,
+                                        const std::shared_ptr<HPCSystemDescription>& /*hpc_system_description*/,
+                                        const std::shared_ptr<HPCSystemStatus>& /*hpc_system_status*/) override
   {
 
     std::random_device rd;  // Seed
     std::mt19937 gen(rd()); // Mersenne Twister engine
     std::uniform_real_distribution<double> dis(0.0, std::nextafter(1.0, 2.0));
 
-    return dis(gen);
+    return std::make_pair(dis(gen), 0.0);
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,

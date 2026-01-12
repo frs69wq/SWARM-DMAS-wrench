@@ -30,6 +30,7 @@ class JobSchedulingAgent : public ExecutionController {
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
   void processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event) override;
   void processEventCompoundJobFailure(const std::shared_ptr<CompoundJobFailedEvent>& event) override;
+  void processEventTimer(const std::shared_ptr<wrench::TimerEvent> &event) override;
 
 public:
   JobSchedulingAgent(const std::string& hostname, const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
