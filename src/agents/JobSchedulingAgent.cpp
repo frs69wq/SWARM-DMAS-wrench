@@ -4,8 +4,8 @@
 #include "messages/ControlMessages.h"
 #include "utils/utils.h"
 
-#include <string>
 #include <nlohmann/json.hpp>
+#include <string>
 
 WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent");
 
@@ -44,17 +44,20 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
     // 1) The job description
     // 2) The HPC system description
     // 3) The current state of the HPC system
-    auto [local_bid, decision_time] = scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
+    auto [local_bid, decision_time] =
+        scheduling_policy_->compute_bid(job_description, hpc_system_description_, current_system_status);
     WRENCH_DEBUG("%s computed a bid in %.2f for Job #%d of %.2f", hpc_system_description_->get_cname(), decision_time,
                  job_description->get_job_id(), local_bid);
 
-    this->setTimer(S4U_Simulation::getClock() + decision_time, std::string("{\"job_description\":") + job_description->to_json().dump() + 
-    ", \"local_bid\": " + std::to_string(local_bid) + ", \"compute_time\": " + std::to_string(decision_time) + "}");
-    // Step 4: Broadcast the local bid to the network of agents will be executed when the timer expires. See :processEventTimer() below
+    this->setTimer(S4U_Simulation::getClock() + decision_time,
+                   std::string("{\"job_description\":") + job_description->to_json().dump() + ", \"local_bid\": " +
+                       std::to_string(local_bid) + ", \"compute_time\": " + std::to_string(decision_time) + "}");
+    // Step 4: Broadcast the local bid to the network of agents will be executed when the timer expires. See
+    // :processEventTimer() below
 
-    //scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid, tie_breaker);
+    // scheduling_policy_->broadcast_bid_on_job(shared_from_this(), job_description, local_bid, tie_breaker);
   }
-  
+
   // Receive a bid for a job
   if (auto bid_on_job_message = std::dynamic_pointer_cast<BidOnJobMessage>(event->message)) {
     auto job_description    = bid_on_job_message->get_job_description();
@@ -140,25 +143,23 @@ void JobSchedulingAgent::processEventCompoundJobFailure(const std::shared_ptr<Co
       job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(), JobLifecycleEventType::FAIL));
 }
 
-void JobSchedulingAgent::processEventTimer(const std::shared_ptr<wrench::TimerEvent> &event)
+void JobSchedulingAgent::processEventTimer(const std::shared_ptr<wrench::TimerEvent>& event)
 {
   auto mesg = event->toString();
   // Skip "TimerEvent (message: " (21 characters) and remove last ')'
   std::string json_str = mesg.substr(21, mesg.length() - 22);
-  WRENCH_INFO("PROUT %s", json_str.c_str());
   // Parse the JSON
   nlohmann::json j = nlohmann::json::parse(json_str);
 
-  WRENCH_INFO("PROUT %s", event->toString().c_str());
   // Step 4: Broadcast the local bid to the network of agents
 
   std::random_device rd;  // Seed
   std::mt19937 gen(rd()); // Mersenne Twister engine
   std::uniform_real_distribution<double> dis(0.0, 100.0);
   auto tie_breaker = dis(gen);
-  
 
-  scheduling_policy_->broadcast_bid_on_job(shared_from_this(), std::make_shared<JobDescription>(j["job_description"]), j["local_bid"], tie_breaker);
+  scheduling_policy_->broadcast_bid_on_job(shared_from_this(), std::make_shared<JobDescription>(j["job_description"]),
+                                           j["local_bid"], tie_breaker);
 }
 
 int JobSchedulingAgent::main()
