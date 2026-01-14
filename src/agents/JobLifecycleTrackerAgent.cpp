@@ -1,6 +1,8 @@
 #include "agents/JobLifecycleTrackerAgent.h"
 #include "messages/ControlMessages.h"
 #include "utils/utils.h"
+#include <limits>
+#include <algorithm>
 
 WRENCH_LOG_CATEGORY(job_lifecycle_tracker_agent, "Log category for JobLifecycleTrackerAgent");
 
@@ -73,9 +75,84 @@ int JobLifecycleTrackerAgent::main()
   std::cout << "JobId,FinalStatus,SubmittedTo,ScheduledOn,SubmissionTime,SchedulingTime,StartTime,EndTime,DecisionTime,"
                "WaitingTime,ExecutionTime,Bids,FailureCause"
             << std::endl;
-  for (const auto& jl : *job_lifecycles_)
-    std::cout << jl->export_to_csv().c_str() << std::endl;
+
+  // Statistics of all jobs
+  double sum_dec = 0.0, sum_wait = 0.0, sum_exec = 0.0, sum_tat = 0.0;
+  double min_dec = std::numeric_limits<double>::infinity();
+  double max_dec = -std::numeric_limits<double>::infinity();
+  double min_wait = std::numeric_limits<double>::infinity();
+  double max_wait = -std::numeric_limits<double>::infinity();
+  double min_exec = std::numeric_limits<double>::infinity();
+  double max_exec = -std::numeric_limits<double>::infinity();
+  double min_tat = std::numeric_limits<double>::infinity();
+  double max_tat = -std::numeric_limits<double>::infinity();
+  size_t n_dec = 0, n_wait = 0, n_exec = 0, n_tat = 0;
+
+  for (const auto& jl : *job_lifecycles_) {
+    // individual job
+    std::cout << jl->export_to_csv() << std::endl;
+
+    // decision time for all jobs
+    double d = jl->get_decision_time();
+    if (d >= 0.0) {
+      sum_dec += d;
+      min_dec = std::min(min_dec, d);
+      max_dec = std::max(max_dec, d);
+      n_dec++;
+    }
+
+    // waiting time for all jobs
+    double w = jl->get_waiting_time();
+    if (w >= 0.0) {
+      sum_wait += w;
+      min_wait = std::min(min_wait, w);
+      max_wait = std::max(max_wait, w);
+      n_wait++;
+    }
+
+    // execution time for all jobs
+    double e = jl->get_execution_time();
+    if (e >= 0.0) {
+      sum_exec += e;
+      min_exec = std::min(min_exec, e);
+      max_exec = std::max(max_exec, e);
+      n_exec++;
+    }
+
+    // turnaround time for all jobs
+    double tat = -1.0;
+    if (jl->get_final_status() == "REJECTED") {
+      if (d >= 0.0) tat = d;
+    } else {
+      if (d >= 0.0 && w >= 0.0 && e >= 0.0) tat = d + w + e;
+    }
+    if (tat >= 0.0) {
+      sum_tat += tat;
+      min_tat = std::min(min_tat, tat);
+      max_tat = std::max(max_tat, tat);
+      n_tat++;
+    }
+  }
+
+  // Print the statistics
+  auto print_agg = [](const char* name, double sum, double mn, double mx, size_t n) {
+    if (n > 0) {
+      std::cerr << name << ": avg=" << (sum / n)
+                << " min=" << mn << " max=" << mx << " (n=" << n << ")\n";
+    } else {
+      std::cerr << name << ": no valid samples\n";
+    }
+  };
+
+  print_agg("DecisionTime",  sum_dec,  min_dec,  max_dec,  n_dec);
+  print_agg("WaitingTime",   sum_wait, min_wait, max_wait, n_wait);
+  print_agg("ExecutionTime", sum_exec, min_exec, max_exec, n_exec);
+  print_agg("TurnaroundTime",sum_tat,  min_tat,  max_tat,  n_tat);
+            
+  // for (const auto& jl : *job_lifecycles_)
+  //   std::cout << jl->export_to_csv().c_str() << std::endl;
   return 0;
+
 }
 
 } // namespace wrench

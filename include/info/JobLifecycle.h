@@ -75,6 +75,11 @@ public:
   void set_final_status(const std::string& status) { final_status_ = status; }
   void set_failure_cause(const std::string& cause) { failure_cause_ = cause; }
 
+  double get_decision_time() const { return decision_time_; }
+  double get_waiting_time() const { return waiting_time_; }
+  double get_execution_time() const { return execution_time_; }
+  const std::string& get_final_status() const { return final_status_; }
+
   std::string export_to_csv() const
   {
     std::ostringstream oss;
