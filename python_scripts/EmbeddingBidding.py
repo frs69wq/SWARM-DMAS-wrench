@@ -52,10 +52,10 @@ def embed_job(job):
     job_type = (job.get("job_type") or "OTHER")
     job_site = (job.get("hpc_site") or "OTHER")
 
-    NODES_MAX = 1024.0
-    WALL_MAX = 100000.0
-    MEM_MAX = 1024.0
-    STORAGE_MAX = 1e6
+    NODES_MAX = 2048.0
+    WALL_MAX = 10080.0   # 7 days in minutes
+    MEM_MAX = 1e6
+    STORAGE_MAX = 500.0
 
     def log01(x, cap):
         x = max(0.0, float(x))
@@ -93,10 +93,10 @@ def embed_system(sysdesc, job_site_hint=None):
     if sys_storage_cap == float("inf"):
         sys_storage_cap = 1e9 
 
-    NODES_MAX = 1024.0
-    SPEED_MAX = 4900000000000.0
-    MEM_MAX = 12000.0
-    STORAGE_MAX = 1e9
+    NODES_MAX = 10624.0         # Aurora has the most nodes
+    SPEED_MAX = 312e12          # Aurora speed in FLOPS
+    MEM_MAX = 9472*12000        # Total memory in GB for Frontier
+    STORAGE_MAX = 700e6         # 700 PB for Summit
 
     def log01(x, cap):
         x = max(0.0, float(x))
