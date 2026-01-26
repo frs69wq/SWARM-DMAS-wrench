@@ -26,10 +26,9 @@ private:
   int main() override;
 
 public:
-  ResourceSwitchingAgent(const std::string& hostname,
-                        const std::map<std::string, std::vector<std::string>>& clusters,
-                        const std::string& failure_profile)
-   : ExecutionController(hostname, "resource_switching_agent"), clusters_(clusters)
+  ResourceSwitchingAgent(const std::string& hostname, const std::map<std::string, std::vector<std::string>>& clusters,
+                         const std::string& failure_profile)
+      : ExecutionController(hostname, "resource_switching_agent"), clusters_(clusters)
   {
     parse_failure_profile(failure_profile);
   }

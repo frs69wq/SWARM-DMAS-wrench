@@ -40,19 +40,17 @@ public:
     auto system_type = HPCSystemDescription::string_to_hpc_system_type(
         wrench::S4U_Simulation::getClusterProperty(system_name, "type"));
     auto system_num_compute_nodes = host_list.size() - 1;
-    auto system_node_speed = wrench::S4U_Simulation::getHostFlopRate(host_list.front());
+    auto system_node_speed        = wrench::S4U_Simulation::getHostFlopRate(host_list.front());
     auto system_memory_amount_in_gb =
         std::stoi(wrench::S4U_Simulation::getClusterProperty(system_name, "memory_amount_in_gb"));
     auto system_storage_amount_in_gb =
         std::stod(wrench::S4U_Simulation::getClusterProperty(system_name, "storage_amount_in_gb"));
-    auto system_has_gpu = (wrench::S4U_Simulation::getClusterProperty(system_name, "has_gpu") == "True");
-    auto system_network_interconnect =
-        wrench::S4U_Simulation::getClusterProperty(system_name, "network_interconnect");
+    auto system_has_gpu              = (wrench::S4U_Simulation::getClusterProperty(system_name, "has_gpu") == "True");
+    auto system_network_interconnect = wrench::S4U_Simulation::getClusterProperty(system_name, "network_interconnect");
 
-    return std::make_shared<HPCSystemDescription>(system_name, system_site, system_type, system_num_compute_nodes,
-                                                  system_node_speed, system_memory_amount_in_gb,
-                                                  system_storage_amount_in_gb, system_has_gpu,
-                                                  system_network_interconnect);
+    return std::make_shared<HPCSystemDescription>(
+        system_name, system_site, system_type, system_num_compute_nodes, system_node_speed, system_memory_amount_in_gb,
+        system_storage_amount_in_gb, system_has_gpu, system_network_interconnect);
   }
 
   // Getters

@@ -98,8 +98,9 @@ int do_not_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_desc
   return do_pass;
 }
 
-std::string get_failure_cause_as_string(int failure_code) {
-  switch(failure_code) {
+std::string get_failure_cause_as_string(int failure_code)
+{
+  switch (failure_code) {
     case 1:
       return "Job requires GPU while System has none";
       break;
@@ -114,7 +115,9 @@ std::string get_failure_cause_as_string(int failure_code) {
   }
 }
 
-std::string get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids){
+std::string
+get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids)
+{
   std::ostringstream oss;
   oss << std::fixed << std::setprecision(2) << "\"";
   for (auto it = all_bids.begin(); it != all_bids.end(); ++it) {

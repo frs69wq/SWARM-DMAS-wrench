@@ -1,8 +1,8 @@
 #include "agents/JobLifecycleTrackerAgent.h"
 #include "messages/ControlMessages.h"
 #include "utils/utils.h"
-#include <limits>
 #include <algorithm>
+#include <limits>
 
 WRENCH_LOG_CATEGORY(job_lifecycle_tracker_agent, "Log category for JobLifecycleTrackerAgent");
 
@@ -78,14 +78,14 @@ int JobLifecycleTrackerAgent::main()
 
   // Statistics of all jobs
   double sum_dec = 0.0, sum_wait = 0.0, sum_exec = 0.0, sum_tat = 0.0;
-  double min_dec = std::numeric_limits<double>::infinity();
-  double max_dec = -std::numeric_limits<double>::infinity();
+  double min_dec  = std::numeric_limits<double>::infinity();
+  double max_dec  = -std::numeric_limits<double>::infinity();
   double min_wait = std::numeric_limits<double>::infinity();
   double max_wait = -std::numeric_limits<double>::infinity();
   double min_exec = std::numeric_limits<double>::infinity();
   double max_exec = -std::numeric_limits<double>::infinity();
-  double min_tat = std::numeric_limits<double>::infinity();
-  double max_tat = -std::numeric_limits<double>::infinity();
+  double min_tat  = std::numeric_limits<double>::infinity();
+  double max_tat  = -std::numeric_limits<double>::infinity();
   size_t n_dec = 0, n_wait = 0, n_exec = 0, n_tat = 0;
 
   for (const auto& jl : *job_lifecycles_) {
@@ -122,9 +122,11 @@ int JobLifecycleTrackerAgent::main()
     // turnaround time for all jobs
     double tat = -1.0;
     if (jl->get_final_status() == "REJECTED") {
-      if (d >= 0.0) tat = d;
+      if (d >= 0.0)
+        tat = d;
     } else {
-      if (d >= 0.0 && w >= 0.0 && e >= 0.0) tat = d + w + e;
+      if (d >= 0.0 && w >= 0.0 && e >= 0.0)
+        tat = d + w + e;
     }
     if (tat >= 0.0) {
       sum_tat += tat;
@@ -137,22 +139,20 @@ int JobLifecycleTrackerAgent::main()
   // Print the statistics
   auto print_agg = [](const char* name, double sum, double mn, double mx, size_t n) {
     if (n > 0) {
-      std::cerr << name << ": avg=" << (sum / n)
-                << " min=" << mn << " max=" << mx << " (n=" << n << ")\n";
+      std::cerr << name << ": avg=" << (sum / n) << " min=" << mn << " max=" << mx << " (n=" << n << ")\n";
     } else {
       std::cerr << name << ": no valid samples\n";
     }
   };
 
-  print_agg("DecisionTime",  sum_dec,  min_dec,  max_dec,  n_dec);
-  print_agg("WaitingTime",   sum_wait, min_wait, max_wait, n_wait);
+  print_agg("DecisionTime", sum_dec, min_dec, max_dec, n_dec);
+  print_agg("WaitingTime", sum_wait, min_wait, max_wait, n_wait);
   print_agg("ExecutionTime", sum_exec, min_exec, max_exec, n_exec);
-  print_agg("TurnaroundTime",sum_tat,  min_tat,  max_tat,  n_tat);
-            
+  print_agg("TurnaroundTime", sum_tat, min_tat, max_tat, n_tat);
+
   // for (const auto& jl : *job_lifecycles_)
   //   std::cout << jl->export_to_csv().c_str() << std::endl;
   return 0;
-
 }
 
 } // namespace wrench

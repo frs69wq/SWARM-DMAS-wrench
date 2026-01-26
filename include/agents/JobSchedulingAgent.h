@@ -30,7 +30,7 @@ class JobSchedulingAgent : public ExecutionController {
   void processEventCustom(const std::shared_ptr<CustomEvent>& event) override;
   void processEventCompoundJobCompletion(const std::shared_ptr<CompoundJobCompletedEvent>& event) override;
   void processEventCompoundJobFailure(const std::shared_ptr<CompoundJobFailedEvent>& event) override;
-  void processEventTimer(const std::shared_ptr<wrench::TimerEvent> &event) override;
+  void processEventTimer(const std::shared_ptr<wrench::TimerEvent>& event) override;
 
 public:
   JobSchedulingAgent(const std::string& hostname, const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
@@ -47,6 +47,9 @@ public:
   {
     scheduling_policy_->set_job_scheduling_agent_network(network);
   }
+  const std::shared_ptr<HPCSystemDescription>& get_hpc_system_description() const { return hpc_system_description_; }
+
+  const std::shared_ptr<BatchComputeService>& get_batch_compute_service() const { return batch_compute_service_; }
 
   void set_job_lifecycle_tracker(std::shared_ptr<JobLifecycleTrackerAgent> tracker) { tracker_ = tracker; }
   void set_heartbeat_monitor(std::shared_ptr<HeartbeatMonitorAgent> monitor) { heartbeat_monitor_ = monitor; }

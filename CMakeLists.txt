@@ -20,8 +20,9 @@ set(HEADER_FILES
   include/agents/JobLifecycleTrackerAgent.h
   include/agents/JobSchedulingAgent.h
   include/agents/ResourceSwitchingAgent.h
-  #include/agents/WorkloadCentralizedSubmissionAgent.h
+  include/agents/WorkloadCentralizedSubmissionAgent.h
   include/agents/WorkloadSubmissionAgent.h
+  include/policies/CentralizedSchedulingPolicy.h
   include/policies/PythonBiddingSchedulingPolicy.h
   include/policies/PureLocalSchedulingPolicy.h
   include/policies/RandomBiddingSchedulingPolicy.h
@@ -31,6 +32,7 @@ set(HEADER_FILES
   include/info/HPCSystemStatus.h
   include/info/JobDescription.h
   include/info/JobLifecycle.h
+  include/utils/PythonRunner.h
   include/utils.h
 )
 
@@ -39,7 +41,7 @@ set(SOURCE_FILES
   src/agents/JobLifecycleTrackerAgent.cpp
   src/agents/JobSchedulingAgent.cpp
   src/agents/ResourceSwitchingAgent.cpp
-  #src/agents/WorkloadCentralizedSubmissionAgent.cpp
+  src/agents/WorkloadCentralizedSubmissionAgent.cpp
   src/agents/WorkloadSubmissionAgent.cpp
   src/policies/SchedulingPolicy.cpp
   src/swarm_dmas.cpp

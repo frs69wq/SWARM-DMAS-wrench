@@ -1,9 +1,8 @@
 {
     "platform": "platforms/AmSC.xml",
     "workload": "workloads/heterogeneous_mix_10.json",
-    "centralized_submission": false,
-    "decentralized_policy": "PythonBidding",
-    "decentralized_bidder": "python_scripts/HeuristicBidding.py",
+    "centralized_submission": true,
+    "centralized_policy": "python_scripts/CentralizedScheduling.py",
     "heartbeat_period": 5,
     "heartbeat_expiration": 15,
     "hardware_failure_profile": "hardware_failure_profiles/test.json"

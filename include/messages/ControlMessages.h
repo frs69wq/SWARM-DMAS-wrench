@@ -15,18 +15,22 @@ namespace wrench {
 class JobRequestMessage : public ExecutionControllerCustomEventMessage {
   std::shared_ptr<JobDescription> job_description_;
   bool can_forward_;
+  bool skip_bidding_;
 
 public:
   /// @brief
   /// @param job_description job description
   /// @param can_forward whether the job can be forwarded to another job scheduling agent
-  JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward)
+  /// @param skip_bidding whether to skip the bidding process (true when sent by centralized scheduler)
+  JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward, bool skip_bidding = false)
       : ExecutionControllerCustomEventMessage(can_forward ? CONTROL_MESSAGE_SIZE : BROADCAST_MESSAGE_SIZE)
       , job_description_(job_description)
       , can_forward_(can_forward)
+      , skip_bidding_(skip_bidding)
   {
   }
   bool can_be_forwarded() const { return can_forward_; }
+  bool should_skip_bidding() const { return skip_bidding_; }
   const std::shared_ptr<JobDescription>& get_job_description() const { return job_description_; }
 };
 

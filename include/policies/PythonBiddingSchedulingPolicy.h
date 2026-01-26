@@ -93,7 +93,7 @@ public:
 
       try {
         nlohmann::json result = nlohmann::json::parse(response);
-        XBT_CVERB(swarm_dmas, "%s",result.dump().c_str());
+        XBT_CVERB(swarm_dmas, "%s", result.dump().c_str());
         if (not result.contains("bid_generation_time_seconds") || not result["bid_generation_time_seconds"].is_number())
           throw std::runtime_error("Invalid response: 'bid_generation_time_seconds' not found or not a number");
         if (result.contains("bid") && result["bid"].is_number()) {
