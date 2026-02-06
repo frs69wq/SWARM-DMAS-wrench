@@ -102,9 +102,9 @@ def compute_bid(job_description, system_description, system_status, current_simu
 
     # --- 6. Weighted Aggregation ---
     # Define importance of each factor
-    w_util = 0.33      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
-    w_resource = 0.33  # Change to Medium: Prefer correct hardware types ~ 0.3
-    w_speed = 0.33    # Change to High: User cares most about "When is my job done?" ~ 0.6
+    w_util = 0.6      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
+    w_resource = 0.1  # Change to Medium: Prefer correct hardware types ~ 0.3
+    w_speed = 0.3    # Change to High: User cares most about "When is my job done?" ~ 0.6
 
     # Normalization
     final_score = (
