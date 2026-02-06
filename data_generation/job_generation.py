@@ -7,6 +7,8 @@ from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats
+
+random.seed(42)
 np.random.seed(42)
 
 def generate_synthetic_jobs_v2(**kwargs):
@@ -15,13 +17,14 @@ def generate_synthetic_jobs_v2(**kwargs):
     scenario = kwargs.get('scenario', 'busy_day')
     
     # Define job types
-    job_types = ['HPC', 'AI', 'STORAGE', 'HYBRID']
+    job_types = ['HPC', 'AI', 'HYBRID', 'STORAGE']
+    proportions = [0.3, 0.3, 0.25, 0.15] # proportions for each job type
     # Job templates defining typical job characteristics
     job_templates = [{
         'type': 'HPC',
-        'walltime': (1,24),         # in hours
+        'walltime': (1,72),         # in hours
         'node_range': (64, 2048),
-        'requested_gpu': [False],
+        'requested_gpu': [True, False],
         'storage': (500, 50_000),   # in GB
         # Can be submitted at any site/system
         'sites': ['OLCF', 'ALCF', 'NERSC'],
@@ -29,15 +32,15 @@ def generate_synthetic_jobs_v2(**kwargs):
     }, {
         'type': 'AI',
         'walltime': (4,120), # in hours
-        'node_range': (4,256),   
+        'node_range': (16,1024),   
         'requested_gpu': [True],
         'storage': (1000,100_000), # in GB
         'sites': ['OLCF', 'ALCF', 'NERSC'],
         'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
     }, {
         'type': 'STORAGE',
-        'walltime': (1, 72),
-        'node_range': (32, 512),
+        'walltime': (1, 24),
+        'node_range': (4, 256),
         'requested_gpu': [False],
         'storage': (10_000, 500_000),
         'sites': ['OLCF', 'ALCF', 'NERSC'],
@@ -45,10 +48,10 @@ def generate_synthetic_jobs_v2(**kwargs):
     }, {
         'type': 'HYBRID',
         'walltime': (8,120),
-        'node_range': (8, 512),
+        'node_range': (16, 1024),
         # requested GPU for hybrid jobs could be either True or False
         'requested_gpu': [True, False],
-        'storage': (2000, 50_000),
+        'storage': (500, 50_000),
         'sites': ['OLCF', 'ALCF', 'NERSC'],
         'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
     }]
@@ -130,9 +133,9 @@ def generate_synthetic_jobs_v2(**kwargs):
         sites_array = sites_array[sort_idx]
         
         print(f"Job submissions span: {submission_times[0]:.2f}h to {submission_times[-1]:.2f}h (27-hour period)")
-        print(f"  OLCF (EST): {np.sum(sites_array == 'OLCF')} jobs, peak at hour 12")
-        print(f"  ALCF (CST): {np.sum(sites_array == 'ALCF')} jobs, peak at hour 13")
-        print(f"  NERSC (PST): {np.sum(sites_array == 'NERSC')} jobs, peak at hour 15")
+        print(f"  OLCF (EST): {np.sum(sites_array == 'OLCF')} jobs")
+        print(f"  ALCF (CST): {np.sum(sites_array == 'ALCF')} jobs")
+        print(f"  NERSC (PST): {np.sum(sites_array == 'NERSC')} jobs")
 
     else:
         # Submission times ~ interarrival
@@ -148,7 +151,7 @@ def generate_synthetic_jobs_v2(**kwargs):
     job_ids = np.arange(1, n_jobs + 1)
     
     # 2. Assign job-types randomly to all jobs first
-    types = [random.choice(job_types) for _ in range(n_jobs)]
+    types = random.choices(job_types, weights=proportions, k=n_jobs)
     
     # Initialize empty arrays to hold job characteristics 
     walltimes = np.zeros(n_jobs, dtype=int)
