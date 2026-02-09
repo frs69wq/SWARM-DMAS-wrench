@@ -68,11 +68,14 @@ def compute_bid(job_description, system_description, system_status, current_simu
     # --- 3. Resource Compatibility (Type Matching) ---
     if job_type == sys_type:
         score_resource = 1.0 # Perfect match
-    elif (job_type in ['HPC', 'AI', 'HYBRID'] and sys_type in ['HPC', 'AI', 'HYBRID']):
-        score_resource = 0.8 # Reasonable compatibility
-    elif (job_type == 'STORAGE' or sys_type == 'STORAGE'):
-        # Storage jobs prefer storage systems, but can run elsewhere with 70% penalty to showcase inefficiency 
-        score_resource = 0.3 if job_type != sys_type else 1.0
+    elif (job_type == 'HPC' and sys_type == 'AI'):
+        score_resource = 0.75 # penalty: 25%, HPC jobs can run on AI systems but with some inefficiency
+    elif (job_type == 'AI' and sys_type == 'HPC'):
+        score_resource = 0.85 # penalty: 15%, AI jobs can run on HPC systems but with some inefficiency
+    elif (job_type != 'HYBRID' and sys_type == 'HYBRID'):
+        score_resource = 0.92 # penalty: 8%, Non-hybrid jobs can run on hybrid systems with minor inefficiency
+    elif (job_type != 'STORAGE' and sys_type == 'STORAGE'):
+        score_resource = 0.87 # penalty: 13%, Non-storage jobs can run on storage systems but with significant inefficiency
     else:
         score_resource = 0.5 # Neutral compatibility, if new job types appear
     
