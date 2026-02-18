@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
 Analyze SWARM-DMAS simulation results from test.csv
-- Calculate makespan metric
-- Plot resource utilization for all systems
+- Calculate metrics across a decentralized system: makespan, node usage, storage usage, throughput
+- Plot resource utilization(Gantt chart) and resources across time for all systems
+- Prints summary statistics
+
+How to run:
+python ./data_analysis/analyze_results.py test.csv
 """
 
 import pandas as pd
