@@ -2,224 +2,312 @@ import argparse
 import json
 import os
 import random
-import uuid
-from typing import List
+from typing import Dict, Tuple, Optional
+
 import numpy as np
 import pandas as pd
-from scipy import stats
 
-random.seed(42)
-np.random.seed(42)
+# ----------------------------
+# Helpers
+# ----------------------------
 
-def generate_synthetic_jobs_v2(**kwargs):
-    """Scenario-based synthetic job generator."""
-    n_jobs = kwargs.get('n_jobs', 100)
-    scenario = kwargs.get('scenario', 'busy_day')
-    
-    # Define job types
-    job_types = ['HPC', 'AI', 'HYBRID', 'STORAGE']
-    proportions = [0.3, 0.3, 0.25, 0.15] # proportions for each job type
-    # Job templates defining typical job characteristics
-    job_templates = [{
-        'type': 'HPC',
-        'walltime': (1,72),         # in hours
-        'node_range': (64, 2048),
-        'requested_gpu': [True, False],
-        'storage': (500, 50_000),   # in GB
-        # Can be submitted at any site/system
-        'sites': ['OLCF', 'ALCF', 'NERSC'],
-        'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
-    }, {
-        'type': 'AI',
-        'walltime': (4,120), # in hours
-        'node_range': (16,1024),   
-        'requested_gpu': [True],
-        'storage': (1000,100_000), # in GB
-        'sites': ['OLCF', 'ALCF', 'NERSC'],
-        'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
-    }, {
-        'type': 'STORAGE',
-        'walltime': (1, 24),
-        'node_range': (4, 256),
-        'requested_gpu': [False],
-        'storage': (10_000, 500_000),
-        'sites': ['OLCF', 'ALCF', 'NERSC'],
-        'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
-    }, {
-        'type': 'HYBRID',
-        'walltime': (8,120),
-        'node_range': (16, 1024),
-        # requested GPU for hybrid jobs could be either True or False
-        'requested_gpu': [True, False],
-        'storage': (500, 50_000),
-        'sites': ['OLCF', 'ALCF', 'NERSC'],
-        'systems': ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
-    }]
-    
+def _normalize_probs(d: Dict[str, float]) -> Dict[str, float]:
+    s = sum(float(v) for v in d.values())
+    if s <= 0:
+        raise ValueError("jobtype_proportions must sum to > 0")
+    return {k: float(v) / s for k, v in d.items()}
+
+def _parse_json_arg(s: str) -> Dict:
+    try:
+        return json.loads(s)
+    except Exception as e:
+        raise ValueError(f"Invalid JSON arg: {s}. Error: {e}")
+
+def _scenario_short_frac(scenario: str) -> float:
+    if scenario == "homogeneous_short":
+        return 0.95
+    if scenario == "only_large_long":
+        return 0.05
+    if scenario == "mixed_80_20":
+        return 0.80
+    if scenario == "mixed_20_80":
+        return 0.20
+    return 0.80
+
+def _sample_log_uniform_int(rng: random.Random, lo: int, hi: int) -> int:
+    lo = max(1, int(lo))
+    hi = max(lo, int(hi))
+    return int(round(np.exp(rng.uniform(np.log(lo), np.log(hi)))))
+
+def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
+    """
+    Busy day: for each site, draw local-time submissions ~ Normal(noon, 4h),
+    then map into a shared timeline with offsets (EST=0, CST=+1, PST=+3).
+    Output is sorted times in HOURS.
+    """
+    rng = np.random.default_rng(seed)
+    tz = {'OLCF': 0, 'ALCF': 1, 'NERSC': 3}  # offsets in hours
+
+    sites_arr = np.array(sites, dtype=object)
+    all_times = []
+
+    for site, offset in tz.items():
+        cnt = int(np.sum(sites_arr == site))
+        if cnt == 0:
+            continue
+        peak = 12.0 + offset
+        t = rng.normal(loc=peak, scale=4.0, size=cnt)
+        t = np.clip(t, offset, offset + 24.0)
+        all_times.extend(t.tolist())
+
+    submission_times = np.array(sorted(all_times), dtype=float)
+    if len(submission_times) != n_jobs:
+        # fallback safety
+        submission_times = np.sort(rng.uniform(0, 24.0, size=n_jobs))
+    return submission_times
+
+def _idle_day_times(n_jobs: int, seed: int = 42) -> np.ndarray:
+    """
+    Idle/sparse: long gaps + small bursts (heavy-tailed inter-arrival).
+    Returns sorted times in HOURS within [0,24].
+    """
+    rng = np.random.default_rng(seed)
+    day_minutes = 24 * 60
+
+    times = []
+    t = 0.0
+    while len(times) < n_jobs and t < day_minutes:
+        if rng.random() < 0.7:
+            gap = rng.lognormal(mean=4.0, sigma=0.8)  # long gaps (minutes)
+        else:
+            gap = rng.exponential(scale=8.0)          # short gaps (minutes)
+        t += gap
+        if t <= day_minutes:
+            times.append(t)
+
+    while len(times) < n_jobs:
+        times.append(rng.uniform(0, day_minutes))
+
+    times = np.array(sorted(times[:n_jobs]), dtype=float) / 60.0
+    return times
+
+# ----------------------------
+# Per-job-type size bands
+# ----------------------------
+
+JOB_TYPE_BANDS = {
+    "HPC": {
+        "small_nodes": (1, 64),
+        "large_nodes": (256, 2048),
+        "short_wall": (0.25, 4),   # hours
+        "long_wall": (12, 72),     # hours
+        "small_storage": (50, 10_000),      # GB - small HPC jobs
+        "large_storage": (5_000, 50_000)     
+    },
+    "AI": {
+        "small_nodes": (1, 16),
+        "large_nodes": (256, 1024),  # up to 1024 can be allowed if you want
+        "short_wall": (1, 12),
+        "long_wall": (12, 120),
+        "small_storage": (500, 50_000),     # GB - small AI jobs (datasets, models)
+        "large_storage": (10_000, 200_000)  # GB - large AI jobs (large models, training data)
+
+    },
+    "HYBRID": {
+        "small_nodes": (1, 32),
+        "large_nodes": (256, 1024),
+        "short_wall": (1, 12),
+        "long_wall": (12, 120),
+        "small_storage": (100, 20_000),     # GB - small hybrid jobs
+        "large_storage": (5_000, 100_000)   # GB - large hybrid jobs
+    },
+    "STORAGE": {
+        "small_nodes": (1, 16),
+        "large_nodes": (256, 1024),
+        "short_wall": (0.25, 6),
+        "long_wall": (6, 24),
+        "small_storage": (10_000, 100_000),  # GB - small storage jobs (still substantial)
+        "large_storage": (50_000, 500_000)   # GB - large storage jobs (massive I/O)
+    },
+}
+
+# ----------------------------
+# Main generator
+# ----------------------------
+
+def generate_synthetic_jobs_v3(
+    n_jobs: int = 100,
+    seed: int = 42,
+    day: str = "busy",  # busy|idle
+    scenario: str = "mixed_80_20",
+    jobs_per_site: Optional[Dict[str, int]] = None,
+    jobtype_proportions: Optional[Dict[str, float]] = None,
+) -> pd.DataFrame:
+
+    if seed > 0:
+        random.seed(seed)
+        np.random.seed(seed)
+
+    # Sites + machines (your configs)
     site_configs = {
-        'OLCF': {
-            'machines': {
-                'Frontier': {'type': 'HPC', 'has_gpu' : True, 'node_limit': 9472, 'memory_limit': 12000, 'storage_limit': 700000000},
-                'Andes': {'type': 'STORAGE', 'has_gpu' : False, 'node_limit': 704, 'memory_limit': 256, 'storage_limit': 700000000}
-            } # memory and processing speed is per node in GB
-        },
-        'ALCF': {
-            'machines': {
-                'Aurora': {'type': 'AI', 'has_gpu' : True, 'node_limit': 10624, 'memory_limit': 984, 'storage_limit': 220000000},
-                'Crux': {'type': 'STORAGE','has_gpu' : False,  'node_limit': 256, 'memory_limit': 512, 'storage_limit': 220000000}
-            }
-        },
-        'NERSC': {
-            'machines': {
-                'Perlmutter-Phase-1': {'type': 'HYBRID', 'has_gpu' : True,'node_limit': 1536, 'memory_limit': 672, 'storage_limit': 35000000},
-                'Perlmutter-Phase-2': {'type': 'HYBRID', 'has_gpu' : False, 'node_limit': 3072, 'memory_limit': 512, 'storage_limit': 36000000}
-            }
-        }
+        'OLCF': {'machines': {
+            'Frontier': {'type': 'HPC', 'has_gpu': True,  'node_limit': 9472,  'memory_limit': 12000, 'storage_limit': 700000000},
+            'Andes':    {'type': 'STORAGE', 'has_gpu': False,'node_limit': 704,   'memory_limit': 256,   'storage_limit': 700000000}
+        }},
+        'ALCF': {'machines': {
+            'Aurora': {'type': 'AI', 'has_gpu': True,      'node_limit': 10624, 'memory_limit': 984,   'storage_limit': 220000000},
+            'Crux':   {'type': 'STORAGE','has_gpu': False, 'node_limit': 256,   'memory_limit': 512,   'storage_limit': 220000000}
+        }},
+        'NERSC': {'machines': {
+            'Perlmutter-Phase-1': {'type': 'HYBRID', 'has_gpu': True,  'node_limit': 1536, 'memory_limit': 672, 'storage_limit': 35000000},
+            'Perlmutter-Phase-2': {'type': 'HYBRID', 'has_gpu': False, 'node_limit': 3072, 'memory_limit': 512, 'storage_limit': 36000000}
+        }},
     }
 
-    if scenario == 'busy_day':
-        # Simulate 27-hour period across 3 timezones (EST, CST, PST)
-        # Generate submission times for n_jobs at the same time
-        # EST: hours 0-24 (peak at 12 EST = hour 12)
-        # CST: hours 0-24 but offset +1 from EST (peak at 12 CST = hour 13 in timeline)
-        # PST: hours 0-24 but offset +3 from EST (peak at 12 PST = hour 15 in timeline)
-            
-        # Timezone configurations
-        timezones = {
-            'OLCF': {'name': 'EST', 'offset': 0},    # Oak Ridge, Tennessee
-            'ALCF': {'name': 'CST', 'offset': 1},    # Argonne, Illinois  
-            'NERSC': {'name': 'PST', 'offset': 3}    # Berkeley, California
-        }
-        
-        # Distribute jobs across sites/timezones
-        jobs_per_site = n_jobs // 3
+    job_types = ['HPC', 'AI', 'HYBRID', 'STORAGE']
+
+    if jobtype_proportions is None:
+        jobtype_proportions = {"HPC": 0.3, "AI": 0.3, "HYBRID": 0.25, "STORAGE": 0.15}
+    jobtype_proportions = _normalize_probs(jobtype_proportions)
+    proportions = [jobtype_proportions[jt] for jt in job_types]
+
+    # jobs_per_site defaults
+    if jobs_per_site is None:
+        base = n_jobs // 3
         remainder = n_jobs % 3
-        
-        all_submission_times = []
-        all_sites = []
-        
-        for idx, (site, tz_info) in enumerate(timezones.items()):
-            # Calculate how many jobs for this site
-            site_jobs = jobs_per_site + (1 if idx < remainder else 0)
-            
-            # Peak at noon local time = 12 + timezone offset in global timeline
-            peak_center = 12.0 + tz_info['offset']
-            std_hours = 4.0
-            
-            # Generate normally distributed submission times for this timezone
-            site_submission_times = np.random.normal(
-                loc=peak_center,
-                scale=std_hours,
-                size=site_jobs
-            )
-            
-            # Clip to reasonable range around the peak (±12 hours from peak)
-            site_submission_times = np.clip(
-                site_submission_times, 
-                tz_info['offset'],           # Start of day in this timezone
-                tz_info['offset'] + 24.0     # End of day in this timezone
-            )
-            
-            all_submission_times.extend(site_submission_times)
-            all_sites.extend([site] * site_jobs)
-        
-        # Convert to numpy array and sort chronologically with sites
-        submission_times = np.array(all_submission_times)
-        sites_array = np.array(all_sites)
-        
-        # Sort both by submission time
-        sort_idx = np.argsort(submission_times)
-        submission_times = submission_times[sort_idx]
-        sites_array = sites_array[sort_idx]
-        
-        print(f"Job submissions span: {submission_times[0]:.2f}h to {submission_times[-1]:.2f}h (27-hour period)")
-        print(f"  OLCF (EST): {np.sum(sites_array == 'OLCF')} jobs")
-        print(f"  ALCF (CST): {np.sum(sites_array == 'ALCF')} jobs")
-        print(f"  NERSC (PST): {np.sum(sites_array == 'NERSC')} jobs")
-
-    else:
-        # Submission times ~ interarrival
-        # Exponential distribution for inter-arrival times; does not consider timezones
-        # not used
-        submission_intervals = {
-            'busy_day': 1 / 10,
+        jobs_per_site = {
+            "OLCF": base + (1 if remainder > 0 else 0),
+            "ALCF": base + (1 if remainder > 1 else 0),
+            "NERSC": base
         }
-        arrival_rate = submission_intervals.get(scenario, 1 / 10)
-        submission_times = np.cumsum(np.random.exponential(arrival_rate, n_jobs))
+    else:
+        # If custom jobs_per_site provided, override n_jobs to match it
+        n_jobs = sum(jobs_per_site.values())
+        print(f"Note: Using custom jobs_per_site with total {n_jobs} jobs")
+    # verify the sum matches n_jobs
+    if sum(jobs_per_site.values()) != n_jobs:
+        raise ValueError(f"jobs_per_site must sum to n_jobs. Got {sum(jobs_per_site.values())} vs {n_jobs}")
+   
+
+    # Build origin sites list
+    origin_sites = []
     
-    # 1. Generate Job IDs for all jobs
-    job_ids = np.arange(1, n_jobs + 1)
-    
-    # 2. Assign job-types randomly to all jobs first
+    for site, cnt in jobs_per_site.items():
+        if site not in site_configs:
+            raise ValueError(f"Unknown site in jobs_per_site: {site}")
+        origin_sites.extend([site] * int(cnt))
+    random.shuffle(origin_sites)
+
+    # Pick origin system within each site
+    origin_systems = []
+    for site in origin_sites:
+        origin_systems.append(random.choice(list(site_configs[site]["machines"].keys())))
+
+    # Submission times
+    if day == "busy":
+        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # hours
+    elif day == "idle":
+        submission_times = _idle_day_times(n_jobs, seed=seed)  # hours
+    else:
+        raise ValueError("day must be 'busy' or 'idle'")
+
+    # Scenario mixing
+    short_frac = _scenario_short_frac(scenario)
+
+    # Generate job types
     types = random.choices(job_types, weights=proportions, k=n_jobs)
-    
-    # Initialize empty arrays to hold job characteristics 
-    walltimes = np.zeros(n_jobs, dtype=int)
+
+    # Arrays
+    job_ids = np.arange(1, n_jobs + 1)
+    walltimes_min = np.zeros(n_jobs, dtype=int)
     nodes = np.zeros(n_jobs, dtype=int)
-    memories = np.zeros(n_jobs, dtype=int)
+    memories = np.zeros(n_jobs, dtype=float)
     requested_gpus = np.zeros(n_jobs, dtype=bool)
-    requested_storages = np.zeros(n_jobs, dtype=int)
-    hpc_sites = np.empty(n_jobs, dtype=object)
-    hpc_systems = np.empty(n_jobs, dtype=object)
-    
-    # 3. Generate job characteristics based on job-type template for EACH job and then assign to empty arrays (line #154-160)
+    requested_storages = np.zeros(n_jobs, dtype=float)
+
+    # Generate per job
+    rng = random.Random(seed + 123)
     for i in range(n_jobs):
-        # Get the job type
-        job_type = types[i]
+        jt = types[i]
+        bands = JOB_TYPE_BANDS[jt]
 
-        # Get the job template
-        template = job_templates[job_types.index(job_type)]
+        is_short = (rng.random() < short_frac)
 
-        # 3.1 Generate job parameters based on template
-        job_nodes = random.randint(*template['node_range'])
-        job_requested_storage = random.uniform(*template['storage'])
-        job_hpc_system = random.choice(template['systems'])
+        # GPU policy - determine first
+        if jt == "AI":
+            job_gpu = True
+        elif jt == "STORAGE":
+            job_gpu = False
+        else:
+            job_gpu = (rng.random() < (0.7 if jt == "HYBRID" else 0.3))  # hybrid more likely GPU than HPC
+
+        # Filter systems based on job type and GPU requirement
+        if jt == 'AI':
+            # AI jobs ALWAYS need GPU
+            available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
+        elif jt == 'STORAGE':
+            # STORAGE jobs NEVER need GPU - can go anywhere but no GPU systems
+            available_systems = ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
+        elif jt in ['HPC', 'HYBRID']:
+            if job_gpu:
+                # HPC/HYBRID with GPU requirement
+                available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
+            else:
+                # HPC/HYBRID without GPU requirement
+                available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1','Andes', 'Crux', 'Perlmutter-Phase-2']
+        else:
+            available_systems = list(site_configs[origin_sites[i]]["machines"].keys())
         
-        # Ensure resources don't exceed site limits 
-        # 3.1.1 check job_nodes don't exceed node limits
-        for site, config in site_configs.items():
-            # get the system limits
-            if job_hpc_system in config['machines']:
-                machine_node_limit = config['machines'][job_hpc_system]['node_limit']
-                job_nodes = min(job_nodes, machine_node_limit)
-                # ensure storage does not exceed machine limits
-                machine_storage_limit = config['machines'][job_hpc_system]['storage_limit']
-                job_requested_storage = min(job_requested_storage, machine_storage_limit)
-                break
-               
-        # 3.2 Walltime and other parameters
-        job_walltime_hours = random.randint(*template['walltime'])
-        job_walltime = job_walltime_hours * 60                      # converted to minutes
-        job_requested_gpu = random.choice(template['requested_gpu'])
+        # Select system from filtered list
+        system = rng.choice(available_systems)
         
         # Find the site for the selected system
-        for site, config in site_configs.items():
-            if job_hpc_system in config['machines']:
-                # 3.3 Job site assignment
-                job_hpc_site = site
-                memory_per_node = config['machines'][job_hpc_system]['memory_limit']
+        for site_name, site_config in site_configs.items():
+            if system in site_config["machines"]:
+                site = site_name
                 break
-        # 3.4 Total memory calculation based on nodes and per-node memory
-        job_memory = job_nodes * memory_per_node # total memory per job in GB
-        
-        # Assign generated values back to arrays
-        walltimes[i] = job_walltime
-        nodes[i] = job_nodes 
-        memories[i] = job_memory  
-        requested_gpus[i] = job_requested_gpu
-        requested_storages[i] = job_requested_storage
-        hpc_sites[i] = job_hpc_site
-        hpc_systems[i] = job_hpc_system
-   
-    # 4. Users & groups
-    user_ids = [users for users in np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)]
-    group_ids = [groups for groups in np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)]
 
-    # Compile all job data into a DataFrame for all n_jobs.
+        # Get system capabilities
+        caps = site_configs[site]["machines"][system]
+        node_cap = int(caps["node_limit"])
+        storage_cap = float(caps["storage_limit"])
+        mem_per_node_cap = float(caps["memory_limit"])
+
+        # Nodes (log-uniform)
+        lo, hi = bands["small_nodes"] if is_short else bands["large_nodes"]
+        job_nodes = _sample_log_uniform_int(rng, lo, hi)
+        job_nodes = min(job_nodes, node_cap)
+
+        # Walltime (log-uniform), store in minutes
+        wlo, whi = bands["short_wall"] if is_short else bands["long_wall"]
+        wall_h = float(np.exp(np.random.uniform(np.log(wlo), np.log(whi))))
+        wall_h = max(wlo, min(whi, wall_h))
+        job_wall_min = int(round(wall_h * 60))
+
+        # Storage (log-uniform) - use small/large bands based on is_short
+        slo, shi = bands["small_storage"] if is_short else bands["large_storage"]
+        storage = float(np.exp(np.random.uniform(np.log(slo), np.log(shi))))
+        storage = min(storage, storage_cap)
+
+        total_mem = job_nodes * mem_per_node_cap
+
+        # Assign
+        nodes[i] = job_nodes
+        walltimes_min[i] = job_wall_min
+        requested_gpus[i] = bool(job_gpu)
+        requested_storages[i] = round(storage, 2)
+        memories[i] = total_mem
+        origin_sites[i] = site  # Update with actual assigned site
+        origin_systems[i] = system  # Update with actual assigned system
+
+    # Users/groups
+    user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
+    group_ids = np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)
+
     df = pd.DataFrame({
         'JobID': job_ids,
-        'SubmissionTime': np.round(submission_times, 3),
-        'Walltime': walltimes,
+        'SubmissionTime': np.round(submission_times, 3),  # hours
+        'Walltime': walltimes_min,                        # minutes
         'Nodes': nodes,
         'MemoryGB': memories,
         'RequestedGPU': requested_gpus,
@@ -227,59 +315,53 @@ def generate_synthetic_jobs_v2(**kwargs):
         'JobType': types,
         'UserID': user_ids,
         'GroupID': group_ids,
-        'HPCSite': hpc_sites,
-        'HPCSystem': hpc_systems
+        'HPCSite': np.array(origin_sites, dtype=object),
+        'HPCSystem': np.array(origin_systems, dtype=object),
     })
 
     return df
 
+# ----------------------------
+# CLI
+# ----------------------------
+
 def main():
-
     parser = argparse.ArgumentParser(description='Generate synthetic jobs for simulation')
-    parser.add_argument('--n_jobs', type=int, default=999, help='Total number of jobs to generate')
-    parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility, -1 for no seed')
-    parser.add_argument('--scenario', type=str, default='busy_day',
-                    # following choices are not available atm
-                    choices=['busy_day', 'homogeneous_short', 'heterogeneous_mix', 'long_job_dominant',
-                             'high_parallelism', 'resource_sparse', 'bursty_idle', 'adversarial'],
-                    help='Workload scenario type')
 
-    args = vars(parser.parse_args())
+    parser.add_argument('--n_jobs', type=int, default=100)
+    parser.add_argument('--seed', type=int, default=42)
 
-    if args['seed'] > 0:
-        random.seed(args['seed'])
-        np.random.seed(args['seed'])
+    parser.add_argument('--day', type=str, default='busy', choices=['busy', 'idle'])
+    parser.add_argument('--scenario', type=str, default='mixed_80_20',
+                        choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
 
-    # Generate Jobs using the new v2 function
-    jobs_df = generate_synthetic_jobs_v2(**args)
+    parser.add_argument('--jobs_per_site', type=str, default='',
+                        help='JSON string, e.g. \'{"OLCF":34,"ALCF":33,"NERSC":33}\'')
 
-    scenario_name = args['scenario']
+    parser.add_argument('--jobtype_proportions', type=str, default='',
+                        help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
 
-    # Save to JSON
+    args = parser.parse_args()
+
+    jobs_per_site = _parse_json_arg(args.jobs_per_site) if args.jobs_per_site else None
+    jobtype_proportions = _parse_json_arg(args.jobtype_proportions) if args.jobtype_proportions else None
+
+    df = generate_synthetic_jobs_v3(
+        n_jobs=args.n_jobs,
+        seed=args.seed,
+        day=args.day,
+        scenario=args.scenario,
+        jobs_per_site=jobs_per_site,
+        jobtype_proportions=jobtype_proportions,
+    )
+
     os.makedirs("./data", exist_ok=True)
-    
-    # Convert DataFrame to JSON format
-    jobs_json = jobs_df.to_dict('records')
-    
-    # Save as JSON file
-    json_filename = f"./data/{args['scenario']}_{args['n_jobs']}.json"
-    with open(json_filename, 'w') as f:
-        json.dump(jobs_json, f, indent=2)
-    
-    print(f"Generated {len(jobs_df)} jobs for scenario '{scenario_name}'")
-    print(f"Saved to {json_filename}")
+    out = f"./data/{args.day}_{args.scenario}_{len(df)}.json"
+    with open(out, "w") as f:
+        json.dump(df.to_dict("records"), f, indent=2)
 
-    # Call script to validate jobs
-    # Uncomment the following lines to enable validation
-    # from validate_generated_jobs import validate_jobs
-    # validate_jobs(jobs_df)
-
-    # Visualize job distributions
-    # Uncomment the following lines to enable visualization 
-    # from validate_generated_jobs import visualize_job_distributions, visualize_submission_times_by_timezone
-    # visualize_job_distributions(jobs_df)
-    # visualize_submission_times_by_timezone(jobs_df)
-
+    print(f"Generated {len(df)} jobs.")
+    print(f"Saved: {out}")
 
 if __name__ == "__main__":
     main()
