@@ -239,7 +239,7 @@ def generate_synthetic_jobs_v3(
         elif jt == "STORAGE":
             job_gpu = False
         else:
-            job_gpu = (rng.random() < (0.7 if jt == "HYBRID" else 0.3))  # hybrid more likely GPU than HPC
+            job_gpu = (rng.random() < (0.5 if jt == "HYBRID" else 0.3))  # hybrid more likely GPU than HPC
 
         # Filter systems based on job type and GPU requirement
         if jt == 'AI':
@@ -259,7 +259,20 @@ def generate_synthetic_jobs_v3(
             available_systems = list(site_configs[origin_sites[i]]["machines"].keys())
         
         # Select system from filtered list
-        system = rng.choice(available_systems)
+        # system = rng.choice(available_systems)
+        if job_gpu:
+            # GPU jobs: uniform across GPU systems
+            system = random.choice(available_systems)
+        else:
+            # Non-GPU jobs: prefer CPU systems with weights based on system size
+            # Define per-system weights (higher = more jobs)
+            system_weights = {
+                'Perlmutter-Phase-2': 3.0,  # Largest CPU system (3072 nodes)
+                'Andes': 1.5,               # Medium CPU system (704 nodes)
+                'Crux': 1,                # Smallest CPU system (256 nodes)
+            }
+            weights = [system_weights.get(sys, 1.0) for sys in available_systems]
+            system = random.choices(available_systems, weights=weights, k=1)[0]
         
         # Find the site for the selected system
         for site_name, site_config in site_configs.items():
@@ -304,6 +317,33 @@ def generate_synthetic_jobs_v3(
     user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
     group_ids = np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)
 
+    # DEBUG: Analyze system distribution
+    print("\n=== System Distribution Analysis ===")
+    system_counts = pd.Series(origin_systems).value_counts()
+    print("\nSystem counts:")
+    for system, count in system_counts.items():
+        pct = (count / n_jobs) * 100
+        print(f"  {system:25s}: {count:4d} ({pct:5.1f}%)")
+    
+    # Break down by job type
+    print("\n=== Distribution by Job Type ===")
+    for jt in job_types:
+        jt_mask = [types[i] == jt for i in range(n_jobs)]
+        jt_systems = [origin_systems[i] for i in range(n_jobs) if jt_mask[i]]
+        jt_gpus = [requested_gpus[i] for i in range(n_jobs) if jt_mask[i]]
+        
+        print(f"\n{jt} jobs: {len(jt_systems)} total")
+        if len(jt_systems) > 0:
+            sys_counts = pd.Series(jt_systems).value_counts()
+            for sys, cnt in sys_counts.items():
+                # Count GPU jobs for this system
+                gpu_for_sys = sum(1 for i in range(n_jobs) if types[i] == jt and origin_systems[i] == sys and requested_gpus[i])
+                pct = (cnt / len(jt_systems)) * 100
+                print(f"  {sys:25s}: {cnt:4d} ({pct:5.1f}%), GPU: {gpu_for_sys}/{cnt}")
+            
+            gpu_count = sum(jt_gpus)
+            print(f"  Total GPU jobs: {gpu_count}/{len(jt_systems)} ({100*gpu_count/len(jt_systems):.1f}%)")
+    
     df = pd.DataFrame({
         'JobID': job_ids,
         'SubmissionTime': np.round(submission_times, 3),  # hours
