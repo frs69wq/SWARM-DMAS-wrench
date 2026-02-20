@@ -80,7 +80,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
     # E.g., Aurora (312Tf) gets a score of 63.6 (it is 63x faster than the CPU node). 
     # Andes gets 0.36 (it is slower).)
     sys_speed = system_description.get("node_speed") # in TFLOPS
-    base_sys_speed = 4900000000000.0 # Baseline system speed in FLOPS (Perlmutter CPU nodes)
+    base_sys_speed = 1.5e12
     sys_perf = round(sys_speed / base_sys_speed, 2)
     # system_description["network_gbps"] by default is 200 Gbps for each one described in AmSC.xml
     sys_network_gbps = 200 
