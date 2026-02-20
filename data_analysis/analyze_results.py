@@ -290,9 +290,11 @@ def main():
     
     # Generate plots
     print("\nGenerating plots...")
-    plot_resource_utilization(df, output_dir / 'resource_utilization.png')
-    plot_utilization_percentage(df, output_dir / 'utilization_percentage.png')
-    
+    # plot_resource_utilization(df, output_dir / 'resource_utilization.png')
+    # plot_utilization_percentage(df, output_dir / 'utilization_percentage.png')
+    file_stem = csv_path.stem  # e.g., idle_mixed_80_20_100_llm_claude_bidder
+    plot_resource_utilization(df, output_dir / f"{file_stem}_resource_utilization.png")
+    plot_utilization_percentage(df, output_dir / f"{file_stem}_utilization_percentage.png")    
     print("\n✓ Analysis complete!")
 
 if __name__ == "__main__":
