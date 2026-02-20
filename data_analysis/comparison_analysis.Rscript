@@ -1,0 +1,132 @@
+#!/usr/bin/Rscript --vanilla
+
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+
+args <- commandArgs(trailingOnly=TRUE)
+
+if (length(args) < 2) {
+  stop("Usage: Rscript plot_aggregated_results.R aggregated_metrics.csv output_dir")
+}
+
+input_file <- args[1]
+output_dir <- args[2]
+
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+data <- read.csv(input_file)
+
+# Create workload label
+data$workload <- paste(data$day, data$workload_type, data$num_jobs, sep = "_")
+
+workloads <- unique(data$workload)
+
+safe_bar_plot <- function(df, y_col, y_sd_col=NULL, title_text) {
+
+  if (!(y_col %in% colnames(df))) {
+    return(NULL)
+  }
+
+  p <- ggplot(df, aes(x=strategy, y=.data[[y_col]], fill=strategy)) +
+    geom_bar(stat="identity") +
+    ggtitle(title_text) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle=45, hjust=1),
+          legend.position="none")
+
+  # Add error bars if std column exists
+  if (!is.null(y_sd_col) && y_sd_col %in% colnames(df)) {
+    p <- p + geom_errorbar(
+      aes(ymin=.data[[y_col]] - .data[[y_sd_col]],
+          ymax=.data[[y_col]] + .data[[y_sd_col]]),
+      width=0.2
+    )
+  }
+
+  return(p)
+}
+
+for (w in workloads) {
+
+  subset_data <- data %>% filter(workload == w)
+
+  plots <- list()
+
+  # Makespan
+  plots[[length(plots)+1]] <- safe_bar_plot(
+    subset_data,
+    "makespan_minutes",
+    NULL,
+    paste("Makespan -", w)
+  )
+
+  # Throughput
+  plots[[length(plots)+1]] <- safe_bar_plot(
+    subset_data,
+    "throughput_jobs_per_hour",
+    NULL,
+    paste("Throughput -", w)
+  )
+
+  # Turnaround (mean + std)
+  plots[[length(plots)+1]] <- safe_bar_plot(
+    subset_data,
+    "turnaround_mean",
+    "turnaround_std",
+    paste("Mean Turnaround -", w)
+  )
+
+  # Waiting (mean + std)
+  plots[[length(plots)+1]] <- safe_bar_plot(
+    subset_data,
+    "waiting_mean",
+    "waiting_std",
+    paste("Mean Waiting -", w)
+  )
+
+  # Execution (mean + std)
+  plots[[length(plots)+1]] <- safe_bar_plot(
+    subset_data,
+    "execution_mean",
+    "execution_std",
+    paste("Mean Execution -", w)
+  )
+
+  # completed vs failed jobs
+  if (all(c("completed_jobs", "failed_jobs") %in% colnames(subset_data))) {
+
+    status_data <- data.frame(
+      strategy = rep(subset_data$strategy, 2),
+      FinalStatus = rep(c("Completed", "Failed"),
+                        each = nrow(subset_data)),
+      Count = c(subset_data$completed_jobs,
+                subset_data$failed_jobs)
+    )
+
+    p_status <- ggplot(status_data,
+                      aes(x = strategy, y = Count, fill = FinalStatus)) +
+      geom_bar(stat = "identity") +
+      ggtitle(paste("FinalStatus Distribution -", w)) +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+    plots[[length(plots)+1]] <- p_status
+  }
+
+  # Remove NULL plots (if some metrics missing)
+  plots <- plots[!sapply(plots, is.null)]
+
+  if (length(plots) == 0) {
+    next
+  }
+
+  output_file <- file.path(output_dir, paste0(w, "_comparison.pdf"))
+
+  ggsave(output_file,
+         device = cairo_pdf,
+         plot = do.call(grid.arrange, c(plots, ncol=2)),
+         width = 16, height = 12, dpi = 300)
+
+  cat("Saved:", output_file, "\n")
+}
