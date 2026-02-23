@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-PY_ANALYZER="data_analysis/analyze_results.py"
+PY_ANALYZER="data_analysis/analyze_results_old.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
 RESULT_DIRS=("results" "results/centralized")
 PLOTS_DIR="plots/individual"
@@ -61,49 +61,3 @@ for day in "${DAYS[@]}"; do
         done
     done
 done
-
-
-# for day in "${DAYS[@]}"; do
-#     if [ "$day" == "idle" ]; then
-#         num=100
-#     else
-#         num=700
-#     fi
-
-#     for type in "${TYPES[@]}"; do
-#         workload_name="${day}_${type}_${num}"
-        
-#         # PythonBidding policies
-#         for bidder in "${PYTHON_BIDDERS[@]}"; do
-#             csv_file="$RESULTS_DIR/${workload_name}_${bidder}.csv"
-#             if [ -f "$csv_file" ]; then
-#                 base_name=$(basename "$csv_file" .csv)
-
-#                 echo "Analyzing $csv_file"
-
-#                 python "$PY_ANALYZER" "$csv_file" --output-dir "$PLOTS_DIR"
-#                 Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
-#             else
-#                 echo "Skipping missing file: $csv_file"
-#             fi
-#         done
-
-#         # Baseline policies
-#         for policy in "${BASELINE_POLICIES[@]}"; do
-#             csv_file="$RESULTS_DIR/${workload_name}_${policy}.csv"
-
-#             if [ -f "$csv_file" ]; then
-#                 base_name=$(basename "$csv_file" .csv)
-
-#                 echo "Analyzing $csv_file"
-
-#                 python "$PY_ANALYZER" "$csv_file" --output-dir "$PLOTS_DIR"
-#                 Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
-#             else
-#                 echo "Skipping missing file: $csv_file"
-#             fi
-#         done
-#     done
-# done
-
-# echo "All analyses complete."

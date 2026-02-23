@@ -28,69 +28,69 @@ RESULT_DIR=results
 
 mkdir -p $RESULT_DIR
 
-# # Run experiments for PythonBidding policies
-# PYTHON_BIDDERS=(
-#     "python_scripts/HeuristicBidding.py"
-#     "python_scripts/EmbeddingBidding.py"
-#     # "python_scripts/llm_claude_bidder.py"
-# )
+# Run experiments for PythonBidding policies
+PYTHON_BIDDERS=(
+    "python_scripts/HeuristicBidding.py"
+    "python_scripts/EmbeddingBidding.py"
+    # "python_scripts/llm_claude_bidder.py"
+)
 
-# for workload in "${WORKLOADS[@]}"; do
-#     workload_name=$(basename "$workload" .json)
+for workload in "${WORKLOADS[@]}"; do
+    workload_name=$(basename "$workload" .json)
 
-#     for bidder in "${PYTHON_BIDDERS[@]}"; do
-#         bidder_name=$(basename "$bidder" .py)
+    for bidder in "${PYTHON_BIDDERS[@]}"; do
+        bidder_name=$(basename "$bidder" .py)
 
-#         output_file="$RESULT_DIR/${workload_name}_${bidder_name}.csv"
-#         temp_json="temp_config.json"
+        output_file="$RESULT_DIR/${workload_name}_${bidder_name}.csv"
+        temp_json="temp_config.json"
 
-#         jq \
-#         --arg workload "$workload" \
-#         --arg bidder "$bidder" \
-#         '
-#         .workload = $workload |
-#         .decentralized_policy = "PythonBidding" |
-#         .decentralized_bidder = $bidder
-#         ' $TEMPLATE > $temp_json
+        jq \
+        --arg workload "$workload" \
+        --arg bidder "$bidder" \
+        '
+        .workload = $workload |
+        .decentralized_policy = "PythonBidding" |
+        .decentralized_bidder = $bidder
+        ' $TEMPLATE > $temp_json
 
-#         echo "Running $workload_name - PythonBidding - $bidder_name"
+        echo "Running $workload_name - PythonBidding - $bidder_name"
 
-#         $EXEC_FILE $temp_json > "$output_file"
+        $EXEC_FILE $temp_json > "$output_file"
 
-#         rm $temp_json
-#     done
-# done
+        rm $temp_json
+    done
+done
 
 
-# # Run experiments for baseline bidding policies
-# BASELINE_POLICIES=(
-#         "RandomBidding" 
-#         "PureLocal"
-#     )
+# Run experiments for baseline bidding policies
+BASELINE_POLICIES=(
+        "RandomBidding" 
+        "PureLocal"
+    )
 
-# for workload in "${WORKLOADS[@]}"; do
-#     workload_name=$(basename "$workload" .json)
+for workload in "${WORKLOADS[@]}"; do
+    workload_name=$(basename "$workload" .json)
 
-#     for bidder in "${BASELINE_POLICIES[@]}"; do
-#         output_file="$RESULT_DIR/${workload_name}_${bidder}.csv"
-#         temp_json="temp_config.json"
+    for bidder in "${BASELINE_POLICIES[@]}"; do
+        output_file="$RESULT_DIR/${workload_name}_${bidder}.csv"
+        temp_json="temp_config.json"
 
-#         jq \
-#         --arg workload "$workload" \
-#         --arg policy "$bidder" \
-#         '
-#         .workload = $workload |
-#         .decentralized_policy = $policy |
-#         del(.decentralized_bidder)
-#         ' $TEMPLATE > $temp_json
+        jq \
+        --arg workload "$workload" \
+        --arg policy "$bidder" \
+        '
+        .workload = $workload |
+        .decentralized_policy = $policy |
+        del(.decentralized_bidder)
+        ' $TEMPLATE > $temp_json
 
-#         echo "Running $workload_name - $bidder"
+        echo "Running $workload_name - $bidder"
 
-#         $EXEC_FILE $temp_json > "$output_file"
+        $EXEC_FILE $temp_json > "$output_file"
 
-#         rm $temp_json
-#     done
-# done
+        rm $temp_json
+    done
+done
 
 
 CENTRALIZED_TEMPLATE=experiments/test_centralized.json
@@ -123,4 +123,4 @@ for workload in "${WORKLOADS[@]}"; do
 done
 
 
-# echo "All experiments completed."
+echo "All experiments completed."
