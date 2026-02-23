@@ -1,0 +1,155 @@
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+
+args <- commandArgs(trailingOnly=TRUE)
+
+if (length(args) < 2) {
+  stop("Usage: Rscript comparison_modes.R aggregated_metrics.csv output_dir")
+}
+
+input_file <- args[1]
+output_dir <- args[2]
+
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+data <- read.csv(input_file)
+
+# Ensure mode is factor with consistent order
+data$mode <- factor(data$mode, levels = c("decentralized", "centralized"))
+
+# Create workload label
+data$workload <- paste(data$day, data$workload_type, data$num_jobs, sep = "_")
+
+workloads <- unique(data$workload)
+strategies <- unique(data$strategy)
+
+# ---------------------------------------------------
+# Helper function for mode comparison plots
+# ---------------------------------------------------
+
+safe_bar_plot <- function(df, y_col, y_sd_col=NULL, title_text) {
+
+  if (!(y_col %in% colnames(df))) {
+    return(NULL)
+  }
+
+  p <- ggplot(df, aes(x=mode, y=.data[[y_col]], fill=mode)) +
+    geom_bar(stat="identity", width=0.6) +
+    scale_fill_manual(values=c("#1f77b4", "#ff7f0e")) +
+    ggtitle(title_text) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(size=11),
+      plot.title = element_text(size=13, face="bold"),
+      legend.position="none"
+    )
+
+  if (!is.null(y_sd_col) && y_sd_col %in% colnames(df)) {
+    p <- p + geom_errorbar(
+      aes(ymin=.data[[y_col]] - .data[[y_sd_col]],
+          ymax=.data[[y_col]] + .data[[y_sd_col]]),
+      width=0.2
+    )
+  }
+
+  return(p)
+}
+
+# ---------------------------------------------------
+# Main Loop
+# ---------------------------------------------------
+
+for (w in workloads) {
+
+  for (s in strategies) {
+
+    subset_data <- data %>%
+      filter(workload == w, strategy == s)
+
+    # Require both modes to compare
+    if (length(unique(subset_data$mode)) < 2) {
+      next
+    }
+
+    plots <- list()
+
+    plots[[length(plots)+1]] <- safe_bar_plot(
+      subset_data,
+      "makespan_minutes",
+      NULL,
+      paste("Makespan -", s, "-", w)
+    )
+
+    plots[[length(plots)+1]] <- safe_bar_plot(
+      subset_data,
+      "throughput_jobs_per_hour",
+      NULL,
+      paste("Throughput -", s, "-", w)
+    )
+
+    plots[[length(plots)+1]] <- safe_bar_plot(
+      subset_data,
+      "turnaround_mean",
+      "turnaround_std",
+      paste("Turnaround (Mean ± SD) -", s, "-", w)
+    )
+
+    plots[[length(plots)+1]] <- safe_bar_plot(
+      subset_data,
+      "waiting_mean",
+      "waiting_std",
+      paste("Waiting (Mean ± SD) -", s, "-", w)
+    )
+
+    plots[[length(plots)+1]] <- safe_bar_plot(
+      subset_data,
+      "execution_mean",
+      "execution_std",
+      paste("Execution (Mean ± SD) -", s, "-", w)
+    )
+
+    # Completion vs Failure
+    if (all(c("completed_jobs", "failed_jobs") %in% colnames(subset_data))) {
+
+      status_data <- data.frame(
+        mode = rep(subset_data$mode, 2),
+        FinalStatus = rep(c("Completed", "Failed"),
+                          each = nrow(subset_data)),
+        Count = c(subset_data$completed_jobs,
+                  subset_data$failed_jobs)
+      )
+
+      p_status <- ggplot(status_data,
+                         aes(x = mode, y = Count, fill = FinalStatus)) +
+        geom_bar(stat = "identity") +
+        ggtitle(paste("Completion Distribution -", s, "-", w)) +
+        theme_bw() +
+        theme(
+          plot.title = element_text(size=13, face="bold")
+        )
+
+      plots[[length(plots)+1]] <- p_status
+    }
+
+    plots <- plots[!sapply(plots, is.null)]
+
+    if (length(plots) == 0) {
+      next
+    }
+
+    output_file <- file.path(
+      output_dir,
+      paste0(w, "_", s, "_mode_comparison.pdf")
+    )
+
+    ggsave(output_file,
+           device = cairo_pdf,
+           plot = do.call(grid.arrange, c(plots, ncol=2)),
+           width = 16,
+           height = 12,
+           dpi = 300)
+
+    cat("Saved:", output_file, "\n")
+  }
+}

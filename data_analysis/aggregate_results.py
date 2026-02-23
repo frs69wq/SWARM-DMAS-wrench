@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 RESULTS_DIR = Path("results")
+CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
 # workload files
@@ -110,25 +111,31 @@ def main():
         for workload_type in TYPES:
             workload_name = f"{day}_{workload_type}_{num_jobs}"
 
-            for strategy in ALL_STRATEGIES:
-                csv_path = RESULTS_DIR / f"{workload_name}_{strategy}.csv"
+            for mode, base_dir in [
+                ("decentralized", RESULTS_DIR),
+                ("centralized", CENTRALIZED_DIR),
+            ]:
 
-                if not csv_path.exists():
-                    print(f"Skipping missing file: {csv_path.name}")
-                    continue
+                for strategy in ALL_STRATEGIES:
+                    csv_path = base_dir / f"{workload_name}_{strategy}.csv"
 
-                print(f"Processing {csv_path.name}")
+                    if not csv_path.exists():
+                        print(f"Skipping missing file: {csv_path}")
+                        continue
 
-                metrics = calculate_metrics(csv_path)
+                    print(f"Processing {mode} - {csv_path.name}")
 
-                row = {
-                    "day": day,
-                    "workload_type": workload_type,
-                    "num_jobs": num_jobs,
-                    "strategy": strategy,
-                    **metrics,
-                }
-                rows.append(row)
+                    metrics = calculate_metrics(csv_path)
+
+                    row = {
+                        "mode": mode,
+                        "day": day,
+                        "workload_type": workload_type,
+                        "num_jobs": num_jobs,
+                        "strategy": strategy,
+                        **metrics,
+                    }
+                    rows.append(row)
 
     if not rows:
         print("No matching CSV files found.")
@@ -137,17 +144,16 @@ def main():
     df_summary = pd.DataFrame(rows)
 
     df_summary.sort_values(
-        by=["day", "workload_type", "num_jobs", "strategy"],
+        by=["mode", "day", "workload_type", "num_jobs", "strategy"],
         inplace=True,
     )
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     df_summary.to_csv(OUTPUT_FILE, index=False)
 
     print("\nAggregated Metrics Table:\n")
     print(df_summary.to_string(index=False))
     print(f"\nSaved aggregated metrics to {OUTPUT_FILE}")
-
 
 if __name__ == "__main__":
     main()
