@@ -38,3 +38,7 @@ build/
 *~
 CMakeCache.txt
 CMakeFiles/
+
+__pycache__/
+*.pdf
+temp_config.json
