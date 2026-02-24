@@ -100,6 +100,7 @@ mkdir -p $RESULT_DIR_CENTRALIZED
 # --------------------------------------------------
 # Run experiments for CENTRALIZED scheduling
 # This is now hardcoded for a single bidding method, this will be automated later when CentralizedScheduling.py is updated.
+# Make sure to set 'bidder=' (line 108 in this script) as the same value as what is used in line 6 of python_scripts/CentralizedScheduling.py.
 # --------------------------------------------------
 
 for workload in "${WORKLOADS[@]}"; do
