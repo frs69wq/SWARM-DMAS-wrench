@@ -108,7 +108,7 @@ std::string get_failure_cause_as_string(int failure_code)
       return "Job requires more nodes than the System has";
       break;
     case 3:
-      return "Job requires more nodes than the System has";
+      return "Job requires more memory than the System has";
       break;
     default:
       return "Unknown failure code";
