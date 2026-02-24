@@ -43,7 +43,7 @@ This script:
 - Stores generated plots under `plots/individual` and `plots/centralized` directories for decentralized and centralized modes, respectively.
 
 
-### 3. Compare Results
+### 4. Compare Results
 Before running this script, make sure to run `data_analysis/aggregate_results.py` to aggregate results across jobs for all experiment scenarios. Then from project directory, run:
 ```bash
 bash bash_scripts/compare_results.sh
