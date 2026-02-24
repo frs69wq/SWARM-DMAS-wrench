@@ -5,7 +5,7 @@ Analyze SWARM-DMAS simulation results from test.csv
 - Plot resource utilization for all systems
 
 How to Run:
-python ../data_analysis/analyze_results.py --workload workloads/test_workload.json
+python ../data_analysis/analyze_results.py -c ./results/busy_mixed_20_80_700_PureLocal.csv
 """
 
 import pandas as pd
@@ -28,6 +28,7 @@ def load_job_definitions(workload_path):
 def load_results(csv_path, jobs_df=None):
     """Load simulation results from CSV file and merge with job definitions."""
     df = pd.read_csv(csv_path)
+    
         # rename jobid column 
     if jobs_df is not None and 'JobID' in jobs_df.columns:
         jobs_df.rename(columns={ 'JobID': 'JobId'}, inplace=True)
@@ -137,7 +138,7 @@ def plot_resource_utilization(df, output_path='resource_utilization.png'):
     
     axes[-1].set_xlabel('Execution Time (mins)', fontweight='bold')
     
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 1, 0.97])  # leave space for suptitle
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"✓ Resource utilization plot saved to {output_path}")
     plt.close()
@@ -213,7 +214,7 @@ def plot_utilization_percentage(df, output_path='utilization_percentage.png'):
     ax1.grid(True, alpha=0.3)
     
     # Configure percentage plot
-    ax2.set_xlabel('Time (hours)', fontweight='bold', fontsize=12)
+    ax2.set_xlabel('Time (mins)', fontweight='bold', fontsize=12)
     ax2.set_ylabel('Utilization (%)', fontweight='bold', fontsize=12)
     ax2.set_title('Percentage Utilization (Relative to System Capacity)', fontweight='bold', fontsize=14)
     ax2.legend(loc='best', fontsize=10)
@@ -371,11 +372,9 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description='Analyze SWARM-DMAS simulation results')
-    parser.add_argument('csv_file', nargs='?', default='../build/test.csv',
-                       help='Path to CSV results file (default: ../build/test.csv)')
-    parser.add_argument('--workload', '-w', default='../build/workloads/test_workload.json',
-                       help='Path to workload JSON file (optional, for job definitions)')
-    parser.add_argument('--output-dir', default='./plots',
+    parser.add_argument('--csv_file','-c', default='../build/results/busy_homogeneous_short_700_PureLocal.csv',
+                       help='Path to CSV results file (default: ../build/results/busy_homogeneous_short_700_PureLocal.csv)')
+    parser.add_argument('--output-dir', '-o', default='./plots',
                        help='Output directory for plots (default: ./plots)')
     
     args = parser.parse_args()
@@ -386,25 +385,27 @@ def main():
     
     if not csv_path.exists():
         print(f"Error: CSV file not found: {csv_path}")
-        print(f"Please run the simulation first to generate test.csv")
+        print(f"Please run the simulation first to generate {csv_path.name}")
         return
     
     # Load job definitions if workload file provided
+    # extract everything except the last part of the csv filename to get the workload name
+    workload_fname = '_'.join(csv_path.stem.split('_')[:-1])  
+    workload_path = Path(f'../build/workloads/{workload_fname}.json')
+    print(f"Looking for workload file: {workload_fname} at {workload_path}")
     jobs_df = None
-    if args.workload:
-        workload_path = Path(args.workload)
-        if workload_path.exists():
-            print(f"Loading job definitions from: {workload_path}")
-            jobs_df = load_job_definitions(workload_path)
-            print(f"Loaded {len(jobs_df)} job definitions")
-        else:
-            print(f"Warning: Workload file not found: {workload_path}")
+    
+    # workload_path = Path(args.workload)
+    if workload_path.exists():
+        print(f"Loading job definitions from: {workload_path}")
+        jobs_df = load_job_definitions(workload_path)
+        print(f"Loaded {len(jobs_df)} job definitions")
+    else:
+        print(f"Warning: Workload file not found: {workload_path}")
     
     # print(f"Loading results from: {csv_path}")
     df = load_results(csv_path, jobs_df)
     
-    # print(f"Loaded {len(df)} jobs")
-    # print(f"Columns: {', '.join(df.columns)}")
     
     # Calculate makespan
     makespan = calculate_makespan(df)
