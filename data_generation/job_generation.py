@@ -98,7 +98,7 @@ def _idle_day_times(n_jobs: int, seed: int = 42) -> np.ndarray:
 JOB_TYPE_BANDS = {
     "HPC": {
         "small_nodes": (1, 64),
-        "large_nodes": (256, 2048),
+        "large_nodes": (256, 2048), 
         "short_wall": (0.25, 4),   # hours
         "long_wall": (12, 72),     # hours
         "small_storage": (50, 10_000),      # GB - small HPC jobs
@@ -106,7 +106,7 @@ JOB_TYPE_BANDS = {
     },
     "AI": {
         "small_nodes": (1, 16),
-        "large_nodes": (256, 1024),  # up to 1024 can be allowed if you want
+        "large_nodes": (256, 1024),  
         "short_wall": (1, 12),
         "long_wall": (12, 120),
         "small_storage": (500, 50_000),     # GB - small AI jobs (datasets, models)
@@ -115,7 +115,7 @@ JOB_TYPE_BANDS = {
     },
     "HYBRID": {
         "small_nodes": (1, 32),
-        "large_nodes": (256, 1024),
+        "large_nodes": (256, 1024),  
         "short_wall": (1, 12),
         "long_wall": (12, 120),
         "small_storage": (100, 20_000),     # GB - small hybrid jobs
@@ -123,7 +123,7 @@ JOB_TYPE_BANDS = {
     },
     "STORAGE": {
         "small_nodes": (1, 16),
-        "large_nodes": (256, 1024),
+        "large_nodes": (256, 1024), 
         "short_wall": (0.25, 6),
         "long_wall": (6, 24),
         "small_storage": (10_000, 100_000),  # GB - small storage jobs (still substantial)
@@ -170,47 +170,7 @@ def generate_synthetic_jobs_v3(
         jobtype_proportions = {"HPC": 0.3, "AI": 0.3, "HYBRID": 0.25, "STORAGE": 0.15}
     jobtype_proportions = _normalize_probs(jobtype_proportions)
     proportions = [jobtype_proportions[jt] for jt in job_types]
-
-    # jobs_per_site defaults
-    if jobs_per_site is None:
-        base = n_jobs // 3
-        remainder = n_jobs % 3
-        jobs_per_site = {
-            "OLCF": base + (1 if remainder > 0 else 0),
-            "ALCF": base + (1 if remainder > 1 else 0),
-            "NERSC": base
-        }
-    else:
-        # If custom jobs_per_site provided, override n_jobs to match it
-        n_jobs = sum(jobs_per_site.values())
-        print(f"Note: Using custom jobs_per_site with total {n_jobs} jobs")
-    # verify the sum matches n_jobs
-    if sum(jobs_per_site.values()) != n_jobs:
-        raise ValueError(f"jobs_per_site must sum to n_jobs. Got {sum(jobs_per_site.values())} vs {n_jobs}")
    
-
-    # Build origin sites list
-    origin_sites = []
-    
-    for site, cnt in jobs_per_site.items():
-        if site not in site_configs:
-            raise ValueError(f"Unknown site in jobs_per_site: {site}")
-        origin_sites.extend([site] * int(cnt))
-    random.shuffle(origin_sites)
-
-    # Pick origin system within each site
-    origin_systems = []
-    for site in origin_sites:
-        origin_systems.append(random.choice(list(site_configs[site]["machines"].keys())))
-
-    # Submission times
-    if day == "busy":
-        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # hours
-    elif day == "idle":
-        submission_times = _idle_day_times(n_jobs, seed=seed)  # hours
-    else:
-        raise ValueError("day must be 'busy' or 'idle'")
-
     # Scenario mixing
     short_frac = _scenario_short_frac(scenario)
 
@@ -224,6 +184,8 @@ def generate_synthetic_jobs_v3(
     memories = np.zeros(n_jobs, dtype=float)
     requested_gpus = np.zeros(n_jobs, dtype=bool)
     requested_storages = np.zeros(n_jobs, dtype=float)
+    origin_sites = np.empty(n_jobs, dtype=object)
+    origin_systems = np.empty(n_jobs, dtype=object)
 
     # Generate per job
     rng = random.Random(seed + 123)
@@ -232,7 +194,8 @@ def generate_synthetic_jobs_v3(
         bands = JOB_TYPE_BANDS[jt]
 
         is_short = (rng.random() < short_frac)
-
+        # print(f"Generating job {i+1}/{n_jobs}: type={jt}, short={is_short}")
+        
         # GPU policy - determine first
         if jt == "AI":
             job_gpu = True
@@ -241,35 +204,31 @@ def generate_synthetic_jobs_v3(
         else:
             job_gpu = (rng.random() < (0.5 if jt == "HYBRID" else 0.3))  # hybrid more likely GPU than HPC
 
-        # Filter systems based on job type and GPU requirement
-        if jt == 'AI':
-            # AI jobs ALWAYS need GPU
-            available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
-        elif jt == 'STORAGE':
-            # STORAGE jobs NEVER need GPU - can go anywhere but no GPU systems
-            available_systems = ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1', 'Perlmutter-Phase-2']
-        elif jt in ['HPC', 'HYBRID']:
-            if job_gpu:
-                # HPC/HYBRID with GPU requirement
-                available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
-            else:
-                # HPC/HYBRID without GPU requirement
-                available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1','Andes', 'Crux', 'Perlmutter-Phase-2']
-        else:
-            available_systems = list(site_configs[origin_sites[i]]["machines"].keys())
-        
-        # Select system from filtered list
-        # system = rng.choice(available_systems)
-        if job_gpu:
+
+        if job_gpu: # ai, hpc, hybrid with gpu
             # GPU jobs: uniform across GPU systems
-            system = random.choice(available_systems)
-        else:
+            available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
+            
+            # define per system weights (higher = more jobs)
+            system_weights = {
+                'Frontier': 1,           # GPU-capable but can be used for non-GPU jobs
+                'Aurora': 1,             # GPU-capable but can be used for non-GPU jobs
+                'Perlmutter-Phase-1': 0.8   # GPU-capable but can be used for non-GPU jobs
+            }
+            weights = [system_weights.get(sys, 1.0) for sys in available_systems]
+            system = random.choices(available_systems, weights=weights, k=1)[0]
+        else: # storage, hpc, hybrid without gpu
             # Non-GPU jobs: prefer CPU systems with weights based on system size
             # Define per-system weights (higher = more jobs)
+            available_systems = ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1','Perlmutter-Phase-2']
+            
             system_weights = {
-                'Perlmutter-Phase-2': 3.0,  # Largest CPU system (3072 nodes)
+                'Perlmutter-Phase-2': 1.7,  # Largest CPU system (3072 nodes)
                 'Andes': 1.5,               # Medium CPU system (704 nodes)
                 'Crux': 1,                # Smallest CPU system (256 nodes)
+                'Frontier': 1,           # GPU-capable but can be used for non-GPU jobs
+                'Aurora': 1,             # GPU-capable but can be used for non-GPU jobs
+                'Perlmutter-Phase-1': 1   # GPU-capable but can be used for non-GPU jobs
             }
             weights = [system_weights.get(sys, 1.0) for sys in available_systems]
             system = random.choices(available_systems, weights=weights, k=1)[0]
@@ -316,6 +275,14 @@ def generate_synthetic_jobs_v3(
     # Users/groups
     user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
     group_ids = np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)
+
+     # Submission times
+    if day == "busy":
+        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # hours
+    elif day == "idle":
+        submission_times = _idle_day_times(n_jobs, seed=seed)  # hours
+    else:
+        raise ValueError("day must be 'busy' or 'idle'")
 
     # DEBUG: Analyze system distribution
     print("\n=== System Distribution Analysis ===")
@@ -374,16 +341,11 @@ def main():
     parser.add_argument('--day', type=str, default='busy', choices=['busy', 'idle'])
     parser.add_argument('--scenario', type=str, default='mixed_80_20',
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
-
-    parser.add_argument('--jobs_per_site', type=str, default='',
-                        help='JSON string, e.g. \'{"OLCF":34,"ALCF":33,"NERSC":33}\'')
-
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
 
     args = parser.parse_args()
 
-    jobs_per_site = _parse_json_arg(args.jobs_per_site) if args.jobs_per_site else None
     jobtype_proportions = _parse_json_arg(args.jobtype_proportions) if args.jobtype_proportions else None
 
     df = generate_synthetic_jobs_v3(
@@ -391,7 +353,7 @@ def main():
         seed=args.seed,
         day=args.day,
         scenario=args.scenario,
-        jobs_per_site=jobs_per_site,
+        # jobs_per_site=jobs_per_site,
         jobtype_proportions=jobtype_proportions,
     )
 
