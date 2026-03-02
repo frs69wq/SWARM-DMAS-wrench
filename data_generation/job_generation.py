@@ -3,6 +3,7 @@ import json
 import os
 import random
 from typing import Dict, Tuple, Optional
+from scipy import stats
 
 import numpy as np
 import pandas as pd
@@ -25,19 +26,27 @@ def _parse_json_arg(s: str) -> Dict:
 
 def _scenario_short_frac(scenario: str) -> float:
     if scenario == "homogeneous_short":
-        return 0.95
+        return 1.00
     if scenario == "only_large_long":
-        return 0.05
+        return 0.00
     if scenario == "mixed_80_20":
         return 0.80
     if scenario == "mixed_20_80":
         return 0.20
     return 0.80
 
-def _sample_log_uniform_int(rng: random.Random, lo: int, hi: int) -> int:
+def _sample_uniform_int(rng: random.Random, lo: int, hi: int) -> int:
     lo = max(1, int(lo))
     hi = max(lo, int(hi))
-    return int(round(np.exp(rng.uniform(np.log(lo), np.log(hi)))))
+    return rng.randint(lo, hi)
+
+def _sample_lognormal_int(rng: random.Random, lo: int, hi: int, mu: float, sigma: float) -> int:
+    lo = max(1, int(lo))
+    hi = max(lo, int(hi))
+    # stats.lognorm(s=sigma, scale=np.exp(mu))
+    sample = int(round(rng.lognormvariate(mu, sigma)))
+    # sample = stats.lognorm(s=sigma, scale=np.exp(mu)).rvs(random_state=rng)
+    return max(lo, min(hi, sample))
 
 def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
     """
@@ -95,18 +104,42 @@ def _idle_day_times(n_jobs: int, seed: int = 42) -> np.ndarray:
 # Per-job-type size bands
 # ----------------------------
 
+# Global node bands across all job types
+GLOBAL_NODE_BANDS: Dict[str, Tuple[int, int]] = {
+    "small_nodes": (1, 64),
+    "large_nodes": (65, 10624),
+}
+
+# Global node sampling config
+# For log-normal: mode = exp(mu - sigma^2) -> mu = log(mode) + sigma^2
+NODE_SAMPLING = {
+    "dist": "lognormal",
+    "sigma": 0.8,
+    "desired_mode": 512,
+}
+
+def _sample_nodes(rng: random.Random, size_class: str) -> int:
+    lo, hi = GLOBAL_NODE_BANDS[size_class]
+
+    # Requirement:
+    # - small_nodes: uniformly sampled integers
+    # - large_nodes: lognormal with peak near desired_mode
+    if size_class == "small_nodes":
+        return _sample_uniform_int(rng, lo, hi)
+
+    sigma = float(NODE_SAMPLING.get("sigma", 0.8))
+    desired_mode = float(NODE_SAMPLING.get("desired_mode", 512))
+    mu = float(np.log(desired_mode) + sigma ** 2)
+    return _sample_lognormal_int(rng, lo, hi, mu, sigma)
+
 JOB_TYPE_BANDS = {
     "HPC": {
-        "small_nodes": (1, 64),
-        "large_nodes": (256, 2048), 
         "short_wall": (0.25, 4),   # hours
         "long_wall": (12, 72),     # hours
         "small_storage": (50, 10_000),      # GB - small HPC jobs
         "large_storage": (5_000, 50_000)     
     },
     "AI": {
-        "small_nodes": (1, 16),
-        "large_nodes": (256, 1024),  
         "short_wall": (1, 12),
         "long_wall": (12, 120),
         "small_storage": (500, 50_000),     # GB - small AI jobs (datasets, models)
@@ -114,16 +147,12 @@ JOB_TYPE_BANDS = {
 
     },
     "HYBRID": {
-        "small_nodes": (1, 32),
-        "large_nodes": (256, 1024),  
         "short_wall": (1, 12),
         "long_wall": (12, 120),
         "small_storage": (100, 20_000),     # GB - small hybrid jobs
         "large_storage": (5_000, 100_000)   # GB - large hybrid jobs
     },
     "STORAGE": {
-        "small_nodes": (1, 16),
-        "large_nodes": (256, 1024), 
         "short_wall": (0.25, 6),
         "long_wall": (6, 24),
         "small_storage": (10_000, 100_000),  # GB - small storage jobs (still substantial)
@@ -173,6 +202,7 @@ def generate_synthetic_jobs_v3(
    
     # Scenario mixing
     short_frac = _scenario_short_frac(scenario)
+    print(f"Scenario: {scenario}, short job fraction: {short_frac:.2f}")
 
     # Generate job types
     types = random.choices(job_types, weights=proportions, k=n_jobs)
@@ -208,12 +238,11 @@ def generate_synthetic_jobs_v3(
         if job_gpu: # ai, hpc, hybrid with gpu
             # GPU jobs: uniform across GPU systems
             available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
-            
             # define per system weights (higher = more jobs)
             system_weights = {
-                'Frontier': 1,           # GPU-capable but can be used for non-GPU jobs
-                'Aurora': 1,             # GPU-capable but can be used for non-GPU jobs
-                'Perlmutter-Phase-1': 0.8   # GPU-capable but can be used for non-GPU jobs
+                'Frontier': 1,           
+                'Aurora': 1,             
+                'Perlmutter-Phase-1': 0.8   
             }
             weights = [system_weights.get(sys, 1.0) for sys in available_systems]
             system = random.choices(available_systems, weights=weights, k=1)[0]
@@ -221,7 +250,6 @@ def generate_synthetic_jobs_v3(
             # Non-GPU jobs: prefer CPU systems with weights based on system size
             # Define per-system weights (higher = more jobs)
             available_systems = ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1','Perlmutter-Phase-2']
-            
             system_weights = {
                 'Perlmutter-Phase-2': 1.7,  # Largest CPU system (3072 nodes)
                 'Andes': 1.5,               # Medium CPU system (704 nodes)
@@ -245,9 +273,9 @@ def generate_synthetic_jobs_v3(
         storage_cap = float(caps["storage_limit"])
         mem_per_node_cap = float(caps["memory_limit"])
 
-        # Nodes (log-uniform)
-        lo, hi = bands["small_nodes"] if is_short else bands["large_nodes"]
-        job_nodes = _sample_log_uniform_int(rng, lo, hi)
+        # Nodes (global/common bands across job types)
+        size_class = "small_nodes" if is_short else "large_nodes"
+        job_nodes = _sample_nodes(rng, size_class)
         job_nodes = min(job_nodes, node_cap)
 
         # Walltime (log-uniform), store in minutes
@@ -269,8 +297,8 @@ def generate_synthetic_jobs_v3(
         requested_gpus[i] = bool(job_gpu)
         requested_storages[i] = round(storage, 2)
         memories[i] = total_mem
-        origin_sites[i] = site  # Update with actual assigned site
-        origin_systems[i] = system  # Update with actual assigned system
+        origin_sites[i] = site  
+        origin_systems[i] = system  
 
     # Users/groups
     user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
@@ -337,7 +365,6 @@ def main():
 
     parser.add_argument('--n_jobs', type=int, default=100)
     parser.add_argument('--seed', type=int, default=42)
-
     parser.add_argument('--day', type=str, default='busy', choices=['busy', 'idle'])
     parser.add_argument('--scenario', type=str, default='mixed_80_20',
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
@@ -353,7 +380,6 @@ def main():
         seed=args.seed,
         day=args.day,
         scenario=args.scenario,
-        # jobs_per_site=jobs_per_site,
         jobtype_proportions=jobtype_proportions,
     )
 
