@@ -144,14 +144,19 @@ def compute_bid(job_description, system_description, system_status):
     alpha = 0.1
     norm_slowdown = math.exp(-alpha * slowdown) # lower slowdown => higher score
    
-    # --- 6. Weighted Aggregation ---
+    # --- 5. Weighted Aggregation ---
     # Define importance of each factor
     w_util = 0.6      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
     w_resource = 0.1  # Change to Medium: Prefer correct hardware types ~ 0.3
     w_speed = 0.3    # Change to High: User cares most about "When is my job done?" ~ 0.6
     
-    # apply penalty of randomly between 10-20% if the job type is AI and will be running on non-AI s.type.
-    ai_data_xfer_penalty = random.uniform(0.1, 0.2) if job_type == "AI" and sys_type != "AI" else 0.0
+    # --- 6. AI data-transfer penalty on final score (10-20%) ---
+    ai_data_xfer_penalty = 0.0
+    if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
+        seed_string = f"{job_description.get('job_id')}_{sys_name}_ai_xfer"
+        seed_value = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
+        rng = random.Random(seed_value)
+        ai_data_xfer_penalty = rng.uniform(0.10, 0.20)
     
     # Normalization
     final_score = (
