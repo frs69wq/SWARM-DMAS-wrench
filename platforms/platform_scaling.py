@@ -13,7 +13,7 @@ documentation:
 How to run:
 python platform_scaling.py --radical 8 
 or 
-python platform_scaling.py --radical 8 --speed 2 --memory_amount_in_gb 4 --storage_amount_in_gb 4 --input platforms/amsc.xml --output AmSC_scaled.xml
+python platform_scaling.py --radical 8 --speed 2 --memory_amount_in_gb 8 --storage_amount_in_gb 4 --input platforms/amsc.xml --output AmSC_scaled.xml
 """
 
 NUMERIC_WITH_UNIT_RE = re.compile(
@@ -80,22 +80,6 @@ def _replace_attribute_value(line: str, attr_name: str, transform) -> str:
 
 	return pattern.sub(_replace, line)
 
-
-def _resolve_input_path(preferred_path: str) -> str:
-	if os.path.exists(preferred_path):
-		return preferred_path
-
-	candidate_paths = [
-		"platforms/amsc.xml",
-		"platforms/AmSC.xml",
-	]
-	for path in candidate_paths:
-		if os.path.exists(path):
-			return path
-
-	raise FileNotFoundError(
-		f"Could not find input XML file. Tried: {preferred_path}, {', '.join(candidate_paths)}"
-	)
 
 
 def scale_platform(
@@ -188,8 +172,8 @@ def parse_args() -> argparse.Namespace:
 	)
 	parser.add_argument(
 		"--input",
-		default="platforms/amsc.xml",
-		help="Input platform XML path (default: platforms/amsc.xml)",
+		default="platforms/AmSC.xml",
+		help="Input platform XML path (default: platforms/AmSC.xml)",
 	)
 	parser.add_argument(
 		"--output",
@@ -201,9 +185,28 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
 	args = parse_args()
-	input_path = _resolve_input_path(args.input)
+	input_path = args.input
 	# output file in the folder
+	radical_scale_factor = args.radical
+	storage_scale_factor = args.storage_amount_in_gb
+	speed_scale_factor = args.speed
+	memory_scale_factor = args.memory_amount_in_gb
+
+	# updated output file name
+	output_fname = "AmSC_scaled_down"
+	if radical_scale_factor != 1.0:
+		output_fname += f"_radical_{radical_scale_factor}"
+	if speed_scale_factor != 1.0:
+		output_fname += f"_speed_{speed_scale_factor}"
+	if memory_scale_factor != 1.0:
+		output_fname += f"_memory_{memory_scale_factor}"
+	if storage_scale_factor != 1.0:
+		output_fname += f"_storage_{storage_scale_factor}"
+	output_fname += ".xml"
+	
+	args.output = output_fname
 	output_path = os.path.join(os.path.dirname(input_path), args.output)
+
 	scale_platform(
 		input_path=input_path,
 		output_path=output_path,
