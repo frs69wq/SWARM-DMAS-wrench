@@ -131,7 +131,7 @@ def compute_bid(job_description, system_description, system_status):
     
     # --- 4. Time Cost Calculation ---
     # A. Queue Wait Time
-    r_j = job_submission_time * 3600.0 # convert to seconds
+    r_j = job_submission_time  # in seconds
     wait_time = current_job_start_time_estimate # in seconds
     
     # B. Execution Time (adjusted for hardware speed)
