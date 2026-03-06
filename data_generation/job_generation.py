@@ -3,7 +3,6 @@ import json
 import os
 import random
 from typing import Dict, Tuple, Optional
-from scipy import stats
 
 import numpy as np
 import pandas as pd
@@ -11,7 +10,37 @@ import pandas as pd
 # ----------------------------
 # Helpers
 # ----------------------------
+import xml.etree.ElementTree as ET
 
+def _parse_radical_upper(radical: str) -> int:
+    # "1-5312" -> 5312
+    if "-" in radical:
+        return int(radical.split("-", 1)[1].strip())
+    return int(radical.strip())
+
+def parse_site_configs_from_platform_xml(xml_path: str) -> dict:
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+
+    site_configs = {}
+
+    for cluster in root.findall(".//cluster"):
+        machine = cluster.attrib["id"]
+        node_limit = _parse_radical_upper(cluster.attrib["radical"])
+
+        props = {p.attrib["id"]: p.attrib.get("value", "") for p in cluster.findall("./prop")}
+        site = props["site"]
+
+        site_configs.setdefault(site, {"machines": {}})
+        site_configs[site]["machines"][machine] = {
+            "type": props["type"],
+            "has_gpu": props["has_gpu"].strip().lower() == "true",
+            "node_limit": node_limit,
+            "memory_limit": float(props["memory_amount_in_gb"]),
+            "storage_limit": float(props["storage_amount_in_gb"]),
+        }
+
+    return site_configs
 def _normalize_probs(d: Dict[str, float]) -> Dict[str, float]:
     s = sum(float(v) for v in d.values())
     if s <= 0:
@@ -48,57 +77,81 @@ def _sample_lognormal_int(rng: random.Random, lo: int, hi: int, mu: float, sigma
     # sample = stats.lognorm(s=sigma, scale=np.exp(mu)).rvs(random_state=rng)
     return max(lo, min(hi, sample))
 
+def _format_scale_tag(value: float) -> str:
+    return f"{float(value):g}".replace(".", "p")
+
 def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
     """
     Busy day: for each site, draw local-time submissions ~ Normal(noon, 4h),
     then map into a shared timeline with offsets (EST=0, CST=+1, PST=+3).
-    Output is sorted times in HOURS.
+    Output is per-job times in SECONDS (aligned with input job order).
     """
     rng = np.random.default_rng(seed)
-    tz = {'OLCF': 0, 'ALCF': 1, 'NERSC': 3}  # offsets in hours
+    hour = 3600.0
+    tz = {'OLCF': 0.0, 'ALCF': 1.0 * hour, 'NERSC': 3.0 * hour}  # offsets in seconds
 
     sites_arr = np.array(sites, dtype=object)
-    all_times = []
+    if len(sites_arr) != n_jobs:
+        raise ValueError(f"Expected {n_jobs} sites, got {len(sites_arr)}")
 
-    for site, offset in tz.items():
-        cnt = int(np.sum(sites_arr == site))
+    submission_times = np.empty(n_jobs, dtype=float)
+
+    for site in np.unique(sites_arr):
+        mask = (sites_arr == site)
+        cnt = int(np.sum(mask))
         if cnt == 0:
             continue
-        peak = 12.0 + offset
-        t = rng.normal(loc=peak, scale=4.0, size=cnt)
-        t = np.clip(t, offset, offset + 24.0)
-        all_times.extend(t.tolist())
+        offset = tz.get(str(site), 0.0)
+        peak = 12.0 * hour + offset
+        t = rng.normal(loc=peak, scale=4.0 * hour, size=cnt)
+        t = np.clip(t, offset, offset + 24.0 * hour)
+        submission_times[mask] = t
 
-    submission_times = np.array(sorted(all_times), dtype=float)
-    if len(submission_times) != n_jobs:
-        # fallback safety
-        submission_times = np.sort(rng.uniform(0, 24.0, size=n_jobs))
     return submission_times
 
-def _idle_day_times(n_jobs: int, seed: int = 42) -> np.ndarray:
+def _idle_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
     """
     Idle/sparse: long gaps + small bursts (heavy-tailed inter-arrival).
-    Returns sorted times in HOURS within [0,24].
+    Site-aware version: sample local idle arrivals per site, then shift by timezone.
+    Output is per-job times in SECONDS (aligned with input job order).
     """
     rng = np.random.default_rng(seed)
-    day_minutes = 24 * 60
+    hour = 3600.0
+    tz = {'OLCF': 0.0, 'ALCF': 1.0 * hour, 'NERSC': 3.0 * hour}  # offsets in seconds
 
-    times = []
-    t = 0.0
-    while len(times) < n_jobs and t < day_minutes:
-        if rng.random() < 0.7:
-            gap = rng.lognormal(mean=4.0, sigma=0.8)  # long gaps (minutes)
-        else:
-            gap = rng.exponential(scale=8.0)          # short gaps (minutes)
-        t += gap
-        if t <= day_minutes:
-            times.append(t)
+    sites_arr = np.array(sites, dtype=object)
+    if len(sites_arr) != n_jobs:
+        raise ValueError(f"Expected {n_jobs} sites, got {len(sites_arr)}")
 
-    while len(times) < n_jobs:
-        times.append(rng.uniform(0, day_minutes))
+    submission_times = np.empty(n_jobs, dtype=float)
+    day_seconds = 24 * 3600.0
 
-    times = np.array(sorted(times[:n_jobs]), dtype=float) / 60.0
-    return times
+    for site in np.unique(sites_arr):
+        mask = (sites_arr == site)
+        cnt = int(np.sum(mask))
+        if cnt == 0:
+            continue
+
+        offset = tz.get(str(site), 0.0)
+        times = []
+        t = 0.0
+
+        while len(times) < cnt and t < day_seconds:
+            if rng.random() < 0.7:
+                gap = rng.lognormal(mean=4.0, sigma=0.8) * 60.0  # long gaps (seconds)
+            else:
+                gap = rng.exponential(scale=8.0) * 60.0          # short gaps (seconds)
+            t += gap
+            if t <= day_seconds:
+                times.append(t)
+
+        while len(times) < cnt:
+            times.append(rng.uniform(0, day_seconds))
+
+        local_times = np.array(sorted(times[:cnt]), dtype=float)
+        submission_times[mask] = local_times + offset
+
+    return submission_times
 
 # ----------------------------
 # Per-job-type size bands
@@ -118,8 +171,14 @@ NODE_SAMPLING = {
     "desired_mode": 512,
 }
 
-def _sample_nodes(rng: random.Random, size_class: str) -> int:
-    lo, hi = GLOBAL_NODE_BANDS[size_class]
+def _sample_nodes(
+    rng: random.Random,
+    size_class: str,
+    node_bands: Optional[Dict[str, Tuple[int, int]]] = None,
+    desired_mode: Optional[float] = None,
+) -> int:
+    bands = node_bands or GLOBAL_NODE_BANDS
+    lo, hi = bands[size_class]
 
     # Requirement:
     # - small_nodes: uniformly sampled integers
@@ -128,8 +187,8 @@ def _sample_nodes(rng: random.Random, size_class: str) -> int:
         return _sample_uniform_int(rng, lo, hi)
 
     sigma = float(NODE_SAMPLING.get("sigma", 0.8))
-    desired_mode = float(NODE_SAMPLING.get("desired_mode", 512))
-    mu = float(np.log(desired_mode) + sigma ** 2)
+    mode = float(desired_mode if desired_mode is not None else NODE_SAMPLING.get("desired_mode", 512))
+    mu = float(np.log(mode) + sigma ** 2)
     return _sample_lognormal_int(rng, lo, hi, mu, sigma)
 
 JOB_TYPE_BANDS = {
@@ -171,28 +230,84 @@ def generate_synthetic_jobs_v3(
     scenario: str = "mixed_80_20",
     jobs_per_site: Optional[Dict[str, int]] = None,
     jobtype_proportions: Optional[Dict[str, float]] = None,
+    sfactor: float = 1.0,
 ) -> pd.DataFrame:
+
+    # Apply scale divisors to capacities if provided.
+    # Example: sfactor=8 -> node_limit = node_limit / 8
+    sfactor = max(float(sfactor), 1e-9)
 
     if seed > 0:
         random.seed(seed)
         np.random.seed(seed)
 
-    # Sites + machines (your configs)
-    site_configs = {
-        'OLCF': {'machines': {
-            'Frontier': {'type': 'HPC', 'has_gpu': True,  'node_limit': 9472,  'memory_limit': 12000, 'storage_limit': 700000000},
-            'Andes':    {'type': 'STORAGE', 'has_gpu': False,'node_limit': 704,   'memory_limit': 256,   'storage_limit': 700000000}
-        }},
-        'ALCF': {'machines': {
-            'Aurora': {'type': 'AI', 'has_gpu': True,      'node_limit': 10624, 'memory_limit': 984,   'storage_limit': 220000000},
-            'Crux':   {'type': 'STORAGE','has_gpu': False, 'node_limit': 256,   'memory_limit': 512,   'storage_limit': 220000000}
-        }},
-        'NERSC': {'machines': {
-            'Perlmutter-Phase-1': {'type': 'HYBRID', 'has_gpu': True,  'node_limit': 1536, 'memory_limit': 672, 'storage_limit': 35000000},
-            'Perlmutter-Phase-2': {'type': 'HYBRID', 'has_gpu': False, 'node_limit': 3072, 'memory_limit': 512, 'storage_limit': 36000000}
-        }},
-    }
+    
+    if sfactor != 1.0:
+        site_configs = parse_site_configs_from_platform_xml(f"platforms/AmSC_scaled_down_{int(sfactor)}.xml")
+    else:
+        site_configs = parse_site_configs_from_platform_xml("platforms/AmSC.xml")
 
+    
+    # prettier print of platform config
+    print("=== Original Platform Config ===")
+    for site_name, site_cfg in site_configs.items():
+        print(f"Site: {site_name}")
+        for machine_name, machine_cfg in site_cfg["machines"].items():
+            print(
+                f"  Machine: {machine_name:22s} | "
+                f"type={machine_cfg['type']:10s} | "
+                f"GPU={'Yes' if machine_cfg['has_gpu'] else 'No ':3s} | "
+                f"nodes={machine_cfg['node_limit']:5d} | "
+                f"mem/node={machine_cfg['memory_limit']:6.1f} GB | "
+                f"storage={machine_cfg['storage_limit']:.2e} GB"
+            )
+    
+    # Adapt global/common node sampling to scaled platform limits
+    max_scaled_nodes = max(
+        machine_cfg["node_limit"]
+        for site_cfg in site_configs.values()
+        for machine_cfg in site_cfg["machines"].values()
+    )
+    # scale down small node bands proportionally, but keep at least 1 node
+    # small_lo, small_hi = GLOBAL_NODE_BANDS["small_nodes"]
+    small_lo = max(1, int(GLOBAL_NODE_BANDS["small_nodes"][0] / sfactor))
+    small_hi = max(small_lo, int(GLOBAL_NODE_BANDS["small_nodes"][1] / sfactor))
+    
+    # scale down large_lo and large_hi proportionally, but keep at least 1 node
+    large_lo = min(GLOBAL_NODE_BANDS["large_nodes"][0], small_hi + 1)
+    large_hi = max(large_lo, int(max_scaled_nodes))
+    scaled_node_bands = {
+        "small_nodes": (small_lo, small_hi),
+        "large_nodes": (large_lo, large_hi),
+    }
+    # edge case: if small_hi == small_lo, keep small_hi+1 and accordingly adjust large_lo to maintain the gap
+    if small_hi == small_lo:
+        small_hi = small_lo + 1
+        large_lo = max(large_lo, small_hi + 1)
+        scaled_node_bands["small_nodes"] = (small_lo, small_hi)
+        scaled_node_bands["large_nodes"] = (large_lo, large_hi)
+
+    
+    # sanity check: ensure scaled bands fit within platform limits
+    if large_hi < large_lo:
+        raise ValueError(
+            f"Invalid scaled node bands after applying sfactor={sfactor}: "
+            f"large_hi ({large_hi}) < large_lo ({large_lo}). "
+            f"Check platform limits and scaling logic."
+        )
+    
+    # Keep desired mode semantics (peak near 512 on baseline), but scale with platform size
+    base_mode = float(NODE_SAMPLING.get("desired_mode", 512))
+    scaled_desired_mode = max(float(large_lo), min(float(large_hi), base_mode / sfactor))
+
+    print("\n=== Node Sampling (Effective) ===")
+    print(f"small_nodes band: {scaled_node_bands['small_nodes']}")
+    print(f"large_nodes band: {scaled_node_bands['large_nodes']}")
+    print(
+        f"large_nodes lognormal sigma={NODE_SAMPLING.get('sigma', 0.8)}, "
+        f"base_mode={base_mode}, scaled_mode={scaled_desired_mode:.2f}"
+    )
+    
     job_types = ['HPC', 'AI', 'HYBRID', 'STORAGE']
 
     if jobtype_proportions is None:
@@ -202,7 +317,6 @@ def generate_synthetic_jobs_v3(
    
     # Scenario mixing
     short_frac = _scenario_short_frac(scenario)
-    print(f"Scenario: {scenario}, short job fraction: {short_frac:.2f}")
 
     # Generate job types
     types = random.choices(job_types, weights=proportions, k=n_jobs)
@@ -224,7 +338,6 @@ def generate_synthetic_jobs_v3(
         bands = JOB_TYPE_BANDS[jt]
 
         is_short = (rng.random() < short_frac)
-        # print(f"Generating job {i+1}/{n_jobs}: type={jt}, short={is_short}")
         
         # GPU policy - determine first
         if jt == "AI":
@@ -275,7 +388,7 @@ def generate_synthetic_jobs_v3(
 
         # Nodes (global/common bands across job types)
         size_class = "small_nodes" if is_short else "large_nodes"
-        job_nodes = _sample_nodes(rng, size_class)
+        job_nodes = _sample_nodes(rng, size_class, node_bands=scaled_node_bands, desired_mode=scaled_desired_mode)
         job_nodes = min(job_nodes, node_cap)
 
         # Walltime (log-uniform), store in minutes
@@ -306,12 +419,19 @@ def generate_synthetic_jobs_v3(
 
      # Submission times
     if day == "busy":
-        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # hours
+        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # seconds
     elif day == "idle":
-        submission_times = _idle_day_times(n_jobs, seed=seed)  # hours
+        submission_times = _idle_day_times_by_site(n_jobs, origin_sites, seed=seed)  # seconds
     else:
         raise ValueError("day must be 'busy' or 'idle'")
 
+    print("\n=== Submission Time Sampling ===")
+    print(
+        f"unit=seconds, min={submission_times.min():.3f}, "
+        f"max={submission_times.max():.3f}, mean={submission_times.mean():.3f}"
+    )
+
+    
     # DEBUG: Analyze system distribution
     print("\n=== System Distribution Analysis ===")
     system_counts = pd.Series(origin_systems).value_counts()
@@ -341,7 +461,7 @@ def generate_synthetic_jobs_v3(
     
     df = pd.DataFrame({
         'JobID': job_ids,
-        'SubmissionTime': np.round(submission_times, 3),  # hours
+        'SubmissionTime': np.round(submission_times, 3),  # seconds
         'Walltime': walltimes_min,                        # minutes
         'Nodes': nodes,
         'MemoryGB': memories,
@@ -354,6 +474,10 @@ def generate_synthetic_jobs_v3(
         'HPCSystem': np.array(origin_systems, dtype=object),
     })
 
+    # Ensure jobs are ordered by submission time and IDs follow that order.
+    df = df.sort_values(by="SubmissionTime", kind="mergesort").reset_index(drop=True)
+    df["JobID"] = np.arange(1, len(df) + 1)
+
     return df
 
 # ----------------------------
@@ -363,17 +487,32 @@ def generate_synthetic_jobs_v3(
 def main():
     parser = argparse.ArgumentParser(description='Generate synthetic jobs for simulation')
 
-    parser.add_argument('--n_jobs', type=int, default=100)
+    parser.add_argument('--n_jobs', type=int, default=32_000)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--day', type=str, default='busy', choices=['busy', 'idle'])
     parser.add_argument('--scenario', type=str, default='mixed_80_20',
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
+    parser.add_argument("--sfactor", type=float, required=False, default=1.0, help="Radical scale divisor (default: 1.0)")
 
     args = parser.parse_args()
 
     jobtype_proportions = _parse_json_arg(args.jobtype_proportions) if args.jobtype_proportions else None
+
+    # Adjust number of jobs based on day type and scaling factor
+    if args.sfactor != 1.0:
+        if args.day == "busy":
+            # Busy day: scale down proportionally to platform size
+            args.n_jobs = max(1, int(args.n_jobs / args.sfactor))
+        elif args.day == "idle":
+            # Idle day: keep more jobs to avoid long inter-arrival times
+            args.n_jobs = max(1, int(args.n_jobs / (args.sfactor * 6)))
+    elif args.day == "idle":
+        # For idle day with no scaling, we can still reduce jobs to avoid excessively long gaps
+        args.n_jobs = max(1, int(args.n_jobs / 6))
+
+    print(f"Generating {args.n_jobs} jobs , day={args.day}, sfactor={args.sfactor}")
 
     df = generate_synthetic_jobs_v3(
         n_jobs=args.n_jobs,
@@ -381,10 +520,13 @@ def main():
         day=args.day,
         scenario=args.scenario,
         jobtype_proportions=jobtype_proportions,
+        sfactor=args.sfactor,
     )
 
     os.makedirs("./data", exist_ok=True)
-    out = f"./data/{args.day}_{args.scenario}_{len(df)}.json"
+    r_tag = _format_scale_tag(args.sfactor)
+ 
+    out = f"./data/{args.day}_{args.scenario}_{len(df)}_r{r_tag}.json"
     with open(out, "w") as f:
         json.dump(df.to_dict("records"), f, indent=2)
 
