@@ -159,8 +159,8 @@ def _idle_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndar
 
 # Global node bands across all job types
 GLOBAL_NODE_BANDS: Dict[str, Tuple[int, int]] = {
-    "small_nodes": (1, 64),
-    "large_nodes": (65, 10624),
+    "small_nodes": (1, 256),
+    "large_nodes": (257, 10624),
 }
 
 # Global node sampling config
@@ -168,7 +168,7 @@ GLOBAL_NODE_BANDS: Dict[str, Tuple[int, int]] = {
 NODE_SAMPLING = {
     "dist": "lognormal",
     "sigma": 0.8,
-    "desired_mode": 512,
+    "desired_mode": 700, # calculated based on 512 peak for (64-10624) 
 }
 
 def _sample_nodes(
@@ -297,7 +297,7 @@ def generate_synthetic_jobs_v3(
         )
     
     # Keep desired mode semantics (peak near 512 on baseline), but scale with platform size
-    base_mode = float(NODE_SAMPLING.get("desired_mode", 512))
+    base_mode = float(NODE_SAMPLING.get("desired_mode", 700))
     scaled_desired_mode = max(float(large_lo), min(float(large_hi), base_mode / sfactor))
 
     print("\n=== Node Sampling (Effective) ===")
@@ -462,7 +462,7 @@ def generate_synthetic_jobs_v3(
     df = pd.DataFrame({
         'JobID': job_ids,
         'SubmissionTime': np.round(submission_times, 3),  # seconds
-        'Walltime': walltimes_min,                        # minutes
+        'Walltime': walltimes_min*60,                        # seconds
         'Nodes': nodes,
         'MemoryGB': memories,
         'RequestedGPU': requested_gpus,
@@ -507,10 +507,10 @@ def main():
             args.n_jobs = max(1, int(args.n_jobs / args.sfactor))
         elif args.day == "idle":
             # Idle day: keep more jobs to avoid long inter-arrival times
-            args.n_jobs = max(1, int(args.n_jobs / (args.sfactor * 6)))
+            args.n_jobs = max(1, int(args.n_jobs / (args.sfactor)))
     elif args.day == "idle":
         # For idle day with no scaling, we can still reduce jobs to avoid excessively long gaps
-        args.n_jobs = max(1, int(args.n_jobs / 6))
+        args.n_jobs = max(1, int(args.n_jobs / 1))
 
     print(f"Generating {args.n_jobs} jobs , day={args.day}, sfactor={args.sfactor}")
 
