@@ -135,7 +135,7 @@ def compute_bid(job_description, system_description, system_status):
     wait_time = current_job_start_time_estimate # in seconds
     
     # B. Execution Time (adjusted for hardware speed)
-    pred_exec_time = (req_walltime*60.0) / sys_perf
+    pred_exec_time = (req_walltime) / sys_perf
     
     C_j = wait_time + pred_exec_time
     total_time_cost = C_j -  r_j # in seconds
