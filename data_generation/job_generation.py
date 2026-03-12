@@ -836,10 +836,10 @@ def main():
         sync_sites=args.sync_sites,
     )
 
-    os.makedirs("./data_generation/data", exist_ok=True)
+    os.makedirs("./data", exist_ok=True)
     r_tag = _format_scale_tag(args.sfactor)
 
-    out = f"data/{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json"
+    out = f"./data/{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json"
     with open(out, "w") as f:
         json.dump(df.to_dict("records"), f, indent=2)
 
