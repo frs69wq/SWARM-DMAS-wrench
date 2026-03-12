@@ -825,7 +825,7 @@ def main():
 
     print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
 
-    df = generate_synthetic_jobs_v3(
+    df = generate_synthetic_jobs_v4(
         n_jobs=args.n_jobs,
         seed=args.seed,
         arrival_pattern=args.arrival_pattern,
