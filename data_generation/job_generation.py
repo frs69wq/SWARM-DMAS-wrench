@@ -41,6 +41,7 @@ def parse_site_configs_from_platform_xml(xml_path: str) -> dict:
         }
 
     return site_configs
+
 def _normalize_probs(d: Dict[str, float]) -> Dict[str, float]:
     s = sum(float(v) for v in d.values())
     if s <= 0:
@@ -102,29 +103,316 @@ def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndar
         if cnt == 0:
             continue
         offset = tz.get(str(site), 0.0)
-        peak = 12.0 * hour + offset
-        t = rng.normal(loc=peak, scale=4.0 * hour, size=cnt)
-        t = np.clip(t, offset, offset + 24.0 * hour)
-        submission_times[mask] = t
+        
+        # local sampling (same business-day shape for every site)
+        local_t = rng.normal(loc=12.0 * hour, scale=4.0 * hour, size=cnt)
+        local_t = np.clip(local_t, 0.0, 24.0 * hour)
+
+        # separate rule: force both local-day edges when possible
+        if cnt >= 2:
+            edge_idx = rng.choice(cnt, size=2, replace=False)
+            local_t[edge_idx[0]] = 0.0
+            local_t[edge_idx[1]] = 24.0 * hour
+        elif cnt == 1:
+            # only one sample exists, so choose one edge deterministically
+            local_t[0] = 0.0  # or 24.0 * hour if you prefer upper edge
+
+        # shift to shared timeline
+        submission_times[mask] = local_t + offset
+
+    # debug for each offset
+    print("\n=== Debug: Submission Times by Site (Busy Day) ===", file=os.sys.stderr)
+    
+    # print min, max, mean for each site
+    for site in np.unique(sites_arr):
+        mask = (sites_arr == site)
+        times = submission_times[mask]
+        if len(times) > 0:
+            print(f"Site: {site:10s} | count={len(times):4d} | min={times.min():.3f}s | mean={times.mean():.3f}s | max={times.max():.3f}s", file=os.sys.stderr)
 
     return submission_times
 
-def _idle_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
+# ----------------------------
+# Bursty arrival profiles
+# ----------------------------
+# Module-level defaults for bursty patterns.  Edit these to tune shape without
+# touching the sampler.  peak_params kwarg can override component entries by
+# name at call time.
+BURSTY_PROFILES: Dict[str, dict] = {
+    "bursty_low_stress": {
+        # Two-hump day: boundary spike at open-of-day (0 h) and a non-normal peak at 12 h.
+        "components": [
+            {
+                "name": "peak1",
+                "kind": "split_normal",
+                "weight": 0.45,
+                "center_h": 0.0,
+                "sigma_rise_h": 1.5,
+                "sigma_fall_h": 2.8,
+            },
+            {
+                "name": "peak2",
+                "kind": "log_uniform_center_spike",
+                "weight": 0.45,
+                "center_h": 12.0,
+                "spike_fraction": 0.18,
+                "left_fraction": 0.38,
+                "dmin_s": 120.0,
+                "left_max_h": 1.5,
+                "right_max_h": 3.2,
+            },
+            {
+                "name": "background",
+                "kind": "uniform",
+                "weight": 0.10,
+            },
+        ],
+    },
+    "bursty_high_stress": {
+        # Same mixture as low stress, but shift the second peak earlier.
+        "components": [
+            {
+                "name": "peak1",
+                "kind": "split_normal",
+                "weight": 0.45,
+                "center_h": 0.0,
+                "sigma_rise_h": 1.5,
+                "sigma_fall_h": 2.8,
+            },
+            {
+                "name": "peak2",
+                "kind": "log_uniform_center_spike",
+                "weight": 0.45,
+                "center_h": 4.0,
+                "spike_fraction": 0.18,
+                "left_fraction": 0.38,
+                "dmin_s": 120.0,
+                "left_max_h": 1.5,
+                "right_max_h": 3.2,
+            },
+            {
+                "name": "background",
+                "kind": "uniform",
+                "weight": 0.10,
+            },
+        ],
+    },
+}
+
+
+def _sample_split_normal_component(
+    rng: np.random.Generator,
+    count: int,
+    center_h: float,
+    sigma_rise_h: float,
+    sigma_fall_h: float,
+    hour: float,
+) -> np.ndarray:
+    if count <= 0:
+        return np.empty(0, dtype=float)
+
+    center = center_h * hour
+    sigma_rise = sigma_rise_h * hour
+    sigma_fall = sigma_fall_h * hour
+    u = rng.normal(0.0, 1.0, size=count)
+    return center + np.where(u < 0.0, sigma_rise, sigma_fall) * u
+
+
+def _sample_log_uniform_center_spike_component(
+    rng: np.random.Generator,
+    count: int,
+    center_h: float,
+    spike_fraction: float,
+    left_fraction: float,
+    dmin_s: float,
+    left_max_h: float,
+    right_max_h: float,
+    hour: float,
+) -> np.ndarray:
+    if count <= 0:
+        return np.empty(0, dtype=float)
+
+    center = center_h * hour
+    spike_fraction = float(np.clip(spike_fraction, 0.0, 1.0))
+    left_fraction = float(np.clip(left_fraction, 0.0, 1.0))
+    dmin_s = max(float(dmin_s), 1.0)
+
+    left_max_s = max(dmin_s, left_max_h * hour)
+    right_max_s = max(dmin_s, right_max_h * hour)
+
+    n_spike = int(round(count * spike_fraction))
+    n_tail = max(0, count - n_spike)
+    n_left = int(round(n_tail * left_fraction))
+    n_right = max(0, n_tail - n_left)
+
+    left_d = (
+        np.exp(rng.uniform(np.log(dmin_s), np.log(left_max_s), size=n_left))
+        if n_left > 0
+        else np.empty(0, dtype=float)
+    )
+    right_d = (
+        np.exp(rng.uniform(np.log(dmin_s), np.log(right_max_s), size=n_right))
+        if n_right > 0
+        else np.empty(0, dtype=float)
+    )
+
+    samples = np.concatenate([
+        np.full(n_spike, center, dtype=float),
+        center - left_d,
+        center + right_d,
+    ])
+    rng.shuffle(samples)
+    return samples
+
+
+def _sample_uniform_component(
+    rng: np.random.Generator,
+    count: int,
+    hour: float,
+) -> np.ndarray:
+    if count <= 0:
+        return np.empty(0, dtype=float)
+    return rng.uniform(0.0, 24.0 * hour, size=count)
+
+
+def _sample_bursty_component(
+    rng: np.random.Generator,
+    component: Dict[str, float],
+    count: int,
+    hour: float,
+) -> np.ndarray:
+    kind = component["kind"]
+
+    if kind == "split_normal":
+        return _sample_split_normal_component(
+            rng=rng,
+            count=count,
+            center_h=float(component["center_h"]),
+            sigma_rise_h=float(component["sigma_rise_h"]),
+            sigma_fall_h=float(component["sigma_fall_h"]),
+            hour=hour,
+        )
+
+    if kind == "log_uniform_center_spike":
+        return _sample_log_uniform_center_spike_component(
+            rng=rng,
+            count=count,
+            center_h=float(component["center_h"]),
+            spike_fraction=float(component["spike_fraction"]),
+            left_fraction=float(component["left_fraction"]),
+            dmin_s=float(component["dmin_s"]),
+            left_max_h=float(component["left_max_h"]),
+            right_max_h=float(component["right_max_h"]),
+            hour=hour,
+        )
+
+    if kind == "uniform":
+        return _sample_uniform_component(rng=rng, count=count, hour=hour)
+
+    raise ValueError(f"Unknown bursty component kind: {kind!r}")
+
+
+def _allocate_component_counts(count: int, components: list) -> np.ndarray:
+    weights = np.array([float(component["weight"]) for component in components], dtype=float)
+    total = float(weights.sum())
+    if total <= 0.0:
+        raise ValueError("Bursty component weights must sum to > 0")
+
+    weights = weights / total
+    raw = count * weights
+    counts = np.floor(raw).astype(int)
+    remainder = int(count - counts.sum())
+
+    if remainder > 0:
+        order = np.argsort(-(raw - counts))
+        for idx in order[:remainder]:
+            counts[idx] += 1
+
+    return counts
+
+
+def _component_debug_stats(local_times: np.ndarray, components: list, hour: float) -> Dict[str, int]:
+    stats: Dict[str, int] = {}
+
+    for component in components:
+        name = str(component.get("name", component["kind"]))
+        kind = component["kind"]
+
+        if kind == "uniform":
+            continue
+
+        center = float(component["center_h"]) * hour
+
+        if kind == "split_normal" and center <= 0.0:
+            stats[f"{name}_0to2h"] = int(np.sum((local_times >= 0.0) & (local_times <= 2.0 * hour)))
+            continue
+
+        if kind == "log_uniform_center_spike":
+            stats[f"{name}_core15m"] = int(np.sum(np.abs(local_times - center) <= 15.0 * 60.0))
+            stats[f"{name}_pm2h"] = int(np.sum(np.abs(local_times - center) <= 2.0 * hour))
+            continue
+
+        stats[f"{name}_pm2h"] = int(np.sum(np.abs(local_times - center) <= 2.0 * hour))
+
+    return stats
+
+
+def _bursty_day_times_by_site(
+    n_jobs: int,
+    sites: list,
+    stress: str = "low_stress",
+    seed: int = 42,
+    peak_params: Optional[Dict] = None,
+    sync_sites: bool = False,
+) -> np.ndarray:
     """
-    Idle/sparse: long gaps + small bursts (heavy-tailed inter-arrival).
-    Site-aware version: sample local idle arrivals per site, then shift by timezone.
-    Output is per-job times in SECONDS (aligned with input job order).
+    Bursty arrivals: sample named profile components per site in local time, then
+    shift by timezone offset. Components are configured declaratively in
+    BURSTY_PROFILES, which makes it easier to experiment with peak shapes without
+    rewriting the sampler.
+
+    Args:
+        stress:      "low_stress" or "high_stress" — selects profile from BURSTY_PROFILES.
+        peak_params: optional per-component overrides merged shallowly by name,
+                     e.g. {"peak2": {"spike_fraction": 0.25, "right_max_h": 4.0}}.
+        sync_sites:  if True, all timezone offsets are zeroed so every site bursts
+                     at the same global time — maximum simultaneous contention.
     """
+    profile_key = f"bursty_{stress}"
+    if profile_key not in BURSTY_PROFILES:
+        raise ValueError(
+            f"Unknown stress level {stress!r}. Valid choices: 'low_stress', 'high_stress'."
+        )
+
+    # Load profile defaults then apply any caller overrides (shallow per-component merge).
+    base = BURSTY_PROFILES[profile_key]
+    components = [dict(component) for component in base["components"]]
+    if peak_params:
+        components_by_name = {str(component["name"]): component for component in components}
+        for name, overrides in peak_params.items():
+            if name not in components_by_name:
+                raise ValueError(
+                    f"Unknown bursty component override {name!r}. "
+                    f"Valid choices: {sorted(components_by_name)}."
+                )
+            if not isinstance(overrides, dict):
+                raise ValueError(f"Override for bursty component {name!r} must be a JSON object")
+            components_by_name[name].update(overrides)
+
     rng = np.random.default_rng(seed)
     hour = 3600.0
-    tz = {'OLCF': 0.0, 'ALCF': 1.0 * hour, 'NERSC': 3.0 * hour}  # offsets in seconds
+    # Timezone offsets shift each site's local burst onto the shared global clock.
+    # Set sync_sites=True to zero all offsets and make every site burst simultaneously.
+    if sync_sites:
+        tz: Dict[str, float] = {}  # all sites get offset 0.0
+    else:
+        tz = {'OLCF': 0.0, 'ALCF': 1.0 * hour, 'NERSC': 3.0 * hour}
 
     sites_arr = np.array(sites, dtype=object)
     if len(sites_arr) != n_jobs:
         raise ValueError(f"Expected {n_jobs} sites, got {len(sites_arr)}")
 
     submission_times = np.empty(n_jobs, dtype=float)
-    day_seconds = 24 * 3600.0
 
     for site in np.unique(sites_arr):
         mask = (sites_arr == site)
@@ -133,23 +421,33 @@ def _idle_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndar
             continue
 
         offset = tz.get(str(site), 0.0)
-        times = []
-        t = 0.0
 
-        while len(times) < cnt and t < day_seconds:
-            if rng.random() < 0.7:
-                gap = rng.lognormal(mean=4.0, sigma=0.8) * 60.0  # long gaps (seconds)
-            else:
-                gap = rng.exponential(scale=8.0) * 60.0          # short gaps (seconds)
-            t += gap
-            if t <= day_seconds:
-                times.append(t)
+        counts = _allocate_component_counts(cnt, components)
+        samples = [
+            _sample_bursty_component(rng=rng, component=component, count=int(component_count), hour=hour)
+            for component, component_count in zip(components, counts)
+        ]
 
-        while len(times) < cnt:
-            times.append(rng.uniform(0, day_seconds))
+        local_t = np.concatenate(samples) if samples else np.empty(0, dtype=float)
+        local_t = np.clip(local_t, 0.0, 24.0 * hour)
+        rng.shuffle(local_t)
+        submission_times[mask] = local_t + offset
 
-        local_times = np.array(sorted(times[:cnt]), dtype=float)
-        submission_times[mask] = local_times + offset
+    # Per-site debug stats.
+    print(f"\n=== Debug: Submission Times by Site (Bursty {stress}) ===", file=os.sys.stderr)
+    for site in np.unique(sites_arr):
+        mask = (sites_arr == site)
+        times = submission_times[mask]
+        if len(times) > 0:
+            local = times - tz.get(str(site), 0.0)
+            stats = _component_debug_stats(local, components, hour)
+            stat_text = " | ".join(f"{key}={value:4d}" for key, value in stats.items())
+            print(
+                f"Site: {site:10s} | count={len(times):4d} | "
+                f"{stat_text} | "
+                f"min={times.min():.1f}s | max={times.max():.1f}s",
+                file=os.sys.stderr,
+            )
 
     return submission_times
 
@@ -166,7 +464,6 @@ GLOBAL_NODE_BANDS: Dict[str, Tuple[int, int]] = {
 # Global node sampling config
 # For log-normal: mode = exp(mu - sigma^2) -> mu = log(mode) + sigma^2
 NODE_SAMPLING = {
-    "dist": "lognormal",
     "sigma": 0.8,
     "desired_mode": 700, # calculated based on 512 peak for (64-10624) 
 }
@@ -226,11 +523,13 @@ JOB_TYPE_BANDS = {
 def generate_synthetic_jobs_v3(
     n_jobs: int = 100,
     seed: int = 42,
-    day: str = "busy",  # busy|idle
+    arrival_pattern: str = "busy",
     scenario: str = "mixed_80_20",
-    jobs_per_site: Optional[Dict[str, int]] = None,
+    # jobs_per_site: Optional[Dict[str, int]] = None,
     jobtype_proportions: Optional[Dict[str, float]] = None,
     sfactor: float = 1.0,
+    peak_params: Optional[Dict] = None,
+    sync_sites: bool = False,
 ) -> pd.DataFrame:
 
     # Apply scale divisors to capacities if provided.
@@ -417,13 +716,20 @@ def generate_synthetic_jobs_v3(
     user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
     group_ids = np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)
 
-     # Submission times
-    if day == "busy":
-        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)  # seconds
-    elif day == "idle":
-        submission_times = _idle_day_times_by_site(n_jobs, origin_sites, seed=seed)  # seconds
+    # Submission times
+    if arrival_pattern == "busy":
+        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)
+    elif arrival_pattern in ("bursty_low_stress", "bursty_high_stress"):
+        stress = arrival_pattern.replace("bursty_", "")
+        submission_times = _bursty_day_times_by_site(
+            n_jobs, origin_sites, stress=stress, seed=seed,
+            peak_params=peak_params, sync_sites=sync_sites,
+        )
     else:
-        raise ValueError("day must be 'busy' or 'idle'")
+        raise ValueError(
+            f"Unknown arrival_pattern {arrival_pattern!r}. "
+            "Valid choices: 'busy', 'bursty_low_stress', 'bursty_high_stress'."
+        )
 
     print("\n=== Submission Time Sampling ===")
     print(
@@ -489,44 +795,51 @@ def main():
 
     parser.add_argument('--n_jobs', type=int, default=32_000)
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--day', type=str, default='busy', choices=['busy', 'idle'])
+    parser.add_argument(
+        '--arrival_pattern', '--day',
+        dest='arrival_pattern',
+        type=str, default='busy',
+        choices=['busy', 'bursty_low_stress', 'bursty_high_stress'],
+        help="Arrival time pattern (default: busy). --day is a deprecated alias.",
+    )
     parser.add_argument('--scenario', type=str, default='mixed_80_20',
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
-    parser.add_argument("--sfactor", type=float, required=False, default=1.0, help="Radical scale divisor (default: 1.0)")
-
+    parser.add_argument("--sfactor", type=float, required=False, default=1.0,
+                        help="Radical scale divisor (default: 1.0)")
+    parser.add_argument('--peak-params', type=str, default='',
+                        help='JSON string to override named bursty components, '
+                             'e.g. \'{"peak2": {"spike_fraction": 0.25, "right_max_h": 4.0}}\'')
+    parser.add_argument('--sync-sites', action='store_true', default=False,
+                        help='Zero all timezone offsets so every site bursts simultaneously '
+                             '(maximum contention stress test). Default: False (staggered by timezone).')
     args = parser.parse_args()
 
     jobtype_proportions = _parse_json_arg(args.jobtype_proportions) if args.jobtype_proportions else None
+    peak_params = _parse_json_arg(args.peak_params) if args.peak_params else None
 
-    # Adjust number of jobs based on day type and scaling factor
+    # Scale job count proportionally to platform size.
     if args.sfactor != 1.0:
-        if args.day == "busy":
-            # Busy day: scale down proportionally to platform size
-            args.n_jobs = max(1, int(args.n_jobs / args.sfactor))
-        elif args.day == "idle":
-            # Idle day: keep more jobs to avoid long inter-arrival times
-            args.n_jobs = max(1, int(args.n_jobs / (args.sfactor)))
-    elif args.day == "idle":
-        # For idle day with no scaling, we can still reduce jobs to avoid excessively long gaps
-        args.n_jobs = max(1, int(args.n_jobs / 1))
+        args.n_jobs = max(1, int(args.n_jobs / args.sfactor))
 
-    print(f"Generating {args.n_jobs} jobs , day={args.day}, sfactor={args.sfactor}")
+    print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
 
     df = generate_synthetic_jobs_v3(
         n_jobs=args.n_jobs,
         seed=args.seed,
-        day=args.day,
+        arrival_pattern=args.arrival_pattern,
         scenario=args.scenario,
         jobtype_proportions=jobtype_proportions,
         sfactor=args.sfactor,
+        peak_params=peak_params,
+        sync_sites=args.sync_sites,
     )
 
     os.makedirs("./data", exist_ok=True)
     r_tag = _format_scale_tag(args.sfactor)
- 
-    out = f"./data/{args.day}_{args.scenario}_{len(df)}_r{r_tag}.json"
+
+    out = f"./data/{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json"
     with open(out, "w") as f:
         json.dump(df.to_dict("records"), f, indent=2)
 
