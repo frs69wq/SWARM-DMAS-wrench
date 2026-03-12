@@ -520,7 +520,7 @@ JOB_TYPE_BANDS = {
 # Main generator
 # ----------------------------
 
-def generate_synthetic_jobs_v3(
+def generate_synthetic_jobs_v4(
     n_jobs: int = 100,
     seed: int = 42,
     arrival_pattern: str = "busy",
