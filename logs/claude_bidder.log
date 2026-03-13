@@ -1,0 +1,869 @@
+2026-03-12 17:56:09,481 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "NERSC",
+  "hpc_system": "Perlmutter-Phase-2",
+  "job_id": 1,
+  "job_type": "HYBRID",
+  "needs_gpu": false,
+  "num_nodes": 32,
+  "requested_memory_gb": 2.0,
+  "requested_storage_gb": 44.0,
+  "submission_time": 1.0,
+  "user_id": 4,
+  "walltime": 218
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": false,
+  "memory_amount_in_gb": 512,
+  "name": "Perlmutter-Phase-2",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 4900000000000.0,
+  "num_nodes": 3072,
+  "site": "NERSC",
+  "storage_amount_in_gb": 35000000,
+  "type": "HYBRID"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 3072,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:09,660 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:09,661 INFO: {"bid": 0.9219, "bid_generation_time_seconds": 0.181384}
+2026-03-12 17:56:10,125 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "ALCF",
+  "hpc_system": "Crux",
+  "job_id": 2,
+  "job_type": "HPC",
+  "needs_gpu": false,
+  "num_nodes": 4,
+  "requested_memory_gb": 16.0,
+  "requested_storage_gb": 8.0,
+  "submission_time": 1.0,
+  "user_id": 1,
+  "walltime": 35
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": false,
+  "memory_amount_in_gb": 512,
+  "name": "Crux",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 5000000000000.0,
+  "num_nodes": 256,
+  "site": "ALCF",
+  "storage_amount_in_gb": 220000000,
+  "type": "STORAGE"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 256,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:10,238 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:10,240 INFO: {"bid": 0.924, "bid_generation_time_seconds": 0.115}
+2026-03-12 17:56:10,781 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "ALCF",
+  "hpc_system": "Aurora",
+  "job_id": 3,
+  "job_type": "AI",
+  "needs_gpu": true,
+  "num_nodes": 16,
+  "requested_memory_gb": 2.0,
+  "requested_storage_gb": 6.0,
+  "submission_time": 1.0,
+  "user_id": 4,
+  "walltime": 427
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 984,
+  "name": "Aurora",
+  "network_interconnect": "Slingshot11",
+  "node_speed": 312000000000000.0,
+  "num_nodes": 10624,
+  "site": "ALCF",
+  "storage_amount_in_gb": 220000000,
+  "type": "AI"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 10624,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:10,923 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:10,926 INFO: {"bid": 0.985, "bid_generation_time_seconds": 0.143708}
+2026-03-12 17:56:11,458 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "NERSC",
+  "hpc_system": "Perlmutter-Phase-1",
+  "job_id": 4,
+  "job_type": "HPC",
+  "needs_gpu": false,
+  "num_nodes": 16,
+  "requested_memory_gb": 16.0,
+  "requested_storage_gb": 44.0,
+  "submission_time": 1.0,
+  "user_id": 2,
+  "walltime": 189
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 672,
+  "name": "Perlmutter-Phase-1",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 41000000000000.0,
+  "num_nodes": 1536,
+  "site": "NERSC",
+  "storage_amount_in_gb": 35000000,
+  "type": "HYBRID"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 1536,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:11,651 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:11,652 INFO: {"bid": 0.9254, "bid_generation_time_seconds": 0.193742}
+2026-03-12 17:56:12,119 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 2,
+  "hpc_site": "OLCF",
+  "hpc_system": "Andes",
+  "job_id": 5,
+  "job_type": "AI",
+  "needs_gpu": false,
+  "num_nodes": 16,
+  "requested_memory_gb": 4.0,
+  "requested_storage_gb": 19.0,
+  "submission_time": 1.0,
+  "user_id": 1,
+  "walltime": 203
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": false,
+  "memory_amount_in_gb": 256,
+  "name": "Andes",
+  "network_interconnect": "HDR InfiniBand",
+  "node_speed": 1800000000000.0,
+  "num_nodes": 704,
+  "site": "OLCF",
+  "storage_amount_in_gb": 700000000,
+  "type": "STORAGE"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 704,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:12,245 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:12,247 INFO: {"bid": 0.9216, "bid_generation_time_seconds": 0.127296}
+2026-03-12 17:56:12,735 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "ALCF",
+  "hpc_system": "Crux",
+  "job_id": 6,
+  "job_type": "STORAGE",
+  "needs_gpu": false,
+  "num_nodes": 128,
+  "requested_memory_gb": 4.0,
+  "requested_storage_gb": 120.0,
+  "submission_time": 1.0,
+  "user_id": 5,
+  "walltime": 2242
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": false,
+  "memory_amount_in_gb": 512,
+  "name": "Crux",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 5000000000000.0,
+  "num_nodes": 256,
+  "site": "ALCF",
+  "storage_amount_in_gb": 220000000,
+  "type": "STORAGE"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 256,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:12,851 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:12,852 INFO: {"bid": 0.9215, "bid_generation_time_seconds": 0.116497}
+2026-03-12 17:56:13,364 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "ALCF",
+  "hpc_system": "Aurora",
+  "job_id": 7,
+  "job_type": "HPC",
+  "needs_gpu": true,
+  "num_nodes": 256,
+  "requested_memory_gb": 64.0,
+  "requested_storage_gb": 75.0,
+  "submission_time": 1.0,
+  "user_id": 3,
+  "walltime": 425
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 984,
+  "name": "Aurora",
+  "network_interconnect": "Slingshot11",
+  "node_speed": 312000000000000.0,
+  "num_nodes": 10624,
+  "site": "ALCF",
+  "storage_amount_in_gb": 220000000,
+  "type": "AI"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 10624,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:13,474 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:13,477 INFO: {"bid": 0.9784, "bid_generation_time_seconds": 0.11133}
+2026-03-12 17:56:13,955 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "ALCF",
+  "hpc_system": "Aurora",
+  "job_id": 8,
+  "job_type": "AI",
+  "needs_gpu": false,
+  "num_nodes": 32,
+  "requested_memory_gb": 4.0,
+  "requested_storage_gb": 1.0,
+  "submission_time": 1.0,
+  "user_id": 4,
+  "walltime": 114
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 984,
+  "name": "Aurora",
+  "network_interconnect": "Slingshot11",
+  "node_speed": 312000000000000.0,
+  "num_nodes": 10624,
+  "site": "ALCF",
+  "storage_amount_in_gb": 220000000,
+  "type": "AI"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 10624,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:14,061 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:14,063 INFO: {"bid": 0.9815, "bid_generation_time_seconds": 0.107512}
+2026-03-12 17:56:14,536 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 2,
+  "hpc_site": "NERSC",
+  "hpc_system": "Perlmutter-Phase-1",
+  "job_id": 9,
+  "job_type": "AI",
+  "needs_gpu": false,
+  "num_nodes": 2,
+  "requested_memory_gb": 128.0,
+  "requested_storage_gb": 4.0,
+  "submission_time": 1.0,
+  "user_id": 3,
+  "walltime": 123
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 672,
+  "name": "Perlmutter-Phase-1",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 41000000000000.0,
+  "num_nodes": 1536,
+  "site": "NERSC",
+  "storage_amount_in_gb": 35000000,
+  "type": "HYBRID"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 1536,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:14,644 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:14,645 INFO: {"bid": 0.9276, "bid_generation_time_seconds": 0.108741}
+2026-03-12 17:56:15,113 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "NERSC",
+  "hpc_system": "Perlmutter-Phase-2",
+  "job_id": 1,
+  "job_type": "HYBRID",
+  "needs_gpu": false,
+  "num_nodes": 32,
+  "requested_memory_gb": 2.0,
+  "requested_storage_gb": 44.0,
+  "submission_time": 1.0,
+  "user_id": 4,
+  "walltime": 218
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 672,
+  "name": "Perlmutter-Phase-1",
+  "network_interconnect": "Slingshot10",
+  "node_speed": 41000000000000.0,
+  "num_nodes": 1536,
+  "site": "NERSC",
+  "storage_amount_in_gb": 35000000,
+  "type": "HYBRID"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 1536,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:15,246 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:15,247 INFO: {"bid": 0.9249, "bid_generation_time_seconds": 0.133976}
+2026-03-12 17:56:15,914 INFO: Prompt:
+You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. Your task is to evaluate incoming job requests against system capabilities and status, compute a suitability score, and provide detailed reasoning.
+<JOB_REQUEST>
+{
+  "group_id": 1,
+  "hpc_site": "NERSC",
+  "hpc_system": "Perlmutter-Phase-2",
+  "job_id": 1,
+  "job_type": "HYBRID",
+  "needs_gpu": false,
+  "num_nodes": 32,
+  "requested_memory_gb": 2.0,
+  "requested_storage_gb": 44.0,
+  "submission_time": 1.0,
+  "user_id": 4,
+  "walltime": 218
+}
+</JOB_REQUEST>
+
+<SYSTEM_CAPABILITIES>
+{
+  "has_gpu": true,
+  "memory_amount_in_gb": 12000,
+  "name": "Frontier",
+  "network_interconnect": "Slingshot11",
+  "node_speed": 83900000000000.0,
+  "num_nodes": 9472,
+  "site": "OLCF",
+  "storage_amount_in_gb": 700000000,
+  "type": "HPC"
+}
+</SYSTEM_CAPABILITIES>
+
+<SYSTEM_STATUS>
+{
+  "current_job_start_time_estimate": 0.0,
+  "current_num_available_nodes": 9472,
+  "queue_length": 0
+}
+</SYSTEM_STATUS>
+
+<TASK_INSTRUCTIONS>
+Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
+Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and total 'num_nodes'.
+ * Job’s total ‘requested_memory_gb’ and system’s per-node ‘memory_amount_in_gb’. 
+ * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
+ * System's current_job_start_time_estimate.
+ * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
+</TASK_INSTRUCTIONS>
+
+<PENALTY_RANGE_MODEL>
+Penalty model for resource compatibility matching:
+- GPU jobs on CPU-only systems → INFEASIBLE 
+- job_type matches system.type AND GPU requirement satisfied → No penalty
+
+GPU jobs on GPU systems:
+- If job_type and system.type mismatches → [0.05–0.10] 
+
+CPU workloads on GPU systems:
+- If job_type in (HPC or HYBRID) → [0.10–0.20]
+- if job_type is STORAGE → [0.2-0.3]
+
+CPU workloads on CPU-only systems:
+- If job_type=HPC → [0.20–0.30]
+- If job_type in [HPC,STORAGE] on system.type=HYBRID → [0.05-0.10]
+- If job_type=HYBRID on system.type=STORAGE→ [0.15–0.25]
+</PENALTY_RANGE_MODEL>
+
+<OUTPUT_FORMAT>
+Your entire response MUST be a valid JSON object with the following structure:
+{
+ "bid_score": <float_value_between_0_and_1>,
+ "reasoning": "<justification_string>",
+}
+</OUTPUT_FORMAT>
+2026-03-12 17:56:16,089 ERROR: Claude bidder request failed: ('Failed to load service account credentials from /workspaces/SWARM-DMAS-wrench/swarm-dmas-gcloud-credentials.json', ValueError('Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming'))
+2026-03-12 17:56:16,090 INFO: {"bid": 0.9285, "bid_generation_time_seconds": 0.176324}

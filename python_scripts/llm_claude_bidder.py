@@ -4,7 +4,7 @@ import os
 import time
 import logging
 import re
-
+from HeuristicBidding import compute_bid
 #################################
 # Claude OpenAI imports 
 from anthropic import AnthropicVertex
@@ -17,8 +17,16 @@ CLAUDE_MODEL      = os.getenv("CLAUDE_MODEL")
 TEMP = 0
 MAX_TOKENS = 5000
 #################################
-# Logs
-logging.basicConfig(level=logging.INFO)
+# Logs - write to both console and file for visibility in subprocess
+os.makedirs("/workspaces/SWARM-DMAS-wrench/logs", exist_ok=True)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s: %(message)s",
+    handlers=[
+        logging.FileHandler("/workspaces/SWARM-DMAS-wrench/logs/claude_bidder.log"),
+        logging.StreamHandler(sys.stderr)
+    ]
+)
 logger = logging.getLogger(__name__)
 #################################
 
@@ -31,47 +39,26 @@ def main():
         job_description = data["job_description"]
         system_description = data["hpc_system_description"]
         system_status = data["hpc_system_status"]
+        runtime_prompt = data.get("prompt")
 
         # Start timing
         start_time = time.perf_counter()
 
         # Do not modify before here
         # Step1: Prompt instructions
-        prompt = f"""
-                You are an HPC_RESOURCE agent, managing a massive supercomputer cluster in a decentralized resource allocation system. 
+        if not isinstance(runtime_prompt, str) or not runtime_prompt.strip():
+            raise ValueError("No prompt provided. Set 'bidder_prompt_file' in the experiment config.")
 
-                IMPORTANT:
-                - The fields hpc_site and hpc_system in JOB_REQUEST indicate only where the job was SUBMITTED (origin), NOT where it must run.
-                - You MUST NOT reward or penalize this system just because its site/system matches or differs from the job’s origin.
-
-                JOB_REQUEST (MASSIVE SCALE):
-                {
-                    job_description
-                }
-
-                SYSTEM CAPABILITIES:
-                {
-                    system_description,
-                }
-
-                SYSTEM STATUS:
-                {
-                    system_status
-                }
-
-                TASK:
-                1. Evaluate the incoming job request above.
-                2. Compute your resource-job suitability score [0-1] based on system capabilites and status.
-                3. Share your reasoning and score in JSON block:
-                        {{
-                            "bid_score": <value>
-                            "reasoning": "<justification>"
-
-                        }}
-                """
+        prompt = (
+            runtime_prompt
+            .replace("{job_description}", json.dumps(job_description, indent=2))
+            .replace("{system_description}", json.dumps(system_description, indent=2))
+            .replace("{system_status}", json.dumps(system_status, indent=2))
+        )
         
         # Log prompt for debugging
-        logger.debug(f"Prompt: {prompt}")
+        logger.debug(f"Prompt:\n{prompt}")
+        # print(f"CLAUDE_PROMPT:\n{prompt}", file=sys.stderr, flush=True)
 
         # Step2: Format prompt
         message = [{"role": "user", "content": prompt}]
@@ -89,10 +76,12 @@ def main():
         for content_block in response.content:
             response = content_block.text
         # Log response for debugging
-        logger.debug(f"Response: {response}")
+        logger.debug(f"Response:\n{response}")
+        # print(f"CLAUDE_RESPONSE:\n{response}", file=sys.stderr, flush=True)
 
     except Exception as e:
-        print(json.dump({"error" : str(e)}))
+        print(json.dumps({"error" : str(e)}))
+        logger.error(f"Claude bidder request failed: {e}")
 
     # End timing
     end_time = time.perf_counter()
@@ -103,7 +92,8 @@ def main():
     match = re.search(bid_score_pattern, response)
 
     # Step6: Heuristic bid if parsing fails
-    heuristic_bid = 0.5  # Change later with the heuristic logic as needed!  
+    # heuristic_bid = 0.1  # Change later with the heuristic logic as needed!  
+    heuristic_bid = compute_bid(job_description, system_description, system_status)
 
     bid = float(match.group(1)) if match else heuristic_bid
 

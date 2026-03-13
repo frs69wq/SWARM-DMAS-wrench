@@ -2,6 +2,7 @@
 #define PYTHON_BIDDING_SCHEDULING_POLICY_H
 
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -19,11 +20,21 @@ XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 
 class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;
+  std::string bidder_prompt_;
 
 public:
-  PythonBiddingSchedulingPolicy(const std::string& python_script_name)
+  PythonBiddingSchedulingPolicy(const std::string& python_script_name, const std::string& bidder_prompt_file)
       : SchedulingPolicy(), python_script_name_(python_script_name)
   {
+    if (!bidder_prompt_file.empty()) {
+      std::ifstream prompt_file(bidder_prompt_file);
+      if (!prompt_file.is_open())
+        throw std::runtime_error("Failed to open bidder prompt file: " + bidder_prompt_file);
+
+      bidder_prompt_.assign((std::istreambuf_iterator<char>(prompt_file)), std::istreambuf_iterator<char>());
+      if (bidder_prompt_.empty())
+        throw std::runtime_error("Bidder prompt file is empty: " + bidder_prompt_file);
+    }
   }
 
   void broadcast_job_description(const std::string& agent_name,
@@ -75,6 +86,8 @@ public:
       j["hpc_system_description"] = hpc_system_description->to_json();
       j["hpc_system_status"]      = hpc_system_status->to_json();
       j["current_simulated_time"] = wrench::S4U_Simulation::getClock();
+      if (!bidder_prompt_.empty())
+        j["prompt"] = bidder_prompt_;
 
       std::string jsonStr = j.dump();
       write(to_python[1], jsonStr.c_str(), jsonStr.size());
