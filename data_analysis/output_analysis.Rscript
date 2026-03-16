@@ -63,3 +63,4 @@ p6 <- ggplot(data, aes(x = ScheduledOn, y = ExecutionTime, fill = ScheduledOn)) 
 ggsave(args[2], device = cairo_pdf,
        plot = grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 3),
        width = 16, height = 10, dpi = 300)
+print(paste("Saved to", args[2]))

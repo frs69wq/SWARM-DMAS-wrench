@@ -1,127 +1,139 @@
 #!/bin/bash
 set -e
-
 EXEC_FILE=./build/swarm_dmas
 
-# workload files
-WORKLOADS=()
-DAYS=("idle" "busy")
-TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
-for day in "${DAYS[@]}"; do
-    if [ "$day" == "idle" ]; then
-        num=100
-    else
-        num=700
-    fi
 
-    for type in "${TYPES[@]}"; do
-        WORKLOADS+=("data_generation/data/${day}_${type}_${num}.json")
+# Workload construction
+WORKLOADS=()
+DAYS=("busy")
+TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
+NUM_JOBS=(1000)
+R_VALUES=(32)
+
+for day in "${DAYS[@]}"; do
+    for i in "${!NUM_JOBS[@]}"; do
+        num="${NUM_JOBS[$i]}"
+        r="${R_VALUES[$i]}"
+        for type in "${TYPES[@]}"; do
+            WORKLOADS+=("data_generation/data/${day}_${type}_${num}_r${r}.json")
+        done
     done
 done
 
 
-# --------------------------------------------------
-# Run experiments for DECENTRALIZED scheduling
-# --------------------------------------------------
-TEMPLATE=experiments/test_decentralized.json
+# Directories & templates
+DEC_TEMPLATE=experiments/test_decentralized.json
+CENT_TEMPLATE=experiments/test_centralized.json
 RESULT_DIR=results
+RESULT_DIR_CENTRALIZED=results/centralized
 
-mkdir -p $RESULT_DIR
+mkdir -p "$RESULT_DIR"
+mkdir -p "$RESULT_DIR_CENTRALIZED"
 
-# Run experiments for PythonBidding policies
+
+# Policies
 PYTHON_BIDDERS=(
     "python_scripts/HeuristicBidding.py"
     "python_scripts/EmbeddingBidding.py"
-    # "python_scripts/llm_claude_bidder.py"
+)
+BASELINE_POLICIES=(
+    "RandomBidding"
+    "PureLocal"
 )
 
+# --------------------------------------------------
+# Main loop
+# --------------------------------------------------
 for workload in "${WORKLOADS[@]}"; do
-    workload_name=$(basename "$workload" .json)
+
+    workload_name=$(basename "${workload}" .json)
+    if [[ $workload =~ _r([0-9]+)\.json$ ]]; then
+        r_value="${BASH_REMATCH[1]}"
+    else
+        echo "ERROR: Could not extract r value from $workload"
+        exit 1
+    fi
+
+    platform_file="platforms/AmSC_scaled_down_${r_value}.xml"
+    echo "==============================================="
+    echo "Workload: $workload_name"
+    echo "Using platform: $platform_file"
+    echo "==============================================="
+
+    # --------------------------------------------------
+    # DECENTRALIZED - Python bidders
+    # --------------------------------------------------
 
     for bidder in "${PYTHON_BIDDERS[@]}"; do
-        bidder_name=$(basename "$bidder" .py)
 
+        bidder_name=$(basename "$bidder" .py)
         output_file="$RESULT_DIR/${workload_name}_${bidder_name}.csv"
         temp_json="temp_config.json"
 
         jq \
         --arg workload "$workload" \
         --arg bidder "$bidder" \
+        --arg platform "$platform_file" \
         '
         .workload = $workload |
+        .platform = $platform |
         .decentralized_policy = "PythonBidding" |
         .decentralized_bidder = $bidder
-        ' $TEMPLATE > $temp_json
+        ' "$DEC_TEMPLATE" > "$temp_json"
 
-        echo "Running $workload_name - PythonBidding - $bidder_name"
+        echo "Running DECENTRALIZED - $bidder_name"
 
-        $EXEC_FILE $temp_json > "$output_file"
-
-        rm $temp_json
+        $EXEC_FILE "$temp_json" > "$output_file"
+        rm "$temp_json"
     done
-done
 
+    # --------------------------------------------------
+    # DECENTRALIZED - Baselines
+    # --------------------------------------------------
 
-# Run experiments for baseline bidding policies
-BASELINE_POLICIES=(
-        "RandomBidding" 
-        "PureLocal"
-    )
+    for policy in "${BASELINE_POLICIES[@]}"; do
 
-for workload in "${WORKLOADS[@]}"; do
-    workload_name=$(basename "$workload" .json)
-
-    for bidder in "${BASELINE_POLICIES[@]}"; do
-        output_file="$RESULT_DIR/${workload_name}_${bidder}.csv"
+        output_file="$RESULT_DIR/${workload_name}_${policy}.csv"
         temp_json="temp_config.json"
 
         jq \
         --arg workload "$workload" \
-        --arg policy "$bidder" \
+        --arg policy "$policy" \
+        --arg platform "$platform_file" \
         '
         .workload = $workload |
+        .platform = $platform |
         .decentralized_policy = $policy |
         del(.decentralized_bidder)
-        ' $TEMPLATE > $temp_json
+        ' "$DEC_TEMPLATE" > "$temp_json"
 
-        echo "Running $workload_name - $bidder"
+        echo "Running DECENTRALIZED - $policy"
 
-        $EXEC_FILE $temp_json > "$output_file"
-
-        rm $temp_json
+        $EXEC_FILE "$temp_json" > "$output_file"
+        rm "$temp_json"
     done
-done
 
+    # --------------------------------------------------
+    # CENTRALIZED
+    # --------------------------------------------------
 
-CENTRALIZED_TEMPLATE=experiments/test_centralized.json
-RESULT_DIR_CENTRALIZED=results/centralized
-
-mkdir -p $RESULT_DIR_CENTRALIZED
-# --------------------------------------------------
-# Run experiments for CENTRALIZED scheduling
-# This is now hardcoded for a single bidding method, this will be automated later when CentralizedScheduling.py is updated.
-# Make sure to set 'bidder=' (line 108 in this script) as the same value as what is used in line 6 of python_scripts/CentralizedScheduling.py.
-# --------------------------------------------------
-
-for workload in "${WORKLOADS[@]}"; do
-    workload_name=$(basename "$workload" .json)
-    bidder='EmbeddingBidding' 
-
+    bidder="EmbeddingBidding"   # Must match CentralizedScheduling.py
     output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
     temp_json="temp_config.json"
 
     jq \
     --arg workload "$workload" \
+    --arg platform "$platform_file" \
     '
-    .workload = $workload
-    ' $CENTRALIZED_TEMPLATE > $temp_json
+    .workload = $workload |
+    .platform = $platform
+    ' "$CENT_TEMPLATE" > "$temp_json"
 
-    echo "Running $workload_name - CentralizedScheduling - $bidder"
+    echo "Running CENTRALIZED - $bidder"
 
-    $EXEC_FILE $temp_json > "$output_file"
+    $EXEC_FILE "$temp_json" > "$output_file"
+    rm "$temp_json"
 
-    rm $temp_json
 done
-
 
 echo "All experiments completed."
