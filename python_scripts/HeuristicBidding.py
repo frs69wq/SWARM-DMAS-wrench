@@ -132,13 +132,13 @@ def compute_bid(job_description, system_description, system_status):
     # --- 4. Time Cost Calculation ---
     # A. Queue Wait Time
     r_j = job_submission_time  # in seconds
-    wait_time = current_job_start_time_estimate # in seconds
+    wait_time = current_job_start_time_estimate - r_j# in seconds
     
     # B. Execution Time (adjusted for hardware speed)
     pred_exec_time = (req_walltime) / sys_perf
     
-    C_j = wait_time + pred_exec_time
-    total_time_cost = C_j -  r_j # in seconds
+    total_time_cost = wait_time + pred_exec_time
+    # total_time_cost = C_j -  r_j # in seconds
     
     slowdown = max(0.0, total_time_cost) / max(pred_exec_time , 1.0) # both in seconds
     alpha = 0.1

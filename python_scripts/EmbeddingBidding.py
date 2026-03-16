@@ -131,6 +131,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     req_mem      = fnum(job.get("requested_memory_gb"), 0.0)
     req_storage  = fnum(job.get("requested_storage_gb"), 0.0)
     req_walltime = fnum(job.get("walltime"), 0.0)
+    job_submission_time = fnum(job.get("submission_time"), 0.0)
 
     sys_nodes    = fnum(sysdesc.get("num_nodes"), 0.0)
     sys_has_gpu  = bool(sysdesc.get("has_gpu", False))
@@ -162,13 +163,14 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     
     # Estimated slowdown using system status
     est_start_time = status.get("current_job_start_time_estimate")
-    wait_time = max(0, est_start_time - current_simulated_time) 
+    wait_time = max(0, est_start_time - job_submission_time) 
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
     BASE_SPEED= 1500000000000.0
     sys_perf = max(1e-3, sys_speed / max(1e-9, BASE_SPEED))
     pred_exec_time = req_walltime / max(1e-9, sys_perf)
-    slowdown = (wait_time + pred_exec_time) / max(1.0, req_walltime)
-    slowdown_feat = math.exp(-slowdown)
+    slowdown = (wait_time + pred_exec_time) / max(1.0, pred_exec_time)
+    alpha = 0.1
+    slowdown_feat = math.exp(-alpha * slowdown)
 
     dynamic_bid = 0.5 * headroom_feat + 0.5 * slowdown_feat
 
