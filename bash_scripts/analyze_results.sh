@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-PY_ANALYZER="data_analysis/analyze_results_old.py"
+PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
 RESULT_DIRS=("results")     # "results/centralized"
 PLOTS_DIR="plots/individual"

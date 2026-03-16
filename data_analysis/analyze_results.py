@@ -442,7 +442,7 @@ def main():
     # Generate plots
     print("\nGenerating plots...")
     # plot_resource_utilization(df, scaled_capacities,output_dir / f'resource_utilization_{workload_name}_{bidding_method}.png')
-    plot_utilization_percentage(df_valid, scaled_capacities, output_dir / f'utilisation_percentage_{workload_name}_{bidding_method}.png')
+    plot_utilization_percentage(df_valid, scaled_capacities, output_dir / f'utilization_percentage_{workload_name}_{bidding_method}.png')
 
     thrhput = calculate_throughput(df_valid)
     print(f"\nThroughput: {thrhput:.2f} jobs/time unit")
