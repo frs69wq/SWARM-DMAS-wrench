@@ -54,16 +54,20 @@ def _parse_json_arg(s: str) -> Dict:
     except Exception as e:
         raise ValueError(f"Invalid JSON arg: {s}. Error: {e}")
 
-def _scenario_short_frac(scenario: str) -> float:
-    if scenario == "homogeneous_short":
-        return 1.00
-    if scenario == "only_large_long":
-        return 0.00
-    if scenario == "mixed_80_20":
-        return 0.80
-    if scenario == "mixed_20_80":
-        return 0.20
-    return 0.80
+_SCENARIO_SHORT_FRAC: Dict[str, float] = {
+    "homogeneous_short": 1.00,
+    "only_large_long":   0.00,
+    "mixed_80_20":       0.80,
+    "mixed_20_80":       0.20,
+}
+
+def _build_short_flags(n_jobs: int, scenario: str, rng: random.Random) -> list:
+    """Return per-job is_short flags with exact counts derived from scenario."""
+    short_frac = _SCENARIO_SHORT_FRAC.get(scenario, 0.80)
+    short_count = int(round(short_frac * n_jobs))
+    flags = [True] * short_count + [False] * (n_jobs - short_count)
+    rng.shuffle(flags)
+    return flags
 
 def _sample_uniform_int(rng: random.Random, lo: int, hi: int) -> int:
     lo = max(1, int(lo))
@@ -520,7 +524,7 @@ JOB_TYPE_BANDS = {
 # Main generator
 # ----------------------------
 
-def generate_synthetic_jobs_v4(
+def generate_synthetic_jobs_v5(
     n_jobs: int = 100,
     seed: int = 42,
     arrival_pattern: str = "busy",
@@ -614,11 +618,12 @@ def generate_synthetic_jobs_v4(
     jobtype_proportions = _normalize_probs(jobtype_proportions)
     proportions = [jobtype_proportions[jt] for jt in job_types]
    
-    # Scenario mixing
-    short_frac = _scenario_short_frac(scenario)
-
     # Generate job types
     types = random.choices(job_types, weights=proportions, k=n_jobs)
+
+    # Scenario mixing: exact per-scenario short/long counts
+    rng = random.Random(seed + 123)
+    short_flags = _build_short_flags(n_jobs=n_jobs, scenario=scenario, rng=rng)
 
     # Arrays
     job_ids = np.arange(1, n_jobs + 1)
@@ -630,13 +635,28 @@ def generate_synthetic_jobs_v4(
     origin_sites = np.empty(n_jobs, dtype=object)
     origin_systems = np.empty(n_jobs, dtype=object)
 
+    # Build a flat system lookup from parsed platform config for capacity-aware placement
+    all_systems_info: Dict[str, dict] = {}
+    for _site_name, _site_cfg in site_configs.items():
+        for _machine_name, _machine_cfg in _site_cfg["machines"].items():
+            all_systems_info[_machine_name] = {"site": _site_name, "caps": _machine_cfg}
+
+    # System selection weight maps (same as before; capacity filtering applied at placement time)
+    _GPU_SYSTEM_WEIGHTS: Dict[str, float] = {
+        "Frontier": 1.0, "Aurora": 1.0, "Perlmutter-Phase-1": 0.8,
+    }
+    _NON_GPU_SYSTEM_WEIGHTS: Dict[str, float] = {
+        "Perlmutter-Phase-2": 1.7, "Andes": 1.5, "Crux": 1.0,
+        "Frontier": 1.0, "Aurora": 1.0, "Perlmutter-Phase-1": 1.0,
+    }
+    _MAX_PLACEMENT_RETRIES = 20
+
     # Generate per job
-    rng = random.Random(seed + 123)
     for i in range(n_jobs):
         jt = types[i]
         bands = JOB_TYPE_BANDS[jt]
 
-        is_short = (rng.random() < short_frac)
+        is_short = short_flags[i]
         
         # GPU policy - determine first
         if jt == "AI":
@@ -647,60 +667,54 @@ def generate_synthetic_jobs_v4(
             job_gpu = (rng.random() < (0.5 if jt == "HYBRID" else 0.3))  # hybrid more likely GPU than HPC
 
 
-        if job_gpu: # ai, hpc, hybrid with gpu
-            # GPU jobs: uniform across GPU systems
-            available_systems = ['Frontier', 'Aurora', 'Perlmutter-Phase-1']
-            # define per system weights (higher = more jobs)
-            system_weights = {
-                'Frontier': 1,           
-                'Aurora': 1,             
-                'Perlmutter-Phase-1': 0.8   
-            }
-            weights = [system_weights.get(sys, 1.0) for sys in available_systems]
-            system = random.choices(available_systems, weights=weights, k=1)[0]
-        else: # storage, hpc, hybrid without gpu
-            # Non-GPU jobs: prefer CPU systems with weights based on system size
-            # Define per-system weights (higher = more jobs)
-            available_systems = ['Frontier', 'Andes', 'Aurora', 'Crux', 'Perlmutter-Phase-1','Perlmutter-Phase-2']
-            system_weights = {
-                'Perlmutter-Phase-2': 1.7,  # Largest CPU system (3072 nodes)
-                'Andes': 1.5,               # Medium CPU system (704 nodes)
-                'Crux': 1,                # Smallest CPU system (256 nodes)
-                'Frontier': 1,           # GPU-capable but can be used for non-GPU jobs
-                'Aurora': 1,             # GPU-capable but can be used for non-GPU jobs
-                'Perlmutter-Phase-1': 1   # GPU-capable but can be used for non-GPU jobs
-            }
-            weights = [system_weights.get(sys, 1.0) for sys in available_systems]
-            system = random.choices(available_systems, weights=weights, k=1)[0]
-        
-        # Find the site for the selected system
-        for site_name, site_config in site_configs.items():
-            if system in site_config["machines"]:
-                site = site_name
-                break
-
-        # Get system capabilities
-        caps = site_configs[site]["machines"][system]
-        node_cap = int(caps["node_limit"])
-        storage_cap = float(caps["storage_limit"])
-        mem_per_node_cap = float(caps["memory_limit"])
-
-        # Nodes (global/common bands across job types)
+        # --- Job-first attribute sampling, then capacity-aware system selection ---
         size_class = "small_nodes" if is_short else "large_nodes"
-        job_nodes = _sample_nodes(rng, size_class, node_bands=scaled_node_bands, desired_mode=scaled_desired_mode)
-        job_nodes = min(job_nodes, node_cap)
+        weights_map = _GPU_SYSTEM_WEIGHTS if job_gpu else _NON_GPU_SYSTEM_WEIGHTS
 
-        # Walltime (log-uniform), store in minutes
+        # Walltime does not constrain system selection; sample it upfront
         wlo, whi = bands["short_wall"] if is_short else bands["long_wall"]
         wall_h = float(np.exp(np.random.uniform(np.log(wlo), np.log(whi))))
         wall_h = max(wlo, min(whi, wall_h))
         job_wall_min = int(round(wall_h * 60))
 
-        # Storage (log-uniform) - use small/large bands based on is_short
+        # Sample nodes and storage, then pick a system that can host both.
+        # Retry if no system in the weighted pool fits the sampled combination.
         slo, shi = bands["small_storage"] if is_short else bands["large_storage"]
-        storage = float(np.exp(np.random.uniform(np.log(slo), np.log(shi))))
-        storage = min(storage, storage_cap)
+        system = site = None
+        for _attempt in range(_MAX_PLACEMENT_RETRIES):
+            job_nodes = _sample_nodes(rng, size_class, node_bands=scaled_node_bands, desired_mode=scaled_desired_mode)
+            storage = float(np.exp(np.random.uniform(np.log(slo), np.log(shi))))
 
+            candidates: list = []
+            candidate_weights: list = []
+            for _sys_name, _w in weights_map.items():
+                _sys_info = all_systems_info.get(_sys_name)
+                if _sys_info is None:
+                    continue
+                _caps = _sys_info["caps"]
+                if job_nodes > _caps["node_limit"]:
+                    continue
+                if storage > _caps["storage_limit"]:
+                    continue
+                candidates.append(_sys_name)
+                candidate_weights.append(_w)
+
+            if candidates:
+                system = random.choices(candidates, weights=candidate_weights, k=1)[0]
+                site = all_systems_info[system]["site"]
+                break
+
+        if system is None:
+            raise ValueError(
+                f"Could not place job {i + 1} after {_MAX_PLACEMENT_RETRIES} retries: "
+                f"job_type={jt}, size_class={size_class}, job_nodes={job_nodes}, "
+                f"storage={storage:.0f} GB, job_gpu={job_gpu}, sfactor={sfactor}. "
+                f"No system in the pool satisfies these requirements."
+            )
+
+        caps = all_systems_info[system]["caps"]
+        mem_per_node_cap = float(caps["memory_limit"])
+        storage = min(storage, float(caps["storage_limit"]))  # safety clamp
         total_mem = job_nodes * mem_per_node_cap
 
         # Assign
@@ -709,8 +723,8 @@ def generate_synthetic_jobs_v4(
         requested_gpus[i] = bool(job_gpu)
         requested_storages[i] = round(storage, 2)
         memories[i] = total_mem
-        origin_sites[i] = site  
-        origin_systems[i] = system  
+        origin_sites[i] = site
+        origin_systems[i] = system
 
     # Users/groups
     user_ids = np.random.randint(1, max(2, n_jobs // 2 + 1), size=n_jobs)
@@ -825,7 +839,7 @@ def main():
 
     print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
 
-    df = generate_synthetic_jobs_v4(
+    df = generate_synthetic_jobs_v5(
         n_jobs=args.n_jobs,
         seed=args.seed,
         arrival_pattern=args.arrival_pattern,
