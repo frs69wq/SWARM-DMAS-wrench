@@ -1,15 +1,16 @@
 #!/bin/bash
 set -eu
 
+NUM_JOBS=(1000)        #  4000 8000 16000 32000
+R_VALUES=(32)        # 8 4 2 1
+
 PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
-RESULT_DIRS=("results" "results/centralized")     # 
+RESULT_DIRS=("results/sfactor_${R_VALUES[0]}" "results/sfactor_${R_VALUES[0]}/centralized")     # 
 
 # Workload files
 DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # "busy" bursty_low_stress
 TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
-NUM_JOBS=(1000)        #  4000 8000 16000 32000
-R_VALUES=(32)        # 8 4 2 1
 METHODS=(
     "HeuristicBidding"
     "EmbeddingBidding"
@@ -18,8 +19,8 @@ METHODS=(
     "PureLocal"
 )
 
-PLOTS_DIR="plots/individual/sfactor${R_VALUES[0]}"
-PLOTS_DIR_CENTRALIZED="plots/centralized/sfactor${R_VALUES[0]}"
+PLOTS_DIR="plots/sfactor_${R_VALUES[0]}/individual"
+PLOTS_DIR_CENTRALIZED="plots/sfactor_${R_VALUES[0]}/centralized"
 
 mkdir -p "$PLOTS_DIR"
 mkdir -p "$PLOTS_DIR_CENTRALIZED"
@@ -36,7 +37,7 @@ for day in "${DAYS[@]}"; do
             for dir in "${RESULT_DIRS[@]}"; do
                 for method in "${METHODS[@]}"; do
 
-                    if [ "$dir" == "results" ]; then
+                    if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
                         csv_file="$dir/${workload_name}_${method}.csv"
                     else
                         csv_file="$dir/${workload_name}_${method}.csv"
@@ -46,11 +47,11 @@ for day in "${DAYS[@]}"; do
                         base_name=$(basename "$csv_file" .csv)
                         echo "Analyzing $csv_file"
 
-                        if [ "$dir" == "results" ]; then
+                        if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
                             python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR" --metrics-dir "$dir"
                             Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
                         else
-                            python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR_CENTRALIZED" --metrics-dir dir
+                            python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR_CENTRALIZED" --metrics-dir "$dir"
                             Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR_CENTRALIZED/${base_name}_summary.pdf"
                         fi
                     else

@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 EXEC_FILE=./build/swarm_dmas
+WRENCH_ARGS="--wrench-commport-pool-size=50000"
 
 
 # Workload construction
@@ -24,8 +25,8 @@ done
 # Directories & templates
 DEC_TEMPLATE=experiments/test_decentralized.json
 CENT_TEMPLATE=experiments/test_centralized.json
-RESULT_DIR=results
-RESULT_DIR_CENTRALIZED=results/centralized
+RESULT_DIR=results/sfactor_${R_VALUES[0]}
+RESULT_DIR_CENTRALIZED=results/sfactor_${R_VALUES[0]}/centralized
 
 mkdir -p "$RESULT_DIR"
 mkdir -p "$RESULT_DIR_CENTRALIZED"
@@ -37,8 +38,8 @@ PYTHON_BIDDERS=(
     "python_scripts/EmbeddingBidding.py"
 )
 BASELINE_POLICIES=(
-    "RandomBidding"
-    "PureLocal"
+    # "RandomBidding"
+    # "PureLocal"
 )
 
 # --------------------------------------------------
@@ -83,7 +84,8 @@ for workload in "${WORKLOADS[@]}"; do
 
         echo "Running DECENTRALIZED - $bidder_name"
 
-        $EXEC_FILE "$temp_json" > "$output_file"
+        # $EXEC_FILE "$temp_json" > "$output_file"
+        $EXEC_FILE "$temp_json" $WRENCH_ARGS > "$output_file"
         rm "$temp_json"
     done
 
@@ -109,30 +111,32 @@ for workload in "${WORKLOADS[@]}"; do
 
         echo "Running DECENTRALIZED - $policy"
 
-        $EXEC_FILE "$temp_json" > "$output_file"
+        # $EXEC_FILE "$temp_json" > "$output_file"
+        $EXEC_FILE "$temp_json" $WRENCH_ARGS > "$output_file"
         rm "$temp_json"
     done
 
-    # --------------------------------------------------
-    # CENTRALIZED
-    # --------------------------------------------------
+    # # --------------------------------------------------
+    # # CENTRALIZED
+    # # --------------------------------------------------
 
-    bidder="HeuristicBidding"   # Must match CentralizedScheduling.py
-    output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
-    temp_json="temp_config.json"
+    # bidder="HeuristicBidding"   # Must match CentralizedScheduling.py
+    # output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
+    # temp_json="temp_config.json"
 
-    jq \
-    --arg workload "$workload" \
-    --arg platform "$platform_file" \
-    '
-    .workload = $workload |
-    .platform = $platform
-    ' "$CENT_TEMPLATE" > "$temp_json"
+    # jq \
+    # --arg workload "$workload" \
+    # --arg platform "$platform_file" \
+    # '
+    # .workload = $workload |
+    # .platform = $platform
+    # ' "$CENT_TEMPLATE" > "$temp_json"
 
-    echo "Running CENTRALIZED - $bidder"
+    # echo "Running CENTRALIZED - $bidder"
 
-    $EXEC_FILE "$temp_json" > "$output_file"
-    rm "$temp_json"
+    # # $EXEC_FILE "$temp_json" > "$output_file"
+    # $EXEC_FILE "$temp_json" $WRENCH_ARGS > "$output_file"
+    # rm "$temp_json"
 
 done
 

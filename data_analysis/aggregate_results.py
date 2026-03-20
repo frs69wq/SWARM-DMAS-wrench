@@ -1,15 +1,15 @@
 import pandas as pd
 from pathlib import Path
 
-RESULTS_DIR = Path("results")
+NUM_JOBS = [1000]
+R_VALUES = [32]
+
+RESULTS_DIR = Path(f"results/sfactor_{R_VALUES[0]}")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
 DAYS = ["busy", "bursty_low_stress", "bursty_high_stress"]
 TYPES = ["homogeneous_short", "only_large_long", "mixed_80_20", "mixed_20_80"]
-
-NUM_JOBS = [1000]
-R_VALUES = [32]
 
 PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]
 BASELINE_POLICIES = ["RandomBidding", "PureLocal"]
