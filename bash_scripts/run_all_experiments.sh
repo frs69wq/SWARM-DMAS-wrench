@@ -5,10 +5,10 @@ EXEC_FILE=./build/swarm_dmas
 
 # Workload construction
 WORKLOADS=()
-DAYS=("busy")
-TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
-NUM_JOBS=(1000)
-R_VALUES=(32)
+DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # 
+TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")     # 
+NUM_JOBS=(2000)
+R_VALUES=(16)
 
 for day in "${DAYS[@]}"; do
     for i in "${!NUM_JOBS[@]}"; do
@@ -33,7 +33,7 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 
 # Policies
 PYTHON_BIDDERS=(
-    "python_scripts/HeuristicBidding.py"
+    # "python_scripts/HeuristicBidding.py"
     "python_scripts/EmbeddingBidding.py"
 )
 BASELINE_POLICIES=(
@@ -117,7 +117,7 @@ for workload in "${WORKLOADS[@]}"; do
     # CENTRALIZED
     # --------------------------------------------------
 
-    bidder="EmbeddingBidding"   # Must match CentralizedScheduling.py
+    bidder="HeuristicBidding"   # Must match CentralizedScheduling.py
     output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
     temp_json="temp_config.json"
 

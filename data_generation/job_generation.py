@@ -816,11 +816,11 @@ def main():
         choices=['busy', 'bursty_low_stress', 'bursty_high_stress'],
         help="Arrival time pattern (default: busy). --day is a deprecated alias.",
     )
-    parser.add_argument('--scenario', type=str, default='mixed_80_20',
+    parser.add_argument('--scenario', type=str, default='mixed_20_80',
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
-    parser.add_argument("--sfactor", type=float, required=False, default=1.0,
+    parser.add_argument("--sfactor", type=float, required=False, default=16,
                         help="Radical scale divisor (default: 1.0)")
     parser.add_argument('--peak-params', type=str, default='',
                         help='JSON string to override named bursty components, '
@@ -850,10 +850,12 @@ def main():
         sync_sites=args.sync_sites,
     )
 
-    os.makedirs("./data", exist_ok=True)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(script_dir, "data")
+    os.makedirs(output_dir, exist_ok=True)
     r_tag = _format_scale_tag(args.sfactor)
 
-    out = f"./data/{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json"
+    out = os.path.join(output_dir, f"{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json")
     with open(out, "w") as f:
         json.dump(df.to_dict("records"), f, indent=2)
 

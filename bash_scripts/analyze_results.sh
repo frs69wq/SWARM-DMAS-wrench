@@ -3,15 +3,10 @@ set -eu
 
 PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
-RESULT_DIRS=("results")     # "results/centralized"
-PLOTS_DIR="plots/individual"
-PLOTS_DIR_CENTRALIZED="plots/centralized"
-
-mkdir -p "$PLOTS_DIR"
-mkdir -p "$PLOTS_DIR_CENTRALIZED"
+RESULT_DIRS=("results" "results/centralized")     # 
 
 # Workload files
-DAYS=("busy")       # "idle" 
+DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # "busy" bursty_low_stress
 TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
 NUM_JOBS=(1000)        #  4000 8000 16000 32000
 R_VALUES=(32)        # 8 4 2 1
@@ -22,6 +17,13 @@ METHODS=(
     "RandomBidding"
     "PureLocal"
 )
+
+PLOTS_DIR="plots/individual/sfactor${R_VALUES[0]}"
+PLOTS_DIR_CENTRALIZED="plots/centralized/sfactor${R_VALUES[0]}"
+
+mkdir -p "$PLOTS_DIR"
+mkdir -p "$PLOTS_DIR_CENTRALIZED"
+
 
 for day in "${DAYS[@]}"; do
     for i in "${!NUM_JOBS[@]}"; do

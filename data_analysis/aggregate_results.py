@@ -5,137 +5,159 @@ RESULTS_DIR = Path("results")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
-# workload files
-DAYS = ["idle", "busy"]
+DAYS = ["busy", "bursty_low_stress", "bursty_high_stress"]
 TYPES = ["homogeneous_short", "only_large_long", "mixed_80_20", "mixed_20_80"]
-PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]  # ,"llm_claude_bidder"
+
+NUM_JOBS = [1000]
+R_VALUES = [32]
+
+PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]
 BASELINE_POLICIES = ["RandomBidding", "PureLocal"]
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 
 
-def _to_numeric(df: pd.DataFrame, cols):
+def _to_numeric(df, cols):
     for c in cols:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
     return df
 
 
+def filter_valid_jobs(df):
+    """Remove rejected / failed / unscheduled jobs."""
+    filtered = df.copy()
 
-def _mean_std(series: pd.Series, prefix: str):
+    if "FailureCause" in filtered.columns:
+        fc = filtered["FailureCause"].astype("string")
+        fc_norm = fc.str.strip().str.lower()
+        valid = fc_norm.isna() | fc_norm.isin(["", "none"])
+        filtered = filtered[valid]
+
+    if "ScheduledOn" in filtered.columns:
+        filtered = filtered[filtered["ScheduledOn"].notna()]
+
+    if "ExecutionTime" in filtered.columns:
+        filtered = filtered[filtered["ExecutionTime"] > 0]
+
+    if "EndTime" in filtered.columns:
+        filtered = filtered[filtered["EndTime"].notna()]
+
+    return filtered
+
+
+def mean_std(series):
     s = series.dropna()
     if s.empty:
-        return {
-            f"{prefix}_mean": None,
-            f"{prefix}_std": None,
-        }
-
-    return {
-        f"{prefix}_mean": float(s.mean()),
-        f"{prefix}_std": float(s.std(ddof=1)) if len(s) > 1 else 0.0,
-    }
+        return None, None
+    return float(s.mean()), float(s.std(ddof=1)) if len(s) > 1 else 0.0
 
 
-def calculate_metrics(csv_path: Path):
-    df = pd.read_csv(csv_path)
+def calculate_metrics(csv_path):
+
+    raw_df = pd.read_csv(csv_path)
 
     time_cols = [
-        "SubmissionTime", "SchedulingTime", "StartTime", "EndTime",
-        "DecisionTime", "WaitingTime", "ExecutionTime",
+        "SubmissionTime",
+        "SchedulingTime",
+        "StartTime",
+        "EndTime",
+        "DecisionTime",
+        "WaitingTime",
+        "ExecutionTime",
     ]
-    df = _to_numeric(df, time_cols)
 
-    total_jobs = len(df)
+    raw_df = _to_numeric(raw_df, time_cols)
 
-    # Completion stats
-    completed_jobs = None
-    failed_jobs = None
-    completion_ratio = None
+    total_jobs = len(raw_df)
 
-    if "FailureCause" in df.columns:
-        fc = df["FailureCause"]
-        fc_str = fc.astype("string")  
-        fc_norm = fc_str.str.strip().str.lower()
-        no_failure = fc_norm.isna() | fc_norm.isin(["none", ""])
+    df = filter_valid_jobs(raw_df)
 
-        completed_jobs = int(no_failure.sum())
-        failed_jobs = total_jobs - completed_jobs
-        completion_ratio = completed_jobs / total_jobs if total_jobs > 0 else None
+    completed_jobs = len(df)
+    failed_jobs = total_jobs - completed_jobs
+    completion_ratio = completed_jobs / total_jobs if total_jobs > 0 else None
 
-
-    # Turnaround time
-    if "TurnaroundTime" not in df.columns and {"EndTime", "SubmissionTime"}.issubset(df.columns):
+    if "TurnaroundTime" not in df.columns and {"EndTime","SubmissionTime"}.issubset(df.columns):
         df["TurnaroundTime"] = df["EndTime"] - df["SubmissionTime"]
 
-    # Makespan and throughput
-    makespan = None
+    # Makespan
+    makespan_minutes = None
     throughput_jobs_per_hour = None
-    if {"EndTime", "SubmissionTime"}.issubset(df.columns):
+
+    if not df.empty and {"EndTime","SubmissionTime"}.issubset(df.columns):
+
         min_submit = df["SubmissionTime"].min()
         max_end = df["EndTime"].max()
-        if pd.notna(min_submit) and pd.notna(max_end):
-            makespan = float(max_end - min_submit) 
-            if makespan > 0:
-                throughput_jobs_per_hour = total_jobs / (makespan / 60.0)
 
-    metrics = {
+        if pd.notna(min_submit) and pd.notna(max_end):
+
+            makespan_seconds = max_end - min_submit
+            makespan_minutes = makespan_seconds / 60
+
+            if makespan_seconds > 0:
+                throughput_jobs_per_hour = completed_jobs / (makespan_seconds / 3600)
+
+    turnaround_mean, turnaround_std = mean_std(df["TurnaroundTime"]) if "TurnaroundTime" in df else (None,None)
+    waiting_mean, waiting_std = mean_std(df["WaitingTime"]) if "WaitingTime" in df else (None,None)
+    execution_mean, execution_std = mean_std(df["ExecutionTime"]) if "ExecutionTime" in df else (None,None)
+    decision_mean, decision_std = mean_std(df["DecisionTime"]) if "DecisionTime" in df else (None,None)
+
+    return {
         "total_jobs": total_jobs,
         "completed_jobs": completed_jobs,
         "failed_jobs": failed_jobs,
         "completion_ratio": completion_ratio,
-        "makespan_minutes": makespan,
+        "makespan_minutes": makespan_minutes,
         "throughput_jobs_per_hour": throughput_jobs_per_hour,
+        "turnaround_mean": turnaround_mean,
+        "turnaround_std": turnaround_std,
+        "waiting_mean": waiting_mean,
+        "waiting_std": waiting_std,
+        "execution_mean": execution_mean,
+        "execution_std": execution_std,
+        "decision_mean": decision_mean,
+        "decision_std": decision_std,
     }
-
-    # Aggregate stats (mean/std)
-    if "TurnaroundTime" in df.columns:
-        metrics.update(_mean_std(df["TurnaroundTime"], "turnaround"))
-
-    if "WaitingTime" in df.columns:
-        metrics.update(_mean_std(df["WaitingTime"], "waiting"))
-
-    if "ExecutionTime" in df.columns:
-        metrics.update(_mean_std(df["ExecutionTime"], "execution"))
-
-    if "DecisionTime" in df.columns:
-        metrics.update(_mean_std(df["DecisionTime"], "decision"))
-
-    return metrics
 
 
 def main():
+
     rows = []
 
     for day in DAYS:
-        num_jobs = 100 if day == "idle" else 700
 
-        for workload_type in TYPES:
-            workload_name = f"{day}_{workload_type}_{num_jobs}"
+        for num_jobs, r in zip(NUM_JOBS, R_VALUES):
 
-            for mode, base_dir in [
-                ("decentralized", RESULTS_DIR),
-                ("centralized", CENTRALIZED_DIR),
-            ]:
+            for workload_type in TYPES:
 
-                for strategy in ALL_STRATEGIES:
-                    csv_path = base_dir / f"{workload_name}_{strategy}.csv"
+                workload_name = f"{day}_{workload_type}_{num_jobs}_r{r}"
 
-                    if not csv_path.exists():
-                        print(f"Skipping missing file: {csv_path}")
-                        continue
+                for mode, base_dir in [
+                    ("decentralized", RESULTS_DIR),
+                    ("centralized", CENTRALIZED_DIR),
+                ]:
 
-                    print(f"Processing {mode} - {csv_path.name}")
+                    for strategy in ALL_STRATEGIES:
 
-                    metrics = calculate_metrics(csv_path)
+                        csv_path = base_dir / f"{workload_name}_{strategy}.csv"
 
-                    row = {
-                        "mode": mode,
-                        "day": day,
-                        "workload_type": workload_type,
-                        "num_jobs": num_jobs,
-                        "strategy": strategy,
-                        **metrics,
-                    }
-                    rows.append(row)
+                        if not csv_path.exists():
+                            print(f"Skipping missing file: {csv_path}")
+                            continue
+
+                        print(f"Processing {mode} - {csv_path.name}")
+
+                        metrics = calculate_metrics(csv_path)
+
+                        row = {
+                            "mode": mode,
+                            "day": day,
+                            "workload_type": workload_type,
+                            "num_jobs": num_jobs,
+                            "strategy": strategy,
+                            **metrics,
+                        }
+
+                        rows.append(row)
 
     if not rows:
         print("No matching CSV files found.")
@@ -143,9 +165,21 @@ def main():
 
     df_summary = pd.DataFrame(rows)
 
+    column_order = [
+        "mode","day","workload_type","num_jobs","strategy",
+        "total_jobs","completed_jobs","failed_jobs","completion_ratio",
+        "makespan_minutes","throughput_jobs_per_hour",
+        "turnaround_mean","turnaround_std",
+        "waiting_mean","waiting_std",
+        "execution_mean","execution_std",
+        "decision_mean","decision_std"
+    ]
+
+    df_summary = df_summary[column_order]
+
     df_summary.sort_values(
-        by=["mode", "day", "workload_type", "num_jobs", "strategy"],
-        inplace=True,
+        by=["mode","day","workload_type","num_jobs","strategy"],
+        inplace=True
     )
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -153,7 +187,9 @@ def main():
 
     print("\nAggregated Metrics Table:\n")
     print(df_summary.to_string(index=False))
+
     print(f"\nSaved aggregated metrics to {OUTPUT_FILE}")
+
 
 if __name__ == "__main__":
     main()

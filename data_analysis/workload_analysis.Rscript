@@ -63,7 +63,6 @@ p7 <- ggplot(data, aes(x = RequestedGPU, fill = RequestedGPU)) +
   ggtitle("RequestedGPU Distribution") +
   theme_bw() + xlab("") +
   theme(legend.position = "none")
-title("My Title")
 
 # Export all plots to a PDF
 output_file <- args[2]
