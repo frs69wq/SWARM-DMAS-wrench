@@ -53,7 +53,7 @@ def embed_job(job):
     job_site = (job.get("hpc_site") or "OTHER")
 
     NODES_MAX = 2048.0
-    WALL_MAX = 10080.0   # 7 days in minutes
+    WALL_MAX = 10080.0 * 60.0   # 7 days in seconds
     MEM_MAX = 1e6
     STORAGE_MAX = 500.0
 
