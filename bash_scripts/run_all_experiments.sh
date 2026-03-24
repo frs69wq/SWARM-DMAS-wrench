@@ -8,8 +8,8 @@ WRENCH_ARGS="--wrench-commport-pool-size=50000"
 WORKLOADS=()
 DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # 
 TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")     # 
-NUM_JOBS=(2000)
-R_VALUES=(16)
+NUM_JOBS=(8000)
+R_VALUES=(4)
 
 for day in "${DAYS[@]}"; do
     for i in "${!NUM_JOBS[@]}"; do
@@ -34,12 +34,12 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 
 # Policies
 PYTHON_BIDDERS=(
-    # "python_scripts/HeuristicBidding.py"
+    "python_scripts/HeuristicBidding.py"
     "python_scripts/EmbeddingBidding.py"
 )
 BASELINE_POLICIES=(
-    # "RandomBidding"
-    # "PureLocal"
+    "RandomBidding"
+    "PureLocal"
 )
 
 # --------------------------------------------------
