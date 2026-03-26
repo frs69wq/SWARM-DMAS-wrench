@@ -684,7 +684,11 @@ def generate_synthetic_jobs_v5(
         for _attempt in range(_MAX_PLACEMENT_RETRIES):
             job_nodes = _sample_nodes(rng, size_class, node_bands=scaled_node_bands, desired_mode=scaled_desired_mode)
             storage = float(np.exp(np.random.uniform(np.log(slo), np.log(shi))))
-
+            # total memory
+            job_total_memory = 512 * job_nodes
+            
+            # pick candidates from the weighted pool that satisfy node, memory, and storage constraints
+            
             candidates: list = []
             candidate_weights: list = []
             for _sys_name, _w in weights_map.items():
@@ -692,9 +696,13 @@ def generate_synthetic_jobs_v5(
                 if _sys_info is None:
                     continue
                 _caps = _sys_info["caps"]
+
                 if job_nodes > _caps["node_limit"]:
                     continue
                 if storage > _caps["storage_limit"]:
+                    continue
+                # system memory is per node memory 
+                if job_total_memory > job_nodes * _caps["memory_limit"]:
                     continue
                 candidates.append(_sys_name)
                 candidate_weights.append(_w)
@@ -713,16 +721,14 @@ def generate_synthetic_jobs_v5(
             )
 
         caps = all_systems_info[system]["caps"]
-        mem_per_node_cap = float(caps["memory_limit"])
         storage = min(storage, float(caps["storage_limit"]))  # safety clamp
-        total_mem = job_nodes * mem_per_node_cap
 
         # Assign
         nodes[i] = job_nodes
         walltimes_min[i] = job_wall_min
         requested_gpus[i] = bool(job_gpu)
         requested_storages[i] = round(storage, 2)
-        memories[i] = total_mem
+        memories[i] = job_total_memory
         origin_sites[i] = site
         origin_systems[i] = system
 
