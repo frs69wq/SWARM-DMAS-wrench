@@ -64,9 +64,17 @@ p7 <- ggplot(data, aes(x = RequestedGPU, fill = RequestedGPU)) +
   theme_bw() + xlab("") +
   theme(legend.position = "none")
 
+# 8. Scatter plot of Nodes vs MemoryGB
+p8 <- ggplot(data, aes(x = Nodes, y = MemoryGB)) +
+  geom_point(color = "steelblue", size = 2.2, alpha = 0.65) +
+  ggtitle("Scatter Plot: Nodes vs MemoryGB") +
+  xlab("Nodes") +
+  ylab("MemoryGB") +
+  theme_bw()
+
 # Export all plots to a PDF
 output_file <- args[2]
 ggsave(output_file, device = cairo_pdf,
-       plot = grid.arrange(p1, p2, p3, p4, p5, p6, p7, ncol = 4),
+  plot = grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 4),
        width = 24, height = 12, dpi = 300)
 
