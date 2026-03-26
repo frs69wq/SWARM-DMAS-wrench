@@ -732,7 +732,6 @@ def generate_synthetic_jobs_v6(
             )
 
         caps = all_systems_info[system]["caps"]
-        storage = min(storage, float(caps["storage_limit"]))  # safety clamp
         job_total_memory = job_nodes * mem_per_node_req
 
         # Assign
