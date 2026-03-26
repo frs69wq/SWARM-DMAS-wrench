@@ -325,6 +325,70 @@ def create_figure(
     fig2.savefig(output_path2, dpi=300, bbox_inches="tight")
     print(f"Saved submission time histogram to: {output_path2}")
 
+    # visualize node histogram for each system in subplots first row and visualize the memory distribution for each system as well in the second row
+    systems = df["HPCSystem"].dropna().unique()
+    fig3, axes = plt.subplots(4, len(systems)+1, figsize=(5 * len(systems), 10))
+    for i, system in enumerate(systems):
+        system_df = df[df["HPCSystem"] == system]
+        nodes_bins = 30
+        memory_bins = 30
+        walltime_bins = 30
+        sns.histplot(system_df["Nodes"], bins=nodes_bins, ax=axes[0, i], color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"))
+        axes[0, i].set_title(f"Nodes Distribution for {system}")
+        axes[0, i].set_xlabel("Requested Nodes")
+        axes[0, i].set_ylabel("Job Count")
+        # add label of total job count for the system in the plot
+        total_jobs = len(system_df)
+        axes[0, i].text(0.95, 0.95, f"Total Jobs: {total_jobs}", transform=axes[0, i].transAxes, ha="right", va="top", fontsize=9, bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85))
+        # visualize node distribution for all systems in the last column
+        sns.histplot(df["Nodes"], bins=nodes_bins, ax=axes[0, -1], color="gray")
+        axes[0, -1].set_title("Nodes Distribution for All Systems")
+        axes[0, -1].set_xlabel("Requested Nodes")
+        axes[0, -1].set_ylabel("Job Count")
+        total_jobs = len(df)
+        axes[0, -1].text(0.95, 0.95, f"Total Jobs: {total_jobs}", transform=axes[0, -1].transAxes, ha="right", va="top", fontsize=9, bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85))
+        
+        
+        sns.histplot(system_df["MemoryGB"], bins=memory_bins, ax=axes[1, i], color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"))
+        axes[1, i].set_title(f"Memory Distribution for {system}")
+        axes[1, i].set_xlabel("Memory (GB)")
+        axes[1, i].set_ylabel("Job Count")
+        # visualize memory distribution for all systems in the last column
+        sns.histplot(df["MemoryGB"], bins=memory_bins, ax=axes[1, -1], color="gray")
+        axes[1, -1].set_title("Memory Distribution for All Systems")
+        axes[1, -1].set_xlabel("Memory (GB)")
+        axes[1, -1].set_ylabel("Job Count")
+        
+        sns.histplot(system_df["Walltime"], bins=walltime_bins, ax=axes[2, i], color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"))
+        axes[2, i].set_title(f"Walltime Distribution for {system}")
+        axes[2, i].set_xlabel("Walltime (seconds)")
+        axes[2, i].set_ylabel("Job Count")
+        # visualize walltime distribution for all systems in the last column
+        sns.histplot(df["Walltime"], bins=walltime_bins, ax=axes[2, -1], color="gray")
+        axes[2, -1].set_title("Walltime Distribution for All Systems")
+        axes[2, -1].set_xlabel("Walltime (seconds)")
+        axes[2, -1].set_ylabel("Job Count")
+
+        # visualize submission time distribution for each system in the fourth row
+        sns.histplot(system_df["SubmissionTime"], bins=submission_bins, ax=axes[3, i], color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"))
+        axes[3, i].set_title(f"Submission Time Distribution for {system}")
+        axes[3, i].set_xlabel("Submission Time (seconds)")
+        axes[3, i].set_ylabel("Job Count")
+        # visualize submission time distribution for all systems in the last column
+        sns.histplot(df["SubmissionTime"], bins=submission_bins, ax=axes[3, -1], color="gray")
+        axes[3, -1].set_title("Submission Time Distribution for All Systems")
+        axes[3, -1].set_xlabel("Submission Time (seconds)")
+        axes[3, -1].set_ylabel("Job Count")
+
+        
+    fig3.tight_layout()
+    # add supertitle with workload name
+    fig3.suptitle(f"Nodes, Memory, and Walltime Distributions by System for {workload}", fontsize=14, y=1.02)
+    output_path3 = output_path.parent / f"{output_path.stem}_nodes_memory_walltime_by_system.png"
+    fig3.savefig(output_path3, dpi=300, bbox_inches="tight")
+    print(f"Saved nodes/memory/walltime by system figure to: {output_path3}") 
+
+    
 
 def main() -> None:
     args = parse_args()
