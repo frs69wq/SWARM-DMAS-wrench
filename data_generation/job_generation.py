@@ -472,6 +472,14 @@ NODE_SAMPLING = {
     "desired_mode": 700, # calculated based on 512 peak for (64-10624) 
 }
 
+# Memory-per-node sampling config (GB per node).
+# Drawn as log-uniform over [min_gb, max_gb].
+# max_gb = 984 matches Aurora's memory_limit so no job is forced onto Frontier by memory alone.
+MEMORY_PER_NODE_SAMPLING = {
+    "min_gb": 32.0,
+    "max_gb": 512.0,
+}
+
 def _sample_nodes(
     rng: random.Random,
     size_class: str,
@@ -524,7 +532,7 @@ JOB_TYPE_BANDS = {
 # Main generator
 # ----------------------------
 
-def generate_synthetic_jobs_v5(
+def generate_synthetic_jobs_v6(
     n_jobs: int = 100,
     seed: int = 42,
     arrival_pattern: str = "busy",
@@ -684,9 +692,11 @@ def generate_synthetic_jobs_v5(
         for _attempt in range(_MAX_PLACEMENT_RETRIES):
             job_nodes = _sample_nodes(rng, size_class, node_bands=scaled_node_bands, desired_mode=scaled_desired_mode)
             storage = float(np.exp(np.random.uniform(np.log(slo), np.log(shi))))
-            # total memory
-            job_total_memory = 512 * job_nodes
-            
+            # log-uniform memory-per-node in [min_gb, max_gb]
+            mem_per_node_req = float(np.exp(np.random.uniform(
+                np.log(float(MEMORY_PER_NODE_SAMPLING["min_gb"])),
+                np.log(float(MEMORY_PER_NODE_SAMPLING["max_gb"])),
+            )))
             # pick candidates from the weighted pool that satisfy node, memory, and storage constraints
             
             candidates: list = []
@@ -702,7 +712,7 @@ def generate_synthetic_jobs_v5(
                 if storage > _caps["storage_limit"]:
                     continue
                 # system memory is per node memory 
-                if job_total_memory > job_nodes * _caps["memory_limit"]:
+                if mem_per_node_req > _caps["memory_limit"]:
                     continue
                 candidates.append(_sys_name)
                 candidate_weights.append(_w)
@@ -716,12 +726,14 @@ def generate_synthetic_jobs_v5(
             raise ValueError(
                 f"Could not place job {i + 1} after {_MAX_PLACEMENT_RETRIES} retries: "
                 f"job_type={jt}, size_class={size_class}, job_nodes={job_nodes}, "
-                f"storage={storage:.0f} GB, job_gpu={job_gpu}, sfactor={sfactor}. "
+                f"storage={storage:.0f} GB, mem_per_node_req={mem_per_node_req:.2f} GB, "
+                f"job_gpu={job_gpu}, sfactor={sfactor}. "
                 f"No system in the pool satisfies these requirements."
             )
 
         caps = all_systems_info[system]["caps"]
         storage = min(storage, float(caps["storage_limit"]))  # safety clamp
+        job_total_memory = job_nodes * mem_per_node_req
 
         # Assign
         nodes[i] = job_nodes
@@ -845,7 +857,7 @@ def main():
 
     print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
 
-    df = generate_synthetic_jobs_v5(
+    df = generate_synthetic_jobs_v6(
         n_jobs=args.n_jobs,
         seed=args.seed,
         arrival_pattern=args.arrival_pattern,
