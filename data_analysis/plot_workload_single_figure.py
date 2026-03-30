@@ -388,7 +388,68 @@ def create_figure(
     fig3.savefig(output_path3, dpi=300, bbox_inches="tight")
     print(f"Saved nodes/memory/walltime by system figure to: {output_path3}") 
 
-    
+    # create fig.4 with just submission time histogram by system
+    fig4, ax = plt.subplots(figsize=(8, 6))
+    for system in systems:
+        system_df = df[df["HPCSystem"] == system]
+        sns.histplot(
+            system_df["SubmissionTime"],
+            bins=submission_bins,
+            stat="count",
+            alpha=0.35,
+            ax=ax,
+            color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"),
+            label=system,
+            element="bars",)
+    ax.set_title("Submission Time by HPC System")
+    ax.set_xlabel("Submission Time (seconds)")
+    ax.set_ylabel("Job Count")
+    ax.legend(title="HPC System")
+    fig4.tight_layout()
+    output_path4 = output_path.parent / f"{output_path.stem}_submission_time_histogram_by_system.png"
+    fig4.savefig(output_path4, dpi=300, bbox_inches="tight")
+    print(f"Saved submission time histogram by system to: {output_path4}")
+
+    # create fig.5 with len(system) subplots showing submission time histogram for each system
+    fig5, axes = plt.subplots(1, len(systems), figsize=(5 * len(systems), 5))
+    for i, system in enumerate(systems):
+        system_df = df[df["HPCSystem"] == system]
+        sns.histplot(
+            system_df["SubmissionTime"],
+            bins=submission_bins,
+            stat="count",
+            alpha=0.35,
+            ax=axes[i],
+            color=site_to_color.get(system_df["HPCSite"].iloc[0], "gray"),
+            label=system,
+            element="bars",)
+        axes[i].set_title(f"Submission Time for {system}")
+        axes[i].set_xlabel("Submission Time (seconds)")
+        axes[i].set_ylabel("Job Count")
+        axes[i].legend(title="HPC System")
+    fig5.tight_layout()
+    output_path5 = output_path.parent / f"{output_path.stem}_submission_time_histogram_subplots_by_system.png"
+    fig5.savefig(output_path5, dpi=300, bbox_inches="tight")
+    print(f"Saved submission time histogram subplots by system to: {output_path5}")
+
+    # visualize walltime distribution for each job type in subplots
+    job_types = df["JobType"].dropna().unique()
+    fig6, axes = plt.subplots(1, len(job_types), figsize=(5 * len(job_types), 5))
+    for i, job_type in enumerate(job_types):
+        job_df = df[df["JobType"] == job_type]
+        sns.histplot(
+            job_df["Walltime"],
+            bins=walltime_bins,
+            ax=axes[i],
+            color="gray",
+        )
+        axes[i].set_title(f"Walltime Distribution for {job_type}")
+        axes[i].set_xlabel("Walltime (seconds)")
+        axes[i].set_ylabel("Job Count")
+    fig6.tight_layout()
+    output_path6 = output_path.parent / f"{output_path.stem}_walltime_histogram_subplots_by_jobtype.png"
+    fig6.savefig(output_path6, dpi=300, bbox_inches="tight")
+    print(f"Saved walltime histogram subplots by job type to: {output_path6}")
 
 def main() -> None:
     args = parse_args()
