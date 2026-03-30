@@ -159,11 +159,16 @@ def compute_bid(job_description, system_description, system_status):
         ai_data_xfer_penalty = rng.uniform(0.10, 0.20)
     
     # Normalization
+    # final_score = (
+    #     (score_util * w_util) + 
+    #     (score_resource * w_resource) + 
+    #     ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
+    # ) / (w_util + w_resource + w_speed)
     final_score = (
-        (score_util * w_util) + 
-        (score_resource * w_resource) + 
-        ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
-    ) / (w_util + w_resource + w_speed)
+        (score_util) + 
+        (score_resource) + 
+        ((norm_slowdown - ai_data_xfer_penalty)) 
+    ) / (3.0)
     
     return round(final_score, 4)
 

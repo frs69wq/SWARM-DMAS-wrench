@@ -837,7 +837,7 @@ def main():
                         choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
-    parser.add_argument("--sfactor", type=float, required=False, default=16,
+    parser.add_argument("--sfactor", type=float, required=False, default=32,
                         help="Radical scale divisor (default: 1.0)")
     parser.add_argument('--peak-params', type=str, default='',
                         help='JSON string to override named bursty components, '

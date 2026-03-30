@@ -1,12 +1,12 @@
 #!/bin/bash
 set -eu
 
-NUM_JOBS=(2000)        #  4000 8000 16000 32000
-R_VALUES=(16)        # 8 4 2 1
+NUM_JOBS=(1000)        #  4000 8000 16000 32000
+R_VALUES=(32)        # 8 4 2 1
 
 PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
-RESULT_DIRS=("results/sfactor_${R_VALUES[0]}" "results/sfactor_${R_VALUES[0]}/centralized")     #
+RESULT_DIRS=("results/sfactor_${R_VALUES[0]}" )     # "results/sfactor_${R_VALUES[0]}/centralized"
 
 
 # Workload files
@@ -14,10 +14,10 @@ DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # "busy" bursty_low
 TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
 METHODS=(
     "HeuristicBidding"
-    "EmbeddingBidding"
+    # "EmbeddingBidding"
     # "llm_claude_bidder"
-    "RandomBidding"
-    "PureLocal"
+    # "RandomBidding"
+    # "PureLocal"
 )
 
 PLOTS_DIR="plots/sfactor_${R_VALUES[0]}/individual"

@@ -1,8 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
-NUM_JOBS = [2000]
-R_VALUES = [16]
+NUM_JOBS = [1000]
+R_VALUES = [32]
 
 RESULTS_DIR = Path(f"results/sfactor_{R_VALUES[0]}")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
@@ -133,7 +133,7 @@ def main():
 
                 for mode, base_dir in [
                     ("decentralized", RESULTS_DIR),
-                    ("centralized", CENTRALIZED_DIR),
+                    # ("centralized", CENTRALIZED_DIR),
                 ]:
 
                     for strategy in ALL_STRATEGIES:
