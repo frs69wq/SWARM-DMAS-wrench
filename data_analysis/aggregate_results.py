@@ -1,8 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
-NUM_JOBS = [1000]
-R_VALUES = [32]
+NUM_JOBS = [2000]
+R_VALUES = [16]
 
 RESULTS_DIR = Path(f"results/sfactor_{R_VALUES[0]}")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
@@ -133,7 +133,7 @@ def main():
 
                 for mode, base_dir in [
                     ("decentralized", RESULTS_DIR),
-                    # ("centralized", CENTRALIZED_DIR),
+                    ("centralized", CENTRALIZED_DIR),
                 ]:
 
                     for strategy in ALL_STRATEGIES:
@@ -181,6 +181,32 @@ def main():
         by=["mode","day","workload_type","num_jobs","strategy"],
         inplace=True
     )
+
+    # Compute percent change vs PureLocal for key metrics
+    for metric in ["makespan_minutes", "waiting_mean", "execution_mean", "turnaround_mean"]:
+        pct_col = f"{metric}_pct_vs_purelocal"
+        # Find PureLocal baseline for each group
+        purelocal = df_summary[df_summary["strategy"] == "PureLocal"]
+        # Merge to align each row with its PureLocal baseline
+        merged = df_summary.merge(
+            purelocal[["mode", "day", "workload_type", "num_jobs", metric]],
+            on=["mode", "day", "workload_type", "num_jobs"],
+            suffixes=("", "_purelocal"),
+            how="left"
+        )
+
+        # add arrow if increase/decrease
+        def format_pct_change(row):
+            if pd.isna(row[f"{metric}_purelocal"]):
+                return None
+            change = row[metric] - row[f"{metric}_purelocal"]
+            arrow = "↑" if change > 0 else "↓" if change < 0 else ""
+            return f"{row[pct_col]}% {arrow}"
+
+        # Compute percent change
+        merged[pct_col] = ((merged[metric] - merged[f"{metric}_purelocal"]) / merged[f"{metric}_purelocal"] * 100).round(2)
+        merged[pct_col] = merged.apply(format_pct_change, axis=1)
+        df_summary[pct_col] = merged[pct_col]
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     df_summary.to_csv(OUTPUT_FILE, index=False)
