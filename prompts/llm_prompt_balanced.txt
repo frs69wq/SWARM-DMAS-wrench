@@ -14,16 +14,15 @@ Your task is to evaluate incoming job requests against system capabilities and s
 </SYSTEM_STATUS>
 
 <TASK_INSTRUCTIONS>
-Evaluate: Analyze the provided JOB_REQUEST against the SYSTEM_CAPABILITIES and SYSTEM_STATUS.
-Compute Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
-Provide Detailed Reasoning: In your reasoning, explicitly consider and compare the following:
- * Job's 'num_nodes' with System's 'current_num_available_nodes'.
+- Analyze the provided JOB REQUEST against the SYSTEM CAPABILITIES and SYSTEM STATUS.
+- Compute a Suitability Score: Determine a resource-job suitability score as a float between 0 and 1 (inclusive).
+- Explicitly consider:
+ * Job's 'num_nodes' with System's 'current_num_available_nodes' and System's 'num_nodes'.
  * Job’s total ‘requested_memory_gb’ with the job's total allocated system memory, which is calculated by multiplying the system’s per-node ‘memory_amount_in_gb’ by the job's 'num_nodes'. 
  * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
  * System's current_job_start_time_estimate.
- * System's 'node_speed', walltime is the upper bound in MINUTES on a shared baseline system with baseline_speed = 1.5 Tf/s.
-
-Critical Constraint: If the job's 'requested_memory_gb' exceeds the total available memory on the system (calculated as 'num_nodes' from SYSTEM_CAPABILITIES * 'memory_amount_in_gb' from SYSTEM_CAPABILITIES), the 'bid_score' MUST be 0.0.
+ * System's processing per-node 'node_speed'. Walltime is the upper bound in SECONDS on a shared baseline system with baseline_speed = 1.5 Tf/s.
+- IMPORTANT: The job's 'hpc_site' and 'hpc_system' fields indicate where the job was originally submitted. They are metadata only. In this decentralized system, any system may bid on any job. Do NOT apply any penalty or score reduction based on a mismatch between the job's 'hpc_site'/'hpc_system' and this system's 'site'/'name'.
 </TASK_INSTRUCTIONS>
 
 <PENALTY_RANGE_MODEL>
@@ -36,17 +35,21 @@ GPU jobs on GPU systems:
 
 CPU workloads on GPU systems:
 - If job_type in (HPC or HYBRID) → [0.10–0.20]
-- if job_type is STORAGE → [0.2-0.3]
+- if job_type is STORAGE → [0.20-0.30]
 
 CPU workloads on CPU-only systems:
 - If job_type=HPC → [0.20–0.30]
 - If job_type in [HPC,STORAGE] on system_type=HYBRID → [0.05-0.10]
 - If job_type=HYBRID on system_type=STORAGE→ [0.15–0.25]
+
+AI data-transfer penalty (applied on top of other penalties):
+- If job_type=AI AND job's 'hpc_site' != 'system_site' → subtract [0.10–0.20] from the final score
+- If job_type≠AI OR sites match → 0.0
 </PENALTY_RANGE_MODEL>
 
 <OUTPUT_FORMAT>
 Your entire response MUST be a valid JSON object with the following structure:
 {
- "bid_score": <float_value_between_0_and_1>,
+ "bid_score": <float_value_between_0_and_1>
 }
 </OUTPUT_FORMAT>
