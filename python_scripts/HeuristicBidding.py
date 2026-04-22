@@ -141,14 +141,14 @@ def compute_bid(job_description, system_description, system_status):
     # total_time_cost = C_j -  r_j # in seconds
     
     slowdown = max(0.0, total_time_cost) / max(pred_exec_time , 1.0) # both in seconds
-    alpha = 0.1
+    alpha = 0.5
     norm_slowdown = math.exp(-alpha * slowdown) # lower slowdown => higher score
    
     # --- 5. Weighted Aggregation ---
     # Define importance of each factor
-    w_util = 0.6      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
+    w_util = 0.3      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
     w_resource = 0.1  # Change to Medium: Prefer correct hardware types ~ 0.3
-    w_speed = 0.3    # Change to High: User cares most about "When is my job done?" ~ 0.6
+    w_speed = 0.6    # Change to High: User cares most about "When is my job done?" ~ 0.6
     
     # --- 6. AI data-transfer penalty on final score (10-20%) ---
     ai_data_xfer_penalty = 0.0
@@ -159,16 +159,16 @@ def compute_bid(job_description, system_description, system_status):
         ai_data_xfer_penalty = rng.uniform(0.10, 0.20)
     
     # Normalization
-    # final_score = (
-    #     (score_util * w_util) + 
-    #     (score_resource * w_resource) + 
-    #     ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
-    # ) / (w_util + w_resource + w_speed)
     final_score = (
-        (score_util) + 
-        (score_resource) + 
-        ((norm_slowdown - ai_data_xfer_penalty)) 
-    ) / (3.0)
+        (score_util * w_util) + 
+        (score_resource * w_resource) + 
+        ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
+    ) / (w_util + w_resource + w_speed)
+    # final_score = (
+    #     (score_util) + 
+    #     (score_resource) + 
+    #     ((norm_slowdown - ai_data_xfer_penalty)) 
+    # ) / (3.0)
     
     return round(final_score, 4)
 

@@ -34,8 +34,8 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 
 # Policies
 PYTHON_BIDDERS=(
-    "python_scripts/HeuristicBidding.py"
-    # "python_scripts/EmbeddingBidding.py"
+    # "python_scripts/HeuristicBidding.py"
+    "python_scripts/EmbeddingBidding.py"
 )
 BASELINE_POLICIES=(
     # "RandomBidding"

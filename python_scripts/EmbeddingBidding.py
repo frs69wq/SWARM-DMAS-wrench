@@ -50,7 +50,7 @@ def embed_job(job):
     gpu = 1.0 if bool(job.get("needs_gpu", False)) else 0.0
 
     job_type = (job.get("job_type") or "OTHER")
-    job_site = (job.get("hpc_site") or "OTHER")
+    # job_site = (job.get("hpc_site") or "OTHER")
 
     NODES_MAX = 2048.0
     WALL_MAX = 10080.0 * 60.0   # 7 days in seconds
@@ -71,13 +71,13 @@ def embed_job(job):
     ], dtype=np.float32)
 
     x_type = one_hot(job_type, JOB_TYPES)
-    x_site = one_hot(job_site, SITES)
+    # x_site = one_hot(job_site, SITES)
 
     w_num  = 1.0
     w_type = 0.7
-    w_site = 0.5
+    # w_site = 0.5
 
-    x = np.concatenate([w_num * x_num, w_type * x_type, w_site * x_site], axis=0)
+    x = np.concatenate([w_num * x_num, w_type * x_type], axis=0)
     return l2_normalize(x)
 
 
@@ -85,7 +85,7 @@ def embed_system(sysdesc, job_site_hint=None):
     sys_nodes = fnum(sysdesc.get("num_nodes"), 1.0)
     sys_has_gpu = 1.0 if bool(sysdesc.get("has_gpu", False)) else 0.0
     sys_type = (sysdesc.get("type") or "OTHER")
-    sys_site = sysdesc.get("site") or (job_site_hint or "OTHER")
+    # sys_site = sysdesc.get("site") or (job_site_hint or "OTHER")
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
     sys_mem_per_node = fnum(sysdesc.get("memory_amount_in_gb"), 0.0)
 
@@ -112,13 +112,13 @@ def embed_system(sysdesc, job_site_hint=None):
     ], dtype=np.float32)
 
     x_type = one_hot(sys_type, JOB_TYPES)
-    x_site = one_hot(sys_site, SITES)
+    # x_site = one_hot(sys_site, SITES)
 
     w_num  = 1.0
     w_type = 0.7
-    w_site = 0.5
+    # w_site = 0.5
 
-    x = np.concatenate([w_num * x_num, w_type * x_type, w_site * x_site], axis=0)
+    x = np.concatenate([w_num * x_num, w_type * x_type], axis=0)
     return l2_normalize(x)  
 
 
@@ -138,7 +138,6 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
     sys_mem_per_node = fnum(sysdesc.get("memory_amount_in_gb"), 0.0)
     sys_total_mem = sys_mem_per_node * sys_nodes
-
     sys_total_storage = finite_or_inf(sysdesc.get("storage_amount_in_gb", float("inf")))
 
     if nodes_req > sys_nodes:
@@ -151,6 +150,10 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
         return 0.0
     if req_walltime <= 0:
         return 0.0
+    
+    job_type = job.get("job_type") or "OTHER"
+    job_site = job.get("hpc_site") or ""
+    sys_site = sysdesc.get("site") or ""
 
     # Embeddings for job and site
     e_job = embed_job(job)
@@ -169,18 +172,21 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     sys_perf = max(1e-3, sys_speed / max(1e-9, BASE_SPEED))
     pred_exec_time = req_walltime / max(1e-9, sys_perf)
     slowdown = (wait_time + pred_exec_time) / max(1.0, pred_exec_time)
-    alpha = 0.1
+    alpha = 0.5
     slowdown_feat = math.exp(-alpha * slowdown)
 
     dynamic_bid = 0.5 * headroom_feat + 0.5 * slowdown_feat
 
     raw = float(np.dot(e_job, e_sys)) 
     static_bid = max(0.0, raw)
-    bid = 0.6 * static_bid + 0.4 * dynamic_bid
+    bid = 0.3 * static_bid + 0.7 * dynamic_bid
+
+    if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
+        bid *= 0.95*bid
     if not math.isfinite(bid):
         bid = 0.0
 
-    return bid
+    return round(float(bid), 6)
 
 
 def main():

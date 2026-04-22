@@ -541,7 +541,7 @@ def generate_synthetic_jobs_v6(
     jobtype_proportions: Optional[Dict[str, float]] = None,
     sfactor: float = 1.0,
     peak_params: Optional[Dict] = None,
-    sync_sites: bool = False,
+    sync_sites: bool = True,
 ) -> pd.DataFrame:
 
     # Apply scale divisors to capacities if provided.
@@ -651,8 +651,8 @@ def generate_synthetic_jobs_v6(
 
     # System selection weight maps (same as before; capacity filtering applied at placement time)
     _GPU_SYSTEM_WEIGHTS: Dict[str, float] = {
-        "Frontier": 1.0, "Aurora": 1.0, "Perlmutter-Phase-1": 0.8,
-    }
+        "Frontier": 1.0, "Aurora": 3.0, "Perlmutter-Phase-1": 0.5,          
+    }           # Aurora changed from 1.0 to 3.0, Perlmutter-Phase-1 reduced to 0.5 from 0.8
     _NON_GPU_SYSTEM_WEIGHTS: Dict[str, float] = {
         "Perlmutter-Phase-2": 1.7, "Andes": 1.5, "Crux": 1.0,
         "Frontier": 1.0, "Aurora": 1.0, "Perlmutter-Phase-1": 1.0,
@@ -829,7 +829,7 @@ def main():
     parser.add_argument(
         '--arrival_pattern', '--day',
         dest='arrival_pattern',
-        type=str, default='busy',
+        type=str, default='bursty_high_stress',
         choices=['busy', 'bursty_low_stress', 'bursty_high_stress'],
         help="Arrival time pattern (default: busy). --day is a deprecated alias.",
     )
@@ -842,7 +842,7 @@ def main():
     parser.add_argument('--peak-params', type=str, default='',
                         help='JSON string to override named bursty components, '
                              'e.g. \'{"peak2": {"spike_fraction": 0.25, "right_max_h": 4.0}}\'')
-    parser.add_argument('--sync-sites', action='store_true', default=False,
+    parser.add_argument('--sync-sites', action='store_true', default=True,
                         help='Zero all timezone offsets so every site bursts simultaneously '
                              '(maximum contention stress test). Default: False (staggered by timezone).')
     args = parser.parse_args()

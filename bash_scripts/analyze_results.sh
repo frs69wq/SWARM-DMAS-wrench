@@ -1,12 +1,23 @@
 #!/bin/bash
 set -eu
 
-NUM_JOBS=(1000)        #  4000 8000 16000 32000
-R_VALUES=(32)        # 8 4 2 1
+# NUM_JOBS=(1000)        #  4000 8000 16000 32000
+# R_VALUES=(32)        # 8 4 2 1
+
+R_VALUE=1
+ 
+# Scenario-specific job counts — must match what was used in run_experiments.sh
+declare -A SCENARIO_NJOBS=(
+    ["homogeneous_short"]=3200
+    ["mixed_80_20"]=200
+    ["mixed_20_80"]=25
+    ["only_large_long"]=15
+)
 
 PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
-RESULT_DIRS=("results/sfactor_${R_VALUES[0]}" )     # "results/sfactor_${R_VALUES[0]}/centralized"
+# RESULT_DIRS=("results/sfactor_${R_VALUES[0]}" )     # "results/sfactor_${R_VALUES[0]}/centralized"
+RESULT_DIRS=("results/sfactor_${R_VALUE}")
 
 
 # Workload files
@@ -14,52 +25,82 @@ DAYS=("busy" "bursty_low_stress" "bursty_high_stress")       # "busy" bursty_low
 TYPES=("homogeneous_short" "only_large_long" "mixed_80_20" "mixed_20_80")
 METHODS=(
     "HeuristicBidding"
-    # "EmbeddingBidding"
-    # "llm_claude_bidder"
-    # "RandomBidding"
-    # "PureLocal"
+    "EmbeddingBidding"
+    "LLMBidding"
+    "RandomBidding"
+    "PureLocal"
 )
 
-PLOTS_DIR="plots/sfactor_${R_VALUES[0]}/individual"
-PLOTS_DIR_CENTRALIZED="plots/sfactor_${R_VALUES[0]}/centralized"
+# PLOTS_DIR="plots/sfactor_${R_VALUES[0]}/individual"
+# PLOTS_DIR_CENTRALIZED="plots/sfactor_${R_VALUES[0]}/centralized"
+PLOTS_DIR="plots/sfactor_${R_VALUE}/individual"
+PLOTS_DIR_CENTRALIZED="plots/sfactor_${R_VALUE}/centralized"
 
 mkdir -p "$PLOTS_DIR"
 mkdir -p "$PLOTS_DIR_CENTRALIZED"
 
 
 for day in "${DAYS[@]}"; do
-    for i in "${!NUM_JOBS[@]}"; do
-        num="${NUM_JOBS[$i]}"
-        r="${R_VALUES[$i]}"
-        for type in "${TYPES[@]}"; do
-
-            workload_name="${day}_${type}_${num}_r${r}"
-
-            for dir in "${RESULT_DIRS[@]}"; do
-                for method in "${METHODS[@]}"; do
-
+    for type in "${TYPES[@]}"; do
+        num="${SCENARIO_NJOBS[$type]}"
+        workload_name="${day}_${type}_${num}_r${R_VALUE}"
+ 
+        for dir in "${RESULT_DIRS[@]}"; do
+            for method in "${METHODS[@]}"; do
+                csv_file="$dir/${workload_name}_${method}.csv"
+ 
+                if [ -f "$csv_file" ]; then
+                    base_name=$(basename "$csv_file" .csv)
+                    echo "Analyzing $csv_file"
+ 
                     if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
-                        csv_file="$dir/${workload_name}_${method}.csv"
+                        python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR" --metrics-dir "$dir"
+                        Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
                     else
-                        csv_file="$dir/${workload_name}_${method}.csv"
+                        python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR_CENTRALIZED" --metrics-dir "$dir"
+                        Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR_CENTRALIZED/${base_name}_summary.pdf"
                     fi
-
-                    if [ -f "$csv_file" ]; then
-                        base_name=$(basename "$csv_file" .csv)
-                        echo "Analyzing $csv_file"
-
-                        if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
-                            python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR" --metrics-dir "$dir"
-                            Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
-                        else
-                            python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR_CENTRALIZED" --metrics-dir "$dir"
-                            Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR_CENTRALIZED/${base_name}_summary.pdf"
-                        fi
-                    else
-                        echo "Skipping missing file: $csv_file"
-                    fi
-                done
+                else
+                    echo "Skipping missing file: $csv_file"
+                fi
             done
         done
     done
 done
+
+# for day in "${DAYS[@]}"; do
+#     for i in "${!NUM_JOBS[@]}"; do
+#         num="${NUM_JOBS[$i]}"
+#         r="${R_VALUES[$i]}"
+#         for type in "${TYPES[@]}"; do
+
+#             workload_name="${day}_${type}_${num}_r${r}"
+
+#             for dir in "${RESULT_DIRS[@]}"; do
+#                 for method in "${METHODS[@]}"; do
+
+#                     if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
+#                         csv_file="$dir/${workload_name}_${method}.csv"
+#                     else
+#                         csv_file="$dir/${workload_name}_${method}.csv"
+#                     fi
+
+#                     if [ -f "$csv_file" ]; then
+#                         base_name=$(basename "$csv_file" .csv)
+#                         echo "Analyzing $csv_file"
+
+#                         if [ "$dir" == "${RESULT_DIRS[0]}" ]; then
+#                             python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR" --metrics-dir "$dir"
+#                             Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR/${base_name}_summary.pdf"
+#                         else
+#                             python "$PY_ANALYZER" --csv_file "$csv_file" --output-dir "$PLOTS_DIR_CENTRALIZED" --metrics-dir "$dir"
+#                             Rscript "$R_ANALYZER" "$csv_file" "$PLOTS_DIR_CENTRALIZED/${base_name}_summary.pdf"
+#                         fi
+#                     else
+#                         echo "Skipping missing file: $csv_file"
+#                     fi
+#                 done
+#             done
+#         done
+#     done
+# done

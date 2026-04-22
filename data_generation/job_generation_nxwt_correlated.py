@@ -472,7 +472,7 @@ GLOBAL_NODE_BANDS: Dict[str, Tuple[int, int]] = {
 #   - smaller systems (Perlmutter-Ph1, Andes) still receive ~15-21% of large jobs
 #   - sigma=0.8 gives reasonable spread without too many jobs hitting the cap
 NODE_SAMPLING = {
-    "sigma": 0.8,
+    "sigma": 0.6,
     "desired_mode": 1000,
 }
 
@@ -485,25 +485,11 @@ MEMORY_PER_NODE_SAMPLING = {
 }
 
 # New: control the joint nodes x walltime structure
+_JOINT_CFG = {"rho": 0.60, "p_outlier": 0.05, "tail_gate": 0.80, "outlier_lo": 0.90}
 NODE_WALLTIME_DEPENDENCE = {
-    "only_large_long": {
-        "rho": 0.6,         # anti-correlation strength
-        "p_outlier": 0.05,   # rare 10x10 jobs
-        "tail_gate": 0.80,   # only if nodes are already in upper tail
-        "outlier_lo": 0.90,  # outlier walltime forced into upper quantile
-    },
-    "mixed_20_80_long": {
-        "rho": 0.65,
-        "p_outlier": 0.05,
-        "tail_gate": 0.80,
-        "outlier_lo": 0.90,
-    },
-    "mixed_80_20_long": {
-        "rho": 0.60,
-        "p_outlier": 0.04,
-        "tail_gate": 0.82,
-        "outlier_lo": 0.90,
-    },
+    "only_large_long":  _JOINT_CFG,
+    "mixed_20_80_long": _JOINT_CFG,
+    "mixed_80_20_long": _JOINT_CFG,
 }
 
 def _sample_nodes(
@@ -1010,21 +996,32 @@ def main():
     parser.add_argument('--sync-sites', action='store_true', default=False,
                         help='Zero all timezone offsets so every site bursts simultaneously '
                              '(maximum contention stress test). Default: False (staggered by timezone).')
+    parser.add_argument('--rho', type=float, default=1.5, choices=[0.9, 1.5], help='Target stress level rho (default: 1.5)')
     args = parser.parse_args()
 
     jobtype_proportions = _parse_json_arg(args.jobtype_proportions) if args.jobtype_proportions else None
     peak_params = _parse_json_arg(args.peak_params) if args.peak_params else None
 
     # Scenario-aware default n_jobs
-    _SCENARIO_DEFAULT_NJOBS: Dict[str, int] = {
-        "homogeneous_short": 3200,
-        "mixed_80_20":        200,
-        "mixed_20_80":         25,
-        "only_large_long":     15,
+    # rho=0.9
+    _SCENARIO_DEFAULT_NJOBS_09: Dict[str, int] = {
+    "homogeneous_short": 1435,
+    "mixed_80_20":         60,
+    "mixed_20_80":         16,
+    "only_large_long":     13,
     }
+    # rho=1.5
+    _SCENARIO_DEFAULT_NJOBS_15: Dict[str, int] = {
+        "homogeneous_short": 2391,
+        "mixed_80_20":        100,
+        "mixed_20_80":         26,
+        "only_large_long":     21,
+    }
+    
     if args.n_jobs is None:
-        args.n_jobs = _SCENARIO_DEFAULT_NJOBS[args.scenario]
-        print(f"Using default n_jobs={args.n_jobs} for scenario '{args.scenario}' (rho~1.5)")
+        table = _SCENARIO_DEFAULT_NJOBS_09 if args.rho == 0.9 else _SCENARIO_DEFAULT_NJOBS_15
+        args.n_jobs = table[args.scenario]
+        print(f"Using n_jobs={args.n_jobs} for scenario='{args.scenario}', rho={args.rho} (analytically derived)")
 
     print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
 
