@@ -103,8 +103,9 @@ def create_figure(
     site_stats_lines = []
     for i, site in enumerate(site_order):
         site_df = df[df["HPCSite"] == site]
+        site_df["SubmissionTimeHours"] = site_df["SubmissionTime"] / 3600.0
         sns.histplot(
-            site_df["SubmissionTime"],
+            site_df["SubmissionTimeHours"],
             bins=submission_bins,
             stat="count",
             alpha=0.35,
@@ -115,14 +116,17 @@ def create_figure(
             # kde=True,
         )
 
-        s_min, s_peak, s_max = _site_hist_stats(site_df["SubmissionTime"], submission_bins)
+        s_min, s_peak, s_max = _site_hist_stats(site_df["SubmissionTimeHours"], submission_bins)
         site_stats_lines.append(
             f"{site}: min={s_min:.1f}s, peak={s_peak:.1f}s, max={s_max:.1f}s"
         )
+       
 
     ax0.set_title("Submission Time by HPC Site")
-    ax0.set_xlabel("Submission Time (seconds)")
+    ax0.set_xlabel("Submission Time (hrs)")
     ax0.set_ylabel("Job Count")
+    ax0.set_xticks(np.arange(0, 28, 3))
+    ax0.set_xlim(0, 27)
     ax0.text(
         0.01,
         0.99,
@@ -322,9 +326,10 @@ def create_figure(
     ax.legend(title="HPC Site")
     fig2.tight_layout()
     output_path2 = output_path.parent / f"{output_path.stem}_submission_time_histogram.png"
-    fig2.savefig(output_path2, dpi=300, bbox_inches="tight")
+    # fig2.savefig(output_path2, dpi=300, bbox_inches="tight")
     print(f"Saved submission time histogram to: {output_path2}")
-
+    
+    ########################
     # visualize node histogram for each system in subplots first row and visualize the memory distribution for each system as well in the second row
     systems = df["HPCSystem"].dropna().unique()
     fig3, axes = plt.subplots(4, len(systems)+1, figsize=(5 * len(systems), 10))
@@ -385,9 +390,9 @@ def create_figure(
     # add supertitle with workload name
     fig3.suptitle(f"Nodes, Memory, and Walltime Distributions by System for {workload}", fontsize=14, y=1.02)
     output_path3 = output_path.parent / f"{output_path.stem}_nodes_memory_walltime_by_system.png"
-    fig3.savefig(output_path3, dpi=300, bbox_inches="tight")
+    # fig3.savefig(output_path3, dpi=300, bbox_inches="tight")
     print(f"Saved nodes/memory/walltime by system figure to: {output_path3}") 
-
+    ########################
     # create fig.4 with just submission time histogram by system
     fig4, ax = plt.subplots(figsize=(8, 6))
     for system in systems:
@@ -407,9 +412,9 @@ def create_figure(
     ax.legend(title="HPC System")
     fig4.tight_layout()
     output_path4 = output_path.parent / f"{output_path.stem}_submission_time_histogram_by_system.png"
-    fig4.savefig(output_path4, dpi=300, bbox_inches="tight")
+    # fig4.savefig(output_path4, dpi=300, bbox_inches="tight")
     print(f"Saved submission time histogram by system to: {output_path4}")
-
+    #########################
     # create fig.5 with len(system) subplots showing submission time histogram for each system
     fig5, axes = plt.subplots(1, len(systems), figsize=(5 * len(systems), 5))
     for i, system in enumerate(systems):
@@ -429,7 +434,7 @@ def create_figure(
         axes[i].legend(title="HPC System")
     fig5.tight_layout()
     output_path5 = output_path.parent / f"{output_path.stem}_submission_time_histogram_subplots_by_system.png"
-    fig5.savefig(output_path5, dpi=300, bbox_inches="tight")
+    # fig5.savefig(output_path5, dpi=300, bbox_inches="tight")
     print(f"Saved submission time histogram subplots by system to: {output_path5}")
 
     # visualize walltime distribution for each job type in subplots
@@ -448,7 +453,7 @@ def create_figure(
         axes[i].set_ylabel("Job Count")
     fig6.tight_layout()
     output_path6 = output_path.parent / f"{output_path.stem}_walltime_histogram_subplots_by_jobtype.png"
-    fig6.savefig(output_path6, dpi=300, bbox_inches="tight")
+    # fig6.savefig(output_path6, dpi=300, bbox_inches="tight")
     print(f"Saved walltime histogram subplots by job type to: {output_path6}")
 
 def main() -> None:
