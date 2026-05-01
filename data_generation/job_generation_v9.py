@@ -55,8 +55,8 @@ def _parse_json_arg(s: str) -> Dict:
         raise ValueError(f"Invalid JSON arg: {s}. Error: {e}")
 
 _SCENARIO_SHORT_FRAC: Dict[str, float] = {
-    "homogeneous_short": 1.00,
-    "only_large_long":   0.00,
+    "small_short": 1.00,
+    "large_long":   0.00,
     "mixed_80_20":       0.80,
     "mixed_20_80":       0.20,
 }
@@ -85,9 +85,9 @@ def _sample_lognormal_int(rng: random.Random, lo: int, hi: int, mu: float, sigma
 def _format_scale_tag(value: float) -> str:
     return f"{float(value):g}".replace(".", "p")
 
-def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
+def _business_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndarray:
     """
-    Busy day: for each site, draw local-time submissions ~ Normal(noon, 4h),
+    business day: for each site, draw local-time submissions ~ Normal(noon, 4h),
     then map into a shared timeline with offsets (EST=0, CST=+1, PST=+3).
     Output is per-job times in SECONDS (aligned with input job order).
     """
@@ -125,7 +125,7 @@ def _busy_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.ndar
         submission_times[mask] = local_t + offset
 
     # debug for each offset
-    print("\n=== Debug: Submission Times by Site (Busy Day) ===", file=os.sys.stderr)
+    print("\n=== Debug: Submission Times by Site (business Day) ===", file=os.sys.stderr)
     
     # print min, max, mean for each site
     for site in np.unique(sites_arr):
@@ -276,7 +276,7 @@ def _sample_uniform_component(
 ) -> np.ndarray:
     if count <= 0:
         return np.empty(0, dtype=float)
-    return rng.uniform(0.0, 24.0 * hour, size=count)
+    return rng.uniform(0.0, 27.0 * hour, size=count)
 
 
 def _sample_bursty_component(
@@ -433,7 +433,7 @@ def _bursty_day_times_by_site(
         ]
 
         local_t = np.concatenate(samples) if samples else np.empty(0, dtype=float)
-        local_t = np.clip(local_t, 0.0, 24.0 * hour)
+        local_t = np.clip(local_t, 0.0, 27.0 * hour)
         rng.shuffle(local_t)
         submission_times[mask] = local_t + offset
 
@@ -487,7 +487,7 @@ MEMORY_PER_NODE_SAMPLING = {
 # New: control the joint nodes x walltime structure
 _JOINT_CFG = {"rho": 0.65, "p_outlier": 0.05, "tail_gate": 0.80, "outlier_lo": 0.90}
 NODE_WALLTIME_DEPENDENCE = {
-    "only_large_long":  _JOINT_CFG,
+    "large_long":  _JOINT_CFG,
     "mixed_20_80_long": _JOINT_CFG,
     "mixed_80_20_long": _JOINT_CFG,
 }
@@ -580,9 +580,9 @@ def _sample_walltime_for_job(
     if is_short:
         return _sample_walltime_independent(wlo, whi)
 
-    # only_large_long: use L-shaped joint distribution
-    if scenario == "only_large_long":
-        cfg = NODE_WALLTIME_DEPENDENCE["only_large_long"]
+    # large_long: use L-shaped joint distribution
+    if scenario == "large_long":
+        cfg = NODE_WALLTIME_DEPENDENCE["large_long"]
         node_lo, node_hi = node_bands["large_nodes"]
         return _sample_walltime_joint_large_long(
             job_nodes=job_nodes,
@@ -667,28 +667,28 @@ JOB_TYPE_BANDS = {
 def generate_synthetic_jobs_v9(
     n_jobs: int = 100,
     seed: int = 42,
-    arrival_pattern: str = "busy",
+    arrival_pattern: str = "business",
     scenario: str = "mixed_80_20",
     # jobs_per_site: Optional[Dict[str, int]] = None,
     jobtype_proportions: Optional[Dict[str, float]] = None,
-    sfactor: float = 1.0,
+    # sfactor: float = 1.0,
     peak_params: Optional[Dict] = None,
     sync_sites: bool = False,
 ) -> pd.DataFrame:
 
     # Apply scale divisors to capacities if provided.
     # Example: sfactor=8 -> node_limit = node_limit / 8
-    sfactor = max(float(sfactor), 1e-9)
+    # sfactor = max(float(sfactor), 1e-9)
 
     if seed > 0:
         random.seed(seed)
         np.random.seed(seed)
 
     
-    if sfactor != 1.0:
-        site_configs = parse_site_configs_from_platform_xml(f"platforms/AmSC_scaled_down_{int(sfactor)}.xml")
-    else:
-        site_configs = parse_site_configs_from_platform_xml("platforms/AmSC.xml")
+    # if sfactor != 1.0:
+    #     site_configs = parse_site_configs_from_platform_xml(f"platforms/AmSC_scaled_down_{int(sfactor)}.xml")
+    # else:
+    site_configs = parse_site_configs_from_platform_xml("platforms/AmSC.xml")
 
     
     # prettier print of platform config
@@ -713,8 +713,8 @@ def generate_synthetic_jobs_v9(
     )
     # scale down small node bands proportionally, but keep at least 1 node
     # small_lo, small_hi = GLOBAL_NODE_BANDS["small_nodes"]
-    small_lo = max(1, int(GLOBAL_NODE_BANDS["small_nodes"][0] / sfactor))
-    small_hi = max(small_lo, int(GLOBAL_NODE_BANDS["small_nodes"][1] / sfactor))
+    small_lo = max(1, int(GLOBAL_NODE_BANDS["small_nodes"][0] ))
+    small_hi = max(small_lo, int(GLOBAL_NODE_BANDS["small_nodes"][1] ))
     
     # scale down large_lo and large_hi proportionally, but keep at least 1 node
     large_lo = min(GLOBAL_NODE_BANDS["large_nodes"][0], small_hi + 1)
@@ -734,13 +734,13 @@ def generate_synthetic_jobs_v9(
     # sanity check: ensure scaled bands fit within platform limits
     if large_hi < large_lo:
         raise ValueError(
-            f"Invalid scaled node bands after applying sfactor={sfactor}: "
+            f"Invalid scaled node bands: "
             f"large_hi ({large_hi}) < large_lo ({large_lo}). "
             f"Check platform limits and scaling logic."
         )
     
     base_mode = float(NODE_SAMPLING.get("desired_mode", 600))
-    scaled_desired_mode = max(float(large_lo), min(float(large_hi), base_mode / sfactor))
+    scaled_desired_mode = max(float(large_lo), min(float(large_hi), base_mode ))
 
     print("\n=== Node Sampling (Effective) ===")
     print(f"small_nodes band: {scaled_node_bands['small_nodes']}")
@@ -872,7 +872,7 @@ def generate_synthetic_jobs_v9(
                 f"Could not place job {i + 1} after {_MAX_PLACEMENT_RETRIES} retries: "
                 f"job_type={jt}, size_class={size_class}, job_nodes={job_nodes}, "
                 f"storage={storage:.0f} GB, mem_per_node_req={mem_per_node_req:.2f} GB, "
-                f"job_gpu={job_gpu}, sfactor={sfactor}. "
+                f"job_gpu={job_gpu}. "
                 f"No system in the pool satisfies these requirements."
             )
 
@@ -893,8 +893,8 @@ def generate_synthetic_jobs_v9(
     group_ids = np.random.randint(1, max(2, n_jobs // 4 + 1), size=n_jobs)
 
     # Submission times
-    if arrival_pattern == "busy":
-        submission_times = _busy_day_times_by_site(n_jobs, origin_sites, seed=seed)
+    if arrival_pattern == "business":
+        submission_times = _business_day_times_by_site(n_jobs, origin_sites, seed=seed)
     elif arrival_pattern in ("bursty_low_stress", "bursty_high_stress"):
         stress = arrival_pattern.replace("bursty_", "")
         submission_times = _bursty_day_times_by_site(
@@ -904,7 +904,7 @@ def generate_synthetic_jobs_v9(
     else:
         raise ValueError(
             f"Unknown arrival_pattern {arrival_pattern!r}. "
-            "Valid choices: 'busy', 'bursty_low_stress', 'bursty_high_stress'."
+            "Valid choices: 'business', 'bursty_low_stress', 'bursty_high_stress'."
         )
 
     print("\n=== Submission Time Sampling ===")
@@ -973,23 +973,23 @@ def main():
                         help=(
                             'Number of jobs to generate. Defaults are calibrated per scenario '
                             'to achieve rho~1.5 over the 27h global submission window: '
-                            'homogeneous_short=3000, mixed_80_20=200, mixed_20_80=20, only_large_long=15. '
-                            'These are fixed across all sfactor levels — do NOT divide by sfactor.'
+                            'small_short=3000, mixed_80_20=200, mixed_20_80=20, large_long=15. '
+                            # 'These are fixed across all sfactor levels — do NOT divide by sfactor.'
                         ))
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument(
         '--arrival_pattern', '--day',
         dest='arrival_pattern',
-        type=str, default='busy',
-        choices=['busy', 'bursty_low_stress', 'bursty_high_stress'],
-        help="Arrival time pattern (default: busy). --day is a deprecated alias.",
+        type=str, default='business',
+        choices=['business', 'bursty_low_stress', 'bursty_high_stress'],
+        help="Arrival time pattern (default: business). --day is a deprecated alias.",
     )
-    parser.add_argument('--scenario', type=str, default='homogeneous_short',
-                        choices=['homogeneous_short', 'only_large_long', 'mixed_80_20', 'mixed_20_80'])
+    parser.add_argument('--scenario', type=str, default='small_short',
+                        choices=['small_short', 'large_long', 'mixed_80_20', 'mixed_20_80'])
     parser.add_argument('--jobtype_proportions', type=str, default='',
                         help='JSON string, e.g. \'{"HPC":0.3,"AI":0.3,"HYBRID":0.25,"STORAGE":0.15}\'')
-    parser.add_argument("--sfactor", type=float, required=False, default=1.0,
-                        help="Radical scale divisor (default: 1.0)")
+    # parser.add_argument("--sfactor", type=float, required=False, default=1.0,
+                        # help="Radical scale divisor (default: 1.0)")
     parser.add_argument('--peak-params', type=str, default='',
                         help='JSON string to override named bursty components, '
                              'e.g. \'{"peak2": {"spike_fraction": 0.25, "right_max_h": 4.0}}\'')
@@ -1003,25 +1003,20 @@ def main():
     peak_params = _parse_json_arg(args.peak_params) if args.peak_params else None
 
     
-#     small/short: 2880, 4800
-# 80% short + 20% long: 250, 420
-# 20% short + 80% long: 67, 112
-# all large/long: 54, 90
-    
     # Scenario-aware default n_jobs
     # rho=0.9
     _SCENARIO_DEFAULT_NJOBS_09: Dict[str, int] = {
-    "homogeneous_short": 2880,
+    "small_short": 2880,
     "mixed_80_20":         251,
     "mixed_20_80":         67,
-    "only_large_long":     54,
+    "large_long":     54,
     }
     # rho=1.5
     _SCENARIO_DEFAULT_NJOBS_15: Dict[str, int] = {
-        "homogeneous_short": 4800,
+        "small_short": 4800,
         "mixed_80_20":        415,
         "mixed_20_80":         112,
-        "only_large_long":     91,
+        "large_long":     91,
     }
     
     if args.n_jobs is None:
@@ -1029,7 +1024,7 @@ def main():
         args.n_jobs = table[args.scenario]
         print(f"Using n_jobs={args.n_jobs} for scenario='{args.scenario}', rho={args.rho} (analytically derived)")
 
-    print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sfactor={args.sfactor}, sync_sites={args.sync_sites}")
+    print(f"Generating {args.n_jobs} jobs, arrival_pattern={args.arrival_pattern}, sync_sites={args.sync_sites}")
 
     df = generate_synthetic_jobs_v9(
         n_jobs=args.n_jobs,
@@ -1037,17 +1032,17 @@ def main():
         arrival_pattern=args.arrival_pattern,
         scenario=args.scenario,
         jobtype_proportions=jobtype_proportions,
-        sfactor=args.sfactor,
+        # sfactor=args.sfactor,
         peak_params=peak_params,
         sync_sites=args.sync_sites,
     )
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(script_dir, "data_rho_1.5_v9")
+    output_dir = os.path.join(script_dir, "data")
     os.makedirs(output_dir, exist_ok=True)
-    r_tag = _format_scale_tag(args.sfactor)
+    # r_tag = _format_scale_tag(args.sfactor)
 
-    out = os.path.join(output_dir, f"{args.arrival_pattern}_{args.scenario}_{len(df)}_r{r_tag}.json")
+    out = os.path.join(output_dir, f"{args.arrival_pattern}_{args.scenario}_{len(df)}_rho{args.rho}.json")
     with open(out, "w") as f:
         json.dump(df.to_dict("records"), f, indent=2)
 
