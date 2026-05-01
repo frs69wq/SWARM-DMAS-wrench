@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""
-Analyze SWARM-DMAS simulation results from test.csv
-- Calculate makespan metric
-- Plot resource utilization for all systems
-
-How to Run:
-python ../data_analysis/analyze_results.py -c ./results/busy_mixed_20_80_700_PureLocal.csv
-"""
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,20 +16,6 @@ BASE_SYSTEM_CAPACITIES = {
     'Perlmutter-Phase-2': {'nodes': 3072, 'storage_gb': 700_000_000}
 }
 
-def extract_r_value(name: str):
-    match = re.search(r"_r(\d+)_", name)
-    if match:
-        return int(match.group(1))
-    return 1
-
-def get_scaled_capacities(r_value):
-    scaled = {}
-    for system, caps in BASE_SYSTEM_CAPACITIES.items():
-        scaled[system] = {
-            'nodes': caps['nodes'] // r_value,
-            'storage_gb': caps['storage_gb'] // r_value
-        }
-    return scaled
 
 def load_job_definitions(workload_path):
     """Load job definitions from workload JSON file."""
@@ -418,9 +396,7 @@ def main():
     print(f"Jobs Completed: {completed_jobs}")
     print(f"Jobs Failed/Unscheduled: {total_jobs - completed_jobs}")
     
-    r_value = extract_r_value(csv_path.stem)
-    print(f"Detected scaling factor r = {r_value}")
-    scaled_capacities = get_scaled_capacities(r_value)
+    system_capacities = BASE_SYSTEM_CAPACITIES
 
     # Calculate makespan
     makespan = calculate_makespan(df_valid)
@@ -429,27 +405,26 @@ def main():
     print_summary_stats(df_valid, makespan)
 
     # Calculate, print and save per-system metrics
-    per_system_metrics = calculate_per_system_metrics(df_valid, scaled_capacities)
+    per_system_metrics = calculate_per_system_metrics(df_valid, system_capacities)
 
     metrics_dir = metrics_dir / "metrics"
     metrics_dir.mkdir(exist_ok=True, parents=True)
     if per_system_metrics is not None:
-        metrics_filename = (f"per_system_metrics_{workload_name}_{bidding_method}_r{r_value}.csv")
+        metrics_filename = (f"per_system_metrics_{workload_name}_{bidding_method}.csv")
         metrics_csv_path = metrics_dir / metrics_filename
         per_system_metrics.to_csv(metrics_csv_path, index=False)
         print(f"✓ Per-system metrics saved to {metrics_csv_path}")
     
     # Generate plots
     print("\nGenerating plots...")
-    # plot_resource_utilization(df, scaled_capacities,output_dir / f'resource_utilization_{workload_name}_{bidding_method}.png')
-    plot_utilization_percentage(df_valid, scaled_capacities, output_dir / f'utilization_percentage_{workload_name}_{bidding_method}.png')
+    plot_utilization_percentage(df_valid, system_capacities, output_dir / f'utilization_percentage_{workload_name}_{bidding_method}.png')
 
     thrhput = calculate_throughput(df_valid)
     print(f"\nThroughput: {thrhput:.2f} jobs/time unit")
     
-    # node_utili, storage_utili = calculate_resource_utilization(df, scaled_capacities)
-    # print(f"\nOverall Node Utilization: {node_utili}%")
-    # print(f"Overall Storage Utilization: {storage_utili}%")
+    node_utili, storage_utili = calculate_resource_utilization(df, system_capacities)
+    print(f"\nOverall Node Utilization: {node_utili}%")
+    print(f"Overall Storage Utilization: {storage_utili}%")
 
     print("\n✓ Analysis complete!")
 

@@ -50,12 +50,11 @@ def embed_job(job):
     gpu = 1.0 if bool(job.get("needs_gpu", False)) else 0.0
 
     job_type = (job.get("job_type") or "OTHER")
-    # job_site = (job.get("hpc_site") or "OTHER")
 
-    NODES_MAX = 2048.0
-    WALL_MAX = 10080.0 * 60.0   # 7 days in seconds
-    MEM_MAX = 1e6
-    STORAGE_MAX = 500.0
+    NODES_MAX = 8600.0
+    WALL_MAX = 60.0 * 60.0   # 1 day in seconds
+    MEM_MAX = 512       #1e6
+    STORAGE_MAX = 500.0 * 1000
 
     def log01(x, cap):
         x = max(0.0, float(x))
@@ -65,7 +64,7 @@ def embed_job(job):
     x_num = np.array([
         log01(nodes, NODES_MAX),
         log01(wall, WALL_MAX),
-        log01(mem, MEM_MAX),
+        log01(mem/nodes, MEM_MAX),
         log01(storage, STORAGE_MAX),
         gpu,
     ], dtype=np.float32)

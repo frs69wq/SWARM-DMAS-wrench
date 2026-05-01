@@ -1,15 +1,28 @@
 import pandas as pd
 from pathlib import Path
 
-NUM_JOBS = [2000]
-R_VALUES = [16]
+RHO_VALUES = [1.5, 0.9]
+SCENARIO_NJOBS_BY_RHO = {
+    1.5: {
+        "mixed_80_20": 415,
+        "mixed_20_80": 112,
+        "large_long": 91,
+        "small_short": 4800,
+    },
+    0.9: {
+        "mixed_80_20": 251,
+        "mixed_20_80": 67,
+        "large_long": 54,
+        "small_short": 2880,
+    },
+}
 
-RESULTS_DIR = Path(f"results/sfactor_{R_VALUES[0]}")
+RESULTS_DIR = Path("results")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
-DAYS = ["busy", "bursty_low_stress", "bursty_high_stress"]
-TYPES = ["homogeneous_short", "only_large_long", "mixed_80_20", "mixed_20_80"]
+DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
+TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]
 
 PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]
 BASELINE_POLICIES = ["RandomBidding", "PureLocal"]
@@ -120,43 +133,32 @@ def calculate_metrics(csv_path):
 
 
 def main():
-
     rows = []
 
-    for day in DAYS:
-
-        for num_jobs, r in zip(NUM_JOBS, R_VALUES):
-
+    for rho in RHO_VALUES:
+        scenario_njobs = SCENARIO_NJOBS_BY_RHO[rho]
+        for day in DAYS:
             for workload_type in TYPES:
+                num_jobs = scenario_njobs[workload_type]
+                workload_name = f"{day}_{workload_type}_{num_jobs}_rho{rho}"
 
-                workload_name = f"{day}_{workload_type}_{num_jobs}_r{r}"
-
-                for mode, base_dir in [
-                    ("decentralized", RESULTS_DIR),
-                    ("centralized", CENTRALIZED_DIR),
-                ]:
-
+                for mode, base_dir in [("decentralized", RESULTS_DIR), ("centralized", CENTRALIZED_DIR),]:
                     for strategy in ALL_STRATEGIES:
-
                         csv_path = base_dir / f"{workload_name}_{strategy}.csv"
-
                         if not csv_path.exists():
                             print(f"Skipping missing file: {csv_path}")
                             continue
-
                         print(f"Processing {mode} - {csv_path.name}")
-
                         metrics = calculate_metrics(csv_path)
-
                         row = {
-                            "mode": mode,
-                            "day": day,
-                            "workload_type": workload_type,
-                            "num_jobs": num_jobs,
-                            "strategy": strategy,
-                            **metrics,
-                        }
-
+                                "mode": mode,
+                                "day": day,
+                                "workload_type": workload_type,
+                                "num_jobs": num_jobs,
+                                "rho": rho,
+                                "strategy": strategy,
+                                **metrics,
+                            }
                         rows.append(row)
 
     if not rows:
@@ -166,7 +168,7 @@ def main():
     df_summary = pd.DataFrame(rows)
 
     column_order = [
-        "mode","day","workload_type","num_jobs","strategy",
+        "mode","day","workload_type","num_jobs","rho","strategy",
         "total_jobs","completed_jobs","failed_jobs","completion_ratio",
         "makespan_minutes","throughput_jobs_per_hour",
         "turnaround_mean","turnaround_std",
@@ -176,9 +178,8 @@ def main():
     ]
 
     df_summary = df_summary[column_order]
-
     df_summary.sort_values(
-        by=["mode","day","workload_type","num_jobs","strategy"],
+        by=["mode","day","workload_type", "rho", "num_jobs","strategy"],
         inplace=True
     )
 
@@ -189,8 +190,8 @@ def main():
         purelocal = df_summary[df_summary["strategy"] == "PureLocal"]
         # Merge to align each row with its PureLocal baseline
         merged = df_summary.merge(
-            purelocal[["mode", "day", "workload_type", "num_jobs", metric]],
-            on=["mode", "day", "workload_type", "num_jobs"],
+            purelocal[["mode", "day", "workload_type", "num_jobs", "rho", metric]],
+            on=["mode", "day", "workload_type", "num_jobs", "rho"],
             suffixes=("", "_purelocal"),
             how="left"
         )
