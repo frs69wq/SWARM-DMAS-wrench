@@ -1,0 +1,6 @@
+System,JobsSubmitted,JobsScheduled,Makespan (min),Throughput (jobs/min),NodeUtilization (%),StorageUtilization (%),MeanTurnaroundTime (min),MeanExecutionTime (min),MeanDecisionTime (sec)
+Andes,4,1,36.02,0.0278,4.4,0.09,36.02,36.0,0.0157
+Aurora,13,13,54620.6,0.0002,0.47,0.0,195.84,195.82,0.0026
+Frontier,19,38,57729.0,0.0007,3.81,0.0,645.52,645.51,0.002
+Perlmutter-Phase-1,19,4,15320.9,0.0003,11.19,0.0,639.9,639.9,0.0013
+Perlmutter-Phase-2,10,11,25321.3,0.0004,6.87,0.0,741.06,741.05,0.0015
