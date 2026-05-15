@@ -140,8 +140,12 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
                                                      wrench::S4U_Simulation::getClock(), JobLifecycleEventType::START));
                                                },
                                                {[](const std::shared_ptr<ActionExecutor>&) {}});
-
-          auto scaling_factor = std::max(50., this->getHost()->get_speed() / 1.5e12);
+          auto scaling_factor = this->getHost()->get_speed() / 1.5e12;
+          if (hpc_system_description_->has_gpu())                                     
+            scaling_factor = std::min(7.5, scaling_factor / 10);
+          WRENCH_DEBUG("Scaling Job #%d walltime on '%s' from %llu to %f (scaling_factor = %f)", job_id, 
+                       hpc_system_description_->get_cname(), job_description->get_walltime(), 
+                       job_description->get_walltime() / scaling_factor, scaling_factor);
           auto sleeper        = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
           job->addActionDependency(tracking, sleeper);
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
