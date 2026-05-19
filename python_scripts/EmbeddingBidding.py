@@ -121,6 +121,17 @@ def embed_system(sysdesc, job_site_hint=None):
     return l2_normalize(x)  
 
 
+def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
+    BASE_SPEED = 1.5e12
+    scaling_factor = fnum(node_speed, BASE_SPEED) / BASE_SPEED
+
+    if has_gpu:
+        scaling_factor = min(7.5, scaling_factor / 10.0)
+
+    scaling_factor = max(1e-9, scaling_factor)
+    return fnum(walltime_seconds, 0.0) / scaling_factor
+
+
 # Function that computes bid based on embeddings
 def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
 
@@ -164,12 +175,10 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     headroom_feat = headroom / (1.0 + headroom)
     
     # Estimated slowdown using system status
-    est_start_time = status.get("current_job_start_time_estimate")
+    est_start_time = fnum(status.get("current_job_start_time_estimate"), job_submission_time)
     wait_time = max(0, est_start_time - job_submission_time) 
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
-    BASE_SPEED= 1500000000000.0
-    sys_perf = max(1e-3, sys_speed / max(1e-9, BASE_SPEED))
-    pred_exec_time = req_walltime / max(1e-9, sys_perf)
+    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
     slowdown = (wait_time + pred_exec_time) / max(1.0, pred_exec_time)
     alpha = 0.5
     slowdown_feat = math.exp(-alpha * slowdown)
@@ -181,7 +190,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     bid = 0.3 * static_bid + 0.7 * dynamic_bid
 
     if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
-        bid *= 0.95*bid
+        bid *= 0.95
     if not math.isfinite(bid):
         bid = 0.0
 

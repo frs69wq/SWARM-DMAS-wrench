@@ -54,6 +54,26 @@ RESOURCE_COMPATIBILITY_TABLE = {
     ("STO", False, "STO", False):  (1.00, 1.00),
 }
 
+def fnum(x, default=0.0):
+    try:
+        if x is None:
+            return float(default)
+        return float(x)
+    except Exception:
+        return float(default)
+
+
+def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
+    BASE_SPEED = 1.5e12
+    scaling_factor = fnum(node_speed, BASE_SPEED) / BASE_SPEED
+
+    if has_gpu:
+        scaling_factor = min(7.5, scaling_factor / 10.0)
+
+    scaling_factor = max(1e-9, scaling_factor)
+    return fnum(walltime_seconds, 0.0) / scaling_factor
+
+
 def compute_bid(job_description, system_description, system_status):
     """Compute a heuristic bid score for a job on a given system_description.
     
@@ -84,9 +104,7 @@ def compute_bid(job_description, system_description, system_status):
     sys_name = system_description.get("name")
     sys_type = system_description.get("type")
     sys_site = system_description.get("site") 
-    sys_speed = system_description.get("node_speed") # in TFLOPS
-    base_sys_speed = 1.5e12 
-    sys_perf = round(sys_speed / base_sys_speed, 2)
+    sys_speed = fnum(system_description.get("node_speed"), 1.5e12)
     
     # System status
     sys_avail_nodes = system_status.get("current_num_available_nodes") 
@@ -132,10 +150,11 @@ def compute_bid(job_description, system_description, system_status):
     # --- 4. Time Cost Calculation ---
     # A. Queue Wait Time
     r_j = job_submission_time  # in seconds
-    wait_time = current_job_start_time_estimate - r_j# in seconds
+    current_job_start_time_estimate = fnum(system_status.get("current_job_start_time_estimate"), job_submission_time)
+    wait_time = max(0.0, current_job_start_time_estimate - r_j)
     
     # B. Execution Time (adjusted for hardware speed)
-    pred_exec_time = (req_walltime) / sys_perf
+    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
     
     total_time_cost = wait_time + pred_exec_time
     # total_time_cost = C_j -  r_j # in seconds
