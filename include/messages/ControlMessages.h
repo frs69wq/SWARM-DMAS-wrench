@@ -68,10 +68,12 @@ class JobLifecycleTrackingMessage : public ExecutionControllerCustomEventMessage
   JobLifecycleEventType event_type_;
   std::string bids_;
   std::string failure_cause_;
+  std::string node_list_;
 
 public:
   JobLifecycleTrackingMessage(int job_id, const std::string& sender_name, double now, JobLifecycleEventType event_type,
-                              const std::string& bids = "", const std::string& failure_cause = "")
+                              const std::string& bids = "", const std::string& failure_cause = "",
+                              const std::string& node_list = "")
       : ExecutionControllerCustomEventMessage(CONTROL_MESSAGE_SIZE)
       , job_id_(job_id)
       , sent_from_(sender_name)
@@ -79,6 +81,7 @@ public:
       , event_type_(event_type)
       , bids_(bids)
       , failure_cause_(failure_cause)
+      , node_list_(node_list)
   {
   }
   int get_job_id() const { return job_id_; }
@@ -87,6 +90,7 @@ public:
   const std::string& get_sender() const { return sent_from_; }
   const std::string& get_bids() const { return bids_; }
   const std::string& get_failure_cause() const { return failure_cause_; }
+  const std::string& get_node_list() const { return node_list_; }
 };
 
 class HeartbeatMessage : public ExecutionControllerCustomEventMessage {

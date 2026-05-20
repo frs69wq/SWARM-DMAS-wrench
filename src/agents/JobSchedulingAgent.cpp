@@ -5,7 +5,9 @@
 #include "utils/utils.h"
 
 #include <nlohmann/json.hpp>
+#include <simgrid/s4u/Host.hpp>
 #include <string>
+#include <wrench/services/helper_services/action_execution_service/ActionExecutionService.h>
 
 WRENCH_LOG_CATEGORY(job_scheduling_agent, "Log category for JobSchedulingAgent");
 
@@ -132,22 +134,57 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
               JobLifecycleEventType::SCHEDULING, get_all_bids_as_string(all_bids_[job_id])));
 
-          auto job      = job_manager_->createCompoundJob(std::to_string(job_id));
-          auto tracking = job->addCustomAction("", 0, 0,
-                                               [this, job_id](const std::shared_ptr<ActionExecutor>&) {
-                                                 tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
-                                                     job_id, hpc_system_description_->get_name(),
-                                                     wrench::S4U_Simulation::getClock(), JobLifecycleEventType::START));
+          auto job = job_manager_->createCompoundJob(std::to_string(job_id));
+          // Capture actual start time for later use in the logging action
+          auto start_time     = std::make_shared<double>(-1.0);
+          auto tracking       = job->addCustomAction("", 0, 0,
+                                                     [start_time](const std::shared_ptr<ActionExecutor>&) {
+                                                 *start_time = wrench::S4U_Simulation::getClock();
                                                },
-                                               {[](const std::shared_ptr<ActionExecutor>&) {}});
+                                                     {[](const std::shared_ptr<ActionExecutor>&) {}});
           auto scaling_factor = this->getHost()->get_speed() / 1.5e12;
-          if (hpc_system_description_->has_gpu())                                     
+          if (hpc_system_description_->has_gpu())
             scaling_factor = std::min(7.5, scaling_factor / 10);
-          WRENCH_DEBUG("Scaling Job #%d walltime on '%s' from %llu to %f (scaling_factor = %f)", job_id, 
-                       hpc_system_description_->get_cname(), job_description->get_walltime(), 
+          WRENCH_DEBUG("Scaling Job #%d walltime on '%s' from %llu to %f (scaling_factor = %f)", job_id,
+                       hpc_system_description_->get_cname(), job_description->get_walltime(),
                        job_description->get_walltime() / scaling_factor, scaling_factor);
-          auto sleeper        = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
+          auto sleeper = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
           job->addActionDependency(tracking, sleeper);
+          // Logging action runs after the sleeper: queries allocated hosts directly from the
+          // ActionExecutionService, builds a compact node range string, and sends the START event
+          auto logging = job->addCustomAction(
+              "", 0, 0,
+              [this, job_id, start_time](const std::shared_ptr<ActionExecutor>& executor) {
+                // Iterate all hosts allocated to this job by the batch service
+                const auto& resources = executor->getActionExecutionService()->getComputeResources();
+                std::vector<int> radicals;
+                radicals.reserve(resources.size());
+                for (const auto& kv : resources) {
+                  // Extract the numeric radical from hostname (format: prefix-<radical>.suffix)
+                  const auto& hostname = kv.first->get_name();
+                  auto dash_pos        = hostname.rfind('-');
+                  auto dot_pos         = hostname.find('.', dash_pos);
+                  radicals.push_back(std::stoi(hostname.substr(dash_pos + 1, dot_pos - dash_pos - 1)));
+                }
+                // Build compact range string, e.g. "0-4:6-7:11:20-31"
+                std::sort(radicals.begin(), radicals.end());
+                std::string node_list;
+                for (size_t i = 0; i < radicals.size();) {
+                  if (!node_list.empty())
+                    node_list += ":";
+                  size_t j = i;
+                  while (j + 1 < radicals.size() && radicals[j + 1] == radicals[j] + 1)
+                    j++;
+                  node_list += (j > i) ? std::to_string(radicals[i]) + "-" + std::to_string(radicals[j])
+                                       : std::to_string(radicals[i]);
+                  i = j + 1;
+                }
+                tracker_->commport->dputMessage(
+                    new JobLifecycleTrackingMessage(job_id, hpc_system_description_->get_name(), *start_time,
+                                                    JobLifecycleEventType::START, "", "", node_list));
+              },
+              {[](const std::shared_ptr<ActionExecutor>&) {}});
+          job->addActionDependency(sleeper, logging);
           std::map<string, string> job_args = {{"-N", std::to_string(job_description->get_num_nodes())},
                                                {"-t", std::to_string(job_description->get_walltime())},
                                                {"-c", "1"}};
