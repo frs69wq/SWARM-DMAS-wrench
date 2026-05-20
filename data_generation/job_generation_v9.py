@@ -144,15 +144,14 @@ def _business_day_times_by_site(n_jobs: int, sites: list, seed: int = 42) -> np.
 # name at call time.
 BURSTY_PROFILES: Dict[str, dict] = {
     "bursty_low_stress": {
-        # Two-hump day: boundary spike at open-of-day (0 h) and a non-normal peak at 12 h.
+        # Two-hump day: exponential burst at open-of-day and a spike-free peak at 12 h.
         "components": [
             {
                 "name": "peak1",
-                "kind": "split_normal",
+                "kind": "exponential_burst",
                 "weight": 0.45,
-                "center_h": 0.0,
-                "sigma_rise_h": 1.5,
-                "sigma_fall_h": 2.8,
+                "mean_h": 0.5,   # mean arrival ~30 min after day-open
+                "max_h": 4.0,
             },
             {
                 "name": "peak2",
@@ -160,6 +159,7 @@ BURSTY_PROFILES: Dict[str, dict] = {
                 "weight": 0.45,
                 "center_h": 12.0,
                 "spike_fraction": 0.18,
+                "spike_sigma_s": 300.0,  # 5-min jitter replaces point mass
                 "left_fraction": 0.38,
                 "dmin_s": 120.0,
                 "left_max_h": 1.5,
@@ -173,15 +173,14 @@ BURSTY_PROFILES: Dict[str, dict] = {
         ],
     },
     "bursty_high_stress": {
-        # Same mixture as low stress, but shift the second peak earlier.
+        # More intense opening burst (mean 15 min) and second peak earlier at 4 h.
         "components": [
             {
                 "name": "peak1",
-                "kind": "split_normal",
+                "kind": "exponential_burst",
                 "weight": 0.45,
-                "center_h": 0.0,
-                "sigma_rise_h": 1.5,
-                "sigma_fall_h": 2.8,
+                "mean_h": 0.25,  # mean arrival ~15 min after day-open (sharper burst)
+                "max_h": 2.0,
             },
             {
                 "name": "peak2",
@@ -189,6 +188,7 @@ BURSTY_PROFILES: Dict[str, dict] = {
                 "weight": 0.45,
                 "center_h": 4.0,
                 "spike_fraction": 0.18,
+                "spike_sigma_s": 300.0,  # 5-min jitter replaces point mass
                 "left_fraction": 0.38,
                 "dmin_s": 120.0,
                 "left_max_h": 1.5,
@@ -227,6 +227,7 @@ def _sample_log_uniform_center_spike_component(
     count: int,
     center_h: float,
     spike_fraction: float,
+    spike_sigma_s: float,
     left_fraction: float,
     dmin_s: float,
     left_max_h: float,
@@ -238,6 +239,7 @@ def _sample_log_uniform_center_spike_component(
 
     center = center_h * hour
     spike_fraction = float(np.clip(spike_fraction, 0.0, 1.0))
+    spike_sigma_s = max(float(spike_sigma_s), 1.0)
     left_fraction = float(np.clip(left_fraction, 0.0, 1.0))
     dmin_s = max(float(dmin_s), 1.0)
 
@@ -260,11 +262,14 @@ def _sample_log_uniform_center_spike_component(
         else np.empty(0, dtype=float)
     )
 
-    samples = np.concatenate([
-        np.full(n_spike, center, dtype=float),
-        center - left_d,
-        center + right_d,
-    ])
+    # Tight Gaussian around center instead of a point mass — avoids identical timestamps.
+    spike_samples = (
+        rng.normal(center, spike_sigma_s, size=n_spike)
+        if n_spike > 0
+        else np.empty(0, dtype=float)
+    )
+
+    samples = np.concatenate([spike_samples, center - left_d, center + right_d])
     rng.shuffle(samples)
     return samples
 
@@ -277,6 +282,20 @@ def _sample_uniform_component(
     if count <= 0:
         return np.empty(0, dtype=float)
     return rng.uniform(0.0, 27.0 * hour, size=count)
+
+
+def _sample_exponential_burst_component(
+    rng: np.random.Generator,
+    count: int,
+    mean_h: float,
+    max_h: float,
+    hour: float,
+) -> np.ndarray:
+    """Exponential inter-arrival burst starting at t=0. All samples are strictly > 0."""
+    if count <= 0:
+        return np.empty(0, dtype=float)
+    samples = rng.exponential(scale=mean_h * hour, size=count)
+    return np.clip(samples, 0.0, max_h * hour)
 
 
 def _sample_bursty_component(
@@ -297,12 +316,22 @@ def _sample_bursty_component(
             hour=hour,
         )
 
+    if kind == "exponential_burst":
+        return _sample_exponential_burst_component(
+            rng=rng,
+            count=count,
+            mean_h=float(component["mean_h"]),
+            max_h=float(component["max_h"]),
+            hour=hour,
+        )
+
     if kind == "log_uniform_center_spike":
         return _sample_log_uniform_center_spike_component(
             rng=rng,
             count=count,
             center_h=float(component["center_h"]),
             spike_fraction=float(component["spike_fraction"]),
+            spike_sigma_s=float(component.get("spike_sigma_s", 300.0)),
             left_fraction=float(component["left_fraction"]),
             dmin_s=float(component["dmin_s"]),
             left_max_h=float(component["left_max_h"]),
@@ -345,6 +374,12 @@ def _component_debug_stats(local_times: np.ndarray, components: list, hour: floa
         if kind == "uniform":
             continue
 
+        if kind == "exponential_burst":
+            max_s = float(component["max_h"]) * hour
+            stats[f"{name}_0to1h"] = int(np.sum((local_times >= 0.0) & (local_times <= 1.0 * hour)))
+            stats[f"{name}_0tomax"] = int(np.sum((local_times >= 0.0) & (local_times <= max_s)))
+            continue
+
         center = float(component["center_h"]) * hour
 
         if kind == "split_normal" and center <= 0.0:
@@ -367,7 +402,7 @@ def _bursty_day_times_by_site(
     stress: str = "low_stress",
     seed: int = 42,
     peak_params: Optional[Dict] = None,
-    sync_sites: bool = False,
+    sync_sites: bool = True,
 ) -> np.ndarray:
     """
     Bursty arrivals: sample named profile components per site in local time, then
@@ -673,7 +708,7 @@ def generate_synthetic_jobs_v9(
     jobtype_proportions: Optional[Dict[str, float]] = None,
     # sfactor: float = 1.0,
     peak_params: Optional[Dict] = None,
-    sync_sites: bool = False,
+    sync_sites: bool = True,
 ) -> pd.DataFrame:
 
     # Apply scale divisors to capacities if provided.
@@ -993,9 +1028,9 @@ def main():
     parser.add_argument('--peak-params', type=str, default='',
                         help='JSON string to override named bursty components, '
                              'e.g. \'{"peak2": {"spike_fraction": 0.25, "right_max_h": 4.0}}\'')
-    parser.add_argument('--sync-sites', action='store_true', default=False,
-                        help='Zero all timezone offsets so every site bursts simultaneously '
-                             '(maximum contention stress test). Default: False (staggered by timezone).')
+    parser.add_argument('--stagger-sites', dest='sync_sites', action='store_false', default=True,
+                        help='Apply per-site timezone offsets to stagger bursts across sites. '
+                             'Default: all sites burst simultaneously (sync_sites=True).')
     parser.add_argument('--rho', type=float, default=1.5, choices=[0.9, 1.5], help='Target stress level rho (default: 1.5)')
     args = parser.parse_args()
 
