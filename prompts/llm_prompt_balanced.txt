@@ -10,7 +10,7 @@ Your task is to evaluate incoming job requests against system capabilities and s
 </SYSTEM_CAPABILITIES>
 
 <SYSTEM_STATUS>
-{system_description}
+{system_status}
 </SYSTEM_STATUS>
 
 <TASK_INSTRUCTIONS>
@@ -21,13 +21,22 @@ Your task is to evaluate incoming job requests against system capabilities and s
  * Job’s total ‘requested_memory_gb’ with the job's total allocated system memory, which is calculated by multiplying the system’s per-node ‘memory_amount_in_gb’ by the job's 'num_nodes'. 
  * Job's 'requested_storage_gb' with System's 'storage_amount_in_gb' (total).
  * System's current_job_start_time_estimate.
- * System's processing per-node 'node_speed'. Walltime is the upper bound in SECONDS on a shared baseline system with baseline_speed = 1.5 Tf/s.
+ * System's per-node processing speed 'node_speed'.
+
+Runtime model:
+- walltime is in SECONDS on baseline_speed = 1.5e12 FLOP/s.
+- If Job 'needs_gpu' = False:
+    estimated_runtime = Job 'walltime' / (System 'node_speed' / 1.5e12)
+- If Job 'needs_gpu' = True:
+    estimated_runtime = Job 'walltime' / min(7.5, (System 'node_speed' / 1.5e12) / 10)
+- Use estimated_runtime when reasoning about completion time and suitability.
+
 - IMPORTANT: The job's 'hpc_site' and 'hpc_system' fields indicate where the job was originally submitted. They are metadata only. In this decentralized system, any system may bid on any job. Do NOT apply any penalty or score reduction based on a mismatch between the job's 'hpc_site'/'hpc_system' and this system's 'site'/'name'.
 </TASK_INSTRUCTIONS>
 
 <PENALTY_RANGE_MODEL>
 Penalty model for resource compatibility matching:
-- GPU jobs on CPU-only systems → 1.0 
+- GPU jobs on CPU-only systems → 1.0
 - job_type matches system_type AND GPU requirement satisfied → 0.0
 
 GPU jobs on GPU systems:
