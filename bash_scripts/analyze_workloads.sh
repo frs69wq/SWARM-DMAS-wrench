@@ -1,8 +1,8 @@
 #!/bin/bash
-set -eu
+set -euo pipefail
 
-WORKLOAD_ANALYZER="data_analysis/workload_analysis.Rscript"
 WORKLOAD_DIR="data_generation/data"
+WORKLOAD_VISUALIZER="data_analysis/visualize_workload.py"
 
 RHO_VALUES=("0.9" "1.5")
 
@@ -22,13 +22,16 @@ declare -A SCENARIO_NJOBS_RHO15=(
 
 DAYS=("business" "bursty_low_stress" "bursty_high_stress")
 TYPES=("small_short" "large_long" "mixed_80_20" "mixed_20_80")
- 
-PLOTS_DIR="plots/workload"
-mkdir -p "$PLOTS_DIR"
+
+total=0
+completed=0
+failed=0
+missing=0
  
 for rho in "${RHO_VALUES[@]}"; do
     for day in "${DAYS[@]}"; do
         for type in "${TYPES[@]}"; do
+            total=$((total + 1))
 
             if [ "$rho" = "0.9" ]; then
                 num_jobs="${SCENARIO_NJOBS_RHO09[$type]}"
@@ -42,22 +45,29 @@ for rho in "${RHO_VALUES[@]}"; do
             workload_file="$WORKLOAD_DIR/${day}_${type}_${num_jobs}_rho${rho}.json"
 
             if [ -f "$workload_file" ]; then
-                base_name=$(basename "$workload_file" .json)
-                output_file="$PLOTS_DIR/${base_name}.pdf"
-
                 echo "Analyzing workload: $workload_file"
-                echo "Saving to: $output_file"
 
-                Rscript "$WORKLOAD_ANALYZER" \
-                    "$workload_file" \
-                    "$output_file"
+                if python "$WORKLOAD_VISUALIZER" --input "$workload_file"; then
+                    completed=$((completed + 1))
+                else
+                    failed=$((failed + 1))
+                    echo "Failed workload: $workload_file" >&2
+                fi
             else
                 echo "Skipping missing workload: $workload_file"
+                missing=$((missing + 1))
             fi
 
         done
     done
 done
 
- 
-echo "All workload analyses complete."
+echo "Workload visualization run complete."
+echo "Total scenarios: $total"
+echo "Completed: $completed"
+echo "Failed: $failed"
+echo "Missing inputs: $missing"
+
+if [[ $failed -gt 0 ]]; then
+    exit 1
+fi
