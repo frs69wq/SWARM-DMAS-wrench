@@ -1015,7 +1015,7 @@ def main():
     parser.add_argument(
         '--arrival_pattern', '--day',
         dest='arrival_pattern',
-        type=str, default='business',
+        type=str, default='bursty_high_stress',
         choices=['business', 'bursty_low_stress', 'bursty_high_stress'],
         help="Arrival time pattern (default: business). --day is a deprecated alias.",
     )

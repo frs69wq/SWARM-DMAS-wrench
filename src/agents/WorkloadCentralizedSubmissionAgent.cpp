@@ -47,6 +47,7 @@ int WorkloadCentralizedSubmissionAgent::main()
         systems_info.push_back({agent, system_description, current_status});
       }
 
+      
       // Use the centralized scheduling policy to select the best system
       auto target_agent = scheduling_policy_->select_best_system(next_job, systems_info);
 

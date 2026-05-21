@@ -3,6 +3,9 @@ set -euo pipefail
 
 WORKLOAD_DIR="data_generation/data"
 WORKLOAD_VISUALIZER="data_analysis/visualize_workload.py"
+PLOTS_DIR="plots/workload"
+
+mkdir -p "$PLOTS_DIR"
 
 RHO_VALUES=("0.9" "1.5")
 
@@ -42,12 +45,16 @@ for rho in "${RHO_VALUES[@]}"; do
                 exit 1
             fi
 
-            workload_file="$WORKLOAD_DIR/${day}_${type}_${num_jobs}_rho${rho}.json"
+            workload_name="${day}_${type}_${num_jobs}_rho${rho}"
+            workload_file="$WORKLOAD_DIR/${workload_name}.json"
+            output_file="$PLOTS_DIR/${workload_name}.png"
 
-            if [ -f "$workload_file" ]; then
-                echo "Analyzing workload: $workload_file"
+            if [[ -f "$workload_file" ]]; then
+                echo "Generating plot: $output_file"
 
-                if python "$WORKLOAD_VISUALIZER" --input "$workload_file"; then
+                if python "$WORKLOAD_VISUALIZER" \
+                    --input "$workload_file" \
+                    --output "$output_file"; then
                     completed=$((completed + 1))
                 else
                     failed=$((failed + 1))
@@ -57,7 +64,6 @@ for rho in "${RHO_VALUES[@]}"; do
                 echo "Skipping missing workload: $workload_file"
                 missing=$((missing + 1))
             fi
-
         done
     done
 done

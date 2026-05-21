@@ -74,20 +74,8 @@ def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
     return fnum(walltime_seconds, 0.0) / scaling_factor
 
 
-def compute_bid(job_description, system_description, system_status):
-    """Compute a heuristic bid score for a job on a given system_description.
-    
-    Args:
-        job (dict): JobDescription "job_id", "user_id","group_id", "job_type",
-            "submission_time", "walltime", "num_nodes", "needs_gpu", "requested_memory_gb", "requested_storage_gb",
-            "hpc_site", "hpc_system"
-        hpc_system (dict): HPC System description: "name", "type", "num_nodes",
-            "memory_amount_in_gb", "storage_amount_in_gb", "has_gpu", "network_interconnect"
-        system_status (dict): HPC System status: "current_num_available_nodes", "current_job_start_time_estimate", "queue_length"
-        current_time (int): Current time in the scheduling system for wait time calculations.
-    Returns:
-        float 0.0 to 1.0.
-    """
+def compute_bid(job_description, system_description, system_status, current_simulated_time=0.0):
+
     # Job details
     nodes_req = job_description.get("num_nodes")
     req_gpu = job_description.get("needs_gpu")
@@ -105,11 +93,13 @@ def compute_bid(job_description, system_description, system_status):
     sys_type = system_description.get("type")
     sys_site = system_description.get("site") 
     sys_speed = fnum(system_description.get("node_speed"), 1.5e12)
+    sys_total_storage = system_description.get("storage_amount_in_gb", float('inf'))
     
     # System status
     sys_avail_nodes = system_status.get("current_num_available_nodes") 
     # Get a estimated start time
     current_job_start_time_estimate = system_status.get("current_job_start_time_estimate") # in seconds
+
 
     # --- 1. Feasibility ---
     # Note: Adding a check for storage capacity if the system defines it

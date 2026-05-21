@@ -245,7 +245,36 @@ def create_figure(
         frameon=True,
     )
 
-    fig.suptitle(f"Workload Overview {workload}", fontsize=14, y=1.02)
+    # Generate figure title
+    workload_name = Path(workload).stem
+    parts = workload_name.split("_")
+    rho = next((p.replace("rho", "") for p in parts if p.startswith("rho")), "unknown")
+
+    num_jobs = next((p for p in parts if p.isdigit()), "unknown")
+
+    if workload_name.startswith("business"):
+        day_type = "Business Day"
+    elif workload_name.startswith("bursty_low_stress"):
+        day_type = "Bursty Low Stress"
+    elif workload_name.startswith("bursty_high_stress"):
+        day_type = "Bursty High Stress"
+    else:
+        day_type = "Unknown Pattern"
+
+    if "small_short" in workload_name:
+        workload_type = "Small Short Jobs"
+    elif "large_long" in workload_name:
+        workload_type = "Large Long Jobs"
+    elif "mixed_80_20" in workload_name:
+        workload_type = "Mixed 80/20"
+    elif "mixed_20_80" in workload_name:
+        workload_type = "Mixed 20/80"
+    else:
+        workload_type = "Unknown Mix"
+
+    title = (f"{day_type} | {workload_type} | " f"{num_jobs} Jobs | " rf"$\rho$={rho}")
+    fig.suptitle(title, fontsize=15, y=1.02)
+    
     fig.tight_layout(rect=(0, 0.07, 0.86, 1))
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

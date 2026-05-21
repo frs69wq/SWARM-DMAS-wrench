@@ -2,10 +2,10 @@
 set -euo pipefail
 
 EXEC_FILE=./build/swarm_dmas
-WRENCH_ARGS="--wrench-commport-pool-size=80000"
+WRENCH_ARGS="--wrench-commport-pool-size=80000"     # --cfg=precision/work-amount:1e-12
 
 # Number of concurrent runs
-MAX_JOBS=36
+MAX_JOBS=16
 
 
 declare -A SCENARIO_NJOBS_RHO_15=(
@@ -21,9 +21,9 @@ declare -A SCENARIO_NJOBS_RHO_09=(
     ["small_short"]=2880
 )
 
-DAYS=("business")           #  "bursty_low_stress" "bursty_high_stress"
-TYPES=("large_long" "small_short" "mixed_80_20"  "mixed_20_80")       #  
-RHO_VALUES=(1.5 0.9)
+DAYS=("business" "bursty_low_stress" "bursty_high_stress")           # 
+TYPES=("mixed_80_20" "mixed_20_80" "large_long" "small_short")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
+RHO_VALUES=(1.5 0.9)            #   1.5 0.9
 
 
 # Build workload list with per-scenario job counts
@@ -55,12 +55,12 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 
 # Bidding strategies to evaluate
 PYTHON_BIDDERS=(
-    # "python_scripts/HeuristicBidding.py"
+    "python_scripts/HeuristicBidding.py"
     "python_scripts/EmbeddingBidding.py"
 )
 
 BASELINE_POLICIES=(
-    "RandomBidding"
+    # "RandomBidding"
     "PureLocal"
 )
 
@@ -174,18 +174,19 @@ for entry in "${WORKLOADS[@]}"; do
     echo "Using platform: $platform_file"
     echo "==============================================="
 
-    for bidder in "${PYTHON_BIDDERS[@]}"; do
-        throttle_jobs
-        run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
-    done
+    # for bidder in "${PYTHON_BIDDERS[@]}"; do
+    #     throttle_jobs
+    #     run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
+    # done
 
     # for policy in "${BASELINE_POLICIES[@]}"; do
     #     throttle_jobs
     #     run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
     # done
 
-    # throttle_jobs
-    # run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
+    throttle_jobs
+    run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
+    # run_centralized "$workload" "$platform_file" "EmbeddingBidding" "$workload_name" &
 done
 
 wait || true
