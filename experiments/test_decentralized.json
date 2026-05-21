@@ -1,9 +1,9 @@
 {
     "platform": "platforms/AmSC.xml",
-    "workload": "workloads/heterogeneous_mix_10.json",
+    "workload": "workloads/bursty_low_stress_small_short_4800_rho1.5.json",
     "centralized_submission": false,
     "decentralized_policy": "PythonBidding",
-    "decentralized_bidder": "python_scripts/HeuristicBidding.py",
+    "decentralized_bidder": "python_scripts/EmbeddingBidding.py",
     "heartbeat_period": 5,
     "heartbeat_expiration": 15,
     "hardware_failure_profile": "hardware_failure_profiles/test.json"
