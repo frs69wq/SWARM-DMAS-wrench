@@ -4,11 +4,13 @@ import os
 import time
 import logging
 import re
+from pathlib import Path
 from HeuristicBidding import compute_bid
-#################################
-# Claude OpenAI imports 
+
 from anthropic import AnthropicVertex
 from google.oauth2 import service_account
+
+
 #################################
 # Model Setup
 CLAUDE_LOCATION   = os.getenv("CLAUDE_LOCATION")
@@ -17,21 +19,68 @@ CLAUDE_MODEL      = os.getenv("CLAUDE_MODEL")
 TEMP = 0
 MAX_TOKENS = 5000
 os.environ["ANTHROPIC_LOG"] = "debug"
-#################################
-# Logs - provide a log_path here
-log_path = os.environ.get(
-    "LLM_LOG_FILE",
-    "/workspaces/SWARM-DMAS-wrench/logs/business_large_long_rho0.9.log"
-)
-os.makedirs(os.path.dirname(log_path), exist_ok=True)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
-    handlers=[
-        logging.FileHandler(log_path)
-    ]
-)
-logger = logging.getLogger(__name__)
+
+# -----------------------------
+# Logging setup
+# -----------------------------
+def safe_name(value):
+    value = str(value or "unknown")
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", value)
+
+
+def setup_logger(data):
+    job_description = data.get("job_description", {})
+    system_description = data.get("hpc_system_description", {})
+
+    workload_name = (
+        os.getenv("LLM_WORKLOAD_NAME")
+        or data.get("workload_name")
+        or job_description.get("workload_name")
+        or job_description.get("workflow_name")
+        or "unknown_workload"
+    )
+
+    system_name = system_description.get("name", "unknown_system")
+
+    log_file = os.getenv("LLM_LOG_FILE")
+    if not log_file:
+        log_dir = os.getenv("LLM_LOG_DIR", "logs/llm_bidding")
+        log_file = os.path.join(
+            log_dir,
+            f"{safe_name(workload_name)}.log"
+        )
+
+    Path(os.path.dirname(log_file)).mkdir(parents=True, exist_ok=True)
+
+    logger = logging.getLogger("llm_claude_bidder")
+    logger.setLevel(logging.INFO)
+    logger.handlers.clear()
+
+    file_handler = logging.FileHandler(log_file, mode="a")
+    file_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s"))
+    logger.addHandler(file_handler)
+
+    logger.info("Logging to %s", log_file)
+    logger.info("Workload=%s System=%s", workload_name, system_name)
+
+    return logger
+
+
+# #################################
+# # Logs - provide a log_path here
+# log_path = os.environ.get(
+#     "LLM_LOG_FILE",
+#     "results/llm_logs/business_large_long_rho0.9.log"
+# )
+# os.makedirs(os.path.dirname(log_path), exist_ok=True)
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format="%(asctime)s %(levelname)s: %(message)s",
+#     handlers=[
+#         logging.FileHandler(log_path)
+#     ]
+# )
+# logger = logging.getLogger(__name__)
 #################################
 # Feasibility check function to short-circuit obviously infeasible jobs before calling the LLM
 def is_feasible_system(job_description, system_description):
@@ -63,20 +112,21 @@ def main():
     job_description = None
     system_description = None
     system_status = None
+    logger=None
 
     try:
         input_data = sys.stdin.read()
         data = json.loads(input_data)
+
+        logger = setup_logger(data)
 
         job_description = data["job_description"]
         system_description = data["hpc_system_description"]
         system_status = data["hpc_system_status"]
         runtime_prompt = data.get("prompt")
 
-        # Start timing
         start_time = time.perf_counter()
 
-        # Console-only status line requested by user
         job_id = job_description.get("job_id", "unknown")
         system_name = system_description.get("name", "unknown")
         print(f"Processing job {job_id} on machine {system_name}", file=sys.stderr, flush=True)
@@ -93,7 +143,6 @@ def main():
             print(json.dumps(result))
             return
 
-        # Do not modify before here
         # Step1: Prompt instructions
         if not isinstance(runtime_prompt, str) or not runtime_prompt.strip():
             raise ValueError("No prompt provided. Set 'bidder_prompt_file' in the experiment config.")
@@ -116,32 +165,33 @@ def main():
         client = AnthropicVertex(region=CLAUDE_LOCATION, project_id=CLAUDE_PROJECT_ID)
 
         # Step4: Get completion
-        llm_response = client.messages.create(
+        response = client.messages.create(
             model=CLAUDE_MODEL,
             messages=message,
             max_tokens=MAX_TOKENS,
             temperature=TEMP,
         )
-        for content_block in llm_response.content:
+        for content_block in response.content:
             llm_response = content_block.text
 
         # if LOG_PROMPT_AND_RESPONSE:
         logger.info("Response:\n%s", llm_response)
 
     except Exception as e:
-        logger.error("Claude bidder request failed; will fall back to heuristic: %s", e)
+        if logger:
+            logger.error("Claude bidder request failed; will fall back to heuristic: %s", e)
+        else:
+            print(f"Claude bidder failed before logger setup: {e}", file=sys.stderr)
 
-    # End timing
-    end_time = time.perf_counter()
-    elapsed_time = end_time - start_time
+    elapsed_time = time.perf_counter() - start_time
 
-    # If any of the critical inputs are missing return zero bid immediately
     if job_description is None or system_description is None or system_status is None:
         result = {
             "bid": 0.0,
             "bid_generation_time_seconds": round(elapsed_time, 6)
         }
-        logger.error("Input unavailable after exception; returning zero bid")
+        if logger:
+            logger.error("Input unavailable after exception; returning zero bid")
         print(json.dumps(result))
         return
 
@@ -152,23 +202,31 @@ def main():
     # Step6: Fallback to the Heuristic bid if parsing fails
     heuristic_bid = compute_bid(job_description, system_description, system_status)
 
-    # Log both heuristic and LLM bids for transparency, even if LLM parsing fails
-    logger.info("Job %s: Heuristic bid=%.4f, LLM bid=%s", job_description.get("job_id", "unknown"), heuristic_bid, match.group(1) if match else "parsing_failed")
+    if logger:
+        logger.info(
+            "Job %s: Heuristic bid=%.4f, LLM bid=%s",
+            job_description.get("job_id", "unknown"),
+            heuristic_bid,
+            match.group(1) if match else "parsing_failed"
+        )
     
-    # Log if LLM or Heuristic used
-    if match:
-        logger.info("Job %s: Using LLM bid", job_description.get("job_id", "unknown"))
-    else:
-        logger.info("Job %s: Using Heuristic bid", job_description.get("job_id", "unknown"))
-
     bid = float(match.group(1)) if match else heuristic_bid
 
-    # Do not modify after here
+    if logger:
+        logger.info(
+            "Job %s: Using %s bid",
+            job_description.get("job_id", "unknown"),
+            "LLM" if match else "Heuristic"
+        )
+
     result = {
-      "bid": bid,
-      "bid_generation_time_seconds": round(elapsed_time, 6)
+        "bid": bid,
+        "bid_generation_time_seconds": round(elapsed_time, 6)
     }
-    logger.info(json.dumps(result))
+
+    if logger:
+        logger.info(json.dumps(result))
+
     print(json.dumps(result))
 
 if __name__ == "__main__":
