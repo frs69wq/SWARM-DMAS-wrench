@@ -24,58 +24,85 @@ def load_job_definitions(workload_path):
     jobs_df = pd.DataFrame(jobs)
     # Ensure JobID column exists and select relevant columns
     if 'JobID' in jobs_df.columns:
-        return jobs_df[['JobID', 'Nodes', 'MemoryGB', 'RequestedGPU', 'RequestedStorageGB', 
-                        'JobType', 'Walltime']].copy()
+        return jobs_df[['JobID', 'Nodes', 'MemoryGB', 'RequestedGPU', 'RequestedStorageGB', 'JobType', 'Walltime']].copy()
     return jobs_df
 
+
 def filter_successful_jobs(df):
-    """
-    Keep only jobs that were successfully scheduled and executed.
-    Removes failed or unscheduled jobs that would corrupt metrics.
-    """
     filtered = df.copy()
-
-    # Must have been scheduled
-    if 'ScheduledOn' in filtered.columns:
-        filtered = filtered[filtered['ScheduledOn'].notna()]
-
-    # Must have valid execution time
-    if 'ExecutionTime' in filtered.columns:
-        filtered = filtered[filtered['ExecutionTime'] > 0]
-
-    # Must have valid end time
-    if 'EndTime' in filtered.columns:
-        filtered = filtered[filtered['EndTime'] > 0]
-
-    return filtered
-
-def load_results(csv_path, jobs_df=None):
-    """Load simulation results from CSV file and merge with job definitions."""
-    df = pd.read_csv(csv_path)
-    
-        # rename jobid column 
-    if jobs_df is not None and 'JobID' in jobs_df.columns:
-        jobs_df.rename(columns={ 'JobID': 'JobId'}, inplace=True)
-    
-    # Check if 'JobID' exists in both DataFrames before merging
-    if jobs_df is not None and 'JobId' in df.columns:
-        df = pd.merge(df, jobs_df, on='JobId', how='left')
-    else:
-        print("Warning: 'JobID' column not found in one of the DataFrames. Skipping merge.")
-    if 'Nodes' not in df.columns:
-        raise ValueError(
-            "Merge failed: 'Nodes' column missing after merging workload JSON."
+    if "FinalStatus" in filtered.columns:
+        status = filtered["FinalStatus"].astype(str).str.lower()
+        success_mask = (
+            status.str.contains("success", na=False)
+            | status.str.contains("completed", na=False)
+            | status.str.contains("finished", na=False)
+        )
+        failure_mask = (status.str.contains("fail", na=False)
+            | status.str.contains("reject", na=False)
+            | status.str.contains("unscheduled", na=False)
         )
 
-    # add column in df for turnaround time if not already present
-    if 'TurnaroundTime' not in df.columns and 'SubmissionTime' in df.columns and 'EndTime' in df.columns:
-        df['TurnaroundTime'] = df['EndTime'] - df['SubmissionTime']
+        if success_mask.any():
+            filtered = filtered[success_mask]
+        else:
+            filtered = filtered[~failure_mask]
+    if "ScheduledOn" in filtered.columns:
+        filtered = filtered[
+            filtered["ScheduledOn"].notna()
+            & (filtered["ScheduledOn"].astype(str).str.strip() != "")
+        ]
+    if "StartTime" in filtered.columns:
+        filtered = filtered[filtered["StartTime"] >= 0]
+    if "EndTime" in filtered.columns:
+        filtered = filtered[filtered["EndTime"] > 0]
+    if "ExecutionTime" in filtered.columns:
+        filtered = filtered[filtered["ExecutionTime"] > 0]
+    return filtered
+
+
+def load_results(csv_path, jobs_df=None):
+    df = pd.read_csv(csv_path)
+
+    required_result_cols = [
+        "JobId", "FinalStatus", "SubmittedTo", "ScheduledOn",
+        "SubmissionTime", "StartTime", "EndTime",
+        "DecisionTime", "WaitingTime", "ExecutionTime"
+    ]
+
+    missing_result_cols = [c for c in required_result_cols if c not in df.columns]
+    if missing_result_cols:
+        raise ValueError(f"Missing expected result CSV columns: {missing_result_cols}")
+
+    if jobs_df is not None:
+        jobs_df = jobs_df.copy()
+
+        if "JobID" in jobs_df.columns:
+            jobs_df = jobs_df.rename(columns={"JobID": "JobId"})
+
+        if "JobId" in jobs_df.columns:
+            df = pd.merge(df, jobs_df, on="JobId", how="left")
+        else:
+            print("Warning: workload JSON has no JobID/JobId column. Skipping merge.")
+
+    if "TurnaroundTime" not in df.columns:
+        df["TurnaroundTime"] = df["EndTime"] - df["SubmissionTime"]
+
+    if "Nodes" not in df.columns:
+        raise ValueError(
+            "Nodes column missing. This script needs the workload JSON merge "
+            "because Nodes is no longer in the result CSV."
+        )
+
+    if "RequestedStorageGB" not in df.columns:
+        df["RequestedStorageGB"] = 0.0
 
     return df
+
 
 def calculate_makespan(df):
     makespan = df['EndTime'].max() - df['SubmissionTime'].min() 
     return makespan
+
 
 def calculate_throughput(df):
     completed_jobs = len(df)
@@ -83,11 +110,8 @@ def calculate_throughput(df):
     throughput = completed_jobs / makespan if makespan > 0 else 0
     return throughput
 
+
 def calculate_resource_utilization(df, system_capacities):
-    """
-    Calculate resource utilization over time for total system.
-    Utilization can be defined as (Nodes Used) / (Total Nodes Available) at any given time for total system.
-    """
     # Calculate total node-minutes used across all jobs
     total_node_time = (df['Nodes'] * df['ExecutionTime']).sum()
     
@@ -117,192 +141,226 @@ def calculate_resource_utilization(df, system_capacities):
 
     return node_utilization, storage_utilization
 
-def plot_resource_utilization(df, system_capacities, output_path='resource_utilization.png'):
+def plot_resource_utilization(
+    df,
+    system_capacities,
+    plot_title,
+    output_path='resource_utilization.png'
+):
     if 'ScheduledOn' not in df.columns:
         print("Error: 'ScheduledOn' column not found in CSV")
-        return 
+        return
+
     systems = df['ScheduledOn'].unique()
-    
-    fig, axes = plt.subplots(len(systems), 1, figsize=(14, 4 * len(systems)), sharex=True)
+
+    fig, axes = plt.subplots(
+        len(systems),
+        1,
+        figsize=(14, 4 * len(systems)),
+        sharex=True
+    )
+
     if len(systems) == 1:
         axes = [axes]
-    
-    fig.suptitle('Resource Utilization Across Systems', fontsize=16, fontweight='bold')
-    
+
+    fig.suptitle(plot_title, fontsize=16)
+
     for idx, system in enumerate(systems):
         ax = axes[idx]
         system_df = df[df['ScheduledOn'] == system].copy()
 
-        # Create timeline visualization
         for _, job in system_df.iterrows():
             start = job['StartTime']
-            duration = job['ExecutionTime']  
-            ax.barh(y=0, width=duration, left=start,
-                   alpha=0.6, edgecolor='black', linewidth=0.5)
+            duration = job['ExecutionTime']
+            ax.barh(
+                y=0,
+                width=duration,
+                left=start,
+                alpha=0.6,
+                edgecolor='black',
+                linewidth=0.5
+            )
+
         ax.set_xlim(0, df['EndTime'].max() * 1.1)
         ax.set_yticks([])
         ax.set_ylabel(f'{system}', fontweight='bold')
-        ax.set_title(f'{system} - {len(system_df)} jobs', fontweight='bold', fontsize=12)
         ax.grid(True, alpha=0.3, axis='x')
-    
-    axes[-1].set_xlabel('Execution Time (mins)', fontweight='bold')
-    plt.tight_layout(rect=[0, 0, 1, 0.97])  
+
+    axes[-1].set_xlabel('Execution Time (seconds)', fontweight='bold')
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"✓ Resource utilization plot saved to {output_path}")
     plt.close()
 
-def plot_utilization_percentage(df, system_capacities, output_path='utilization_percentage.png'):
+
+def plot_utilization_percentage(
+    df,
+    system_capacities,
+    plot_title,
+    output_path='utilization_percentage.png'
+):
     if 'ScheduledOn' not in df.columns:
         print("Error: 'ScheduledOn' column not found")
         return
- 
+
     systems = df['ScheduledOn'].unique()
-    
+
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
+
+    fig.suptitle(plot_title, fontsize=16)
+
     for system in systems:
         system_df = df[df['ScheduledOn'] == system].copy()
+
         if 'EndTime' not in system_df.columns and 'TurnaroundTime' in system_df.columns:
             system_df['EndTime'] = system_df['SubmissionTime'] + system_df['TurnaroundTime']
-        
+
         if 'ExecutionTime' in system_df.columns:
             system_df['StartTime'] = system_df['EndTime'] - system_df['ExecutionTime']
         else:
             system_df['StartTime'] = system_df['SubmissionTime']
-        
-        # Create time bins
+
         max_time = df['EndTime'].max() if 'EndTime' in df.columns else df['SubmissionTime'].max()
-        # print(f"Max time for system {system}: {max_time}")
         time_bins = np.linspace(0, max_time, 100)
+
         utilization_pct = []
         nodes_used_abs = []
-        
+
         capacity = system_capacities.get(system, {}).get('nodes', 1000)
-        
+
         for t in time_bins:
-            # Count nodes in use at time t
-            active_jobs = system_df[(system_df['StartTime'] <= t) & (system_df['EndTime'] >= t)]
-            # print("active_jobs at time", t, "for system", system, ":", len(active_jobs))
-            
+            active_jobs = system_df[
+                (system_df['StartTime'] <= t) &
+                (system_df['EndTime'] > t)
+            ]
+
             nodes_used = active_jobs['Nodes'].sum()
             nodes_used_abs.append(nodes_used)
-            util_pct = (nodes_used / capacity) * 100
-            utilization_pct.append(util_pct)
-        
-        # Plot 1: Absolute nodes used
-        ax1.plot(time_bins, nodes_used_abs, label=f'{system} (cap: {capacity})', 
-                linewidth=2, marker='o', markersize=3, alpha=0.7)
-        
-        # Plot 2: Percentage utilization
-        ax2.plot(time_bins, utilization_pct, label=system, linewidth=2, marker='o', 
-               markersize=3, alpha=0.7)
-    
-    # Configure absolute nodes plot
-    ax1.set_ylabel('Nodes Used (Absolute)', fontweight='bold', fontsize=12)
-    ax1.set_title('Absolute Node Utilization Over Time', fontweight='bold', fontsize=14)
+            utilization_pct.append((nodes_used / capacity) * 100)
+
+        ax1.plot(
+            time_bins,
+            nodes_used_abs,
+            label=f'{system} (cap: {capacity})',
+            linewidth=2,
+            marker='o',
+            markersize=3,
+            alpha=0.7
+        )
+
+        ax2.plot(
+            time_bins,
+            utilization_pct,
+            label=system,
+            linewidth=2,
+            marker='o',
+            markersize=3,
+            alpha=0.7
+        )
+
+    ax1.set_ylabel('Nodes Used', fontweight='bold', fontsize=12)
     ax1.legend(loc='best', fontsize=9)
     ax1.grid(True, alpha=0.3)
-    
-    # Configure percentage plot
-    ax2.set_xlabel('Time (mins)', fontweight='bold', fontsize=12)
+
+    ax2.set_xlabel('Time (seconds)', fontweight='bold', fontsize=12)
     ax2.set_ylabel('Utilization (%)', fontweight='bold', fontsize=12)
-    ax2.set_title('Percentage Utilization (Relative to System Capacity)', fontweight='bold', fontsize=14)
     ax2.legend(loc='best', fontsize=10)
     ax2.grid(True, alpha=0.3)
     ax2.set_ylim(0, 100)
-    
-    plt.tight_layout()
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"✓ Utilization percentage plot saved to {output_path}")
     plt.close()
 
+
 def calculate_per_system_metrics(df, system_capacities):
-    """
-    Calculate performance metrics for each system/machine.
-    
-    Returns:
-        pd.DataFrame: DataFrame with metrics per system including:
-            - Total Jobs Submitted
-            - Total Jobs Scheduled
-            - Makespan
-            - Throughput
-            - Node Utilization (%)
-            - Storage Utilization (%)
-            - Mean Turnaround Time
-            - Mean Execution Time
-            - Mean Decision Time
-    """
-    
-    if 'ScheduledOn' not in df.columns:
+    if "ScheduledOn" not in df.columns:
         print("Error: 'ScheduledOn' column not found")
         return None
-    
-    # Get all unique systems from both SubmittedOn and ScheduledOn
-    systems = set()
-    if 'SubmittedOn' in df.columns:
-        systems.update(df['SubmittedOn'].unique())
-    systems.update(df['ScheduledOn'].unique())
-    
-    metrics = []
-    
-    for system in sorted(systems):
-        # Jobs submitted to this system
 
+    systems = set()
+
+    if "SubmittedTo" in df.columns:
+        systems.update(df["SubmittedTo"].dropna().unique())
+
+    systems.update(df["ScheduledOn"].dropna().unique())
+
+    metrics = []
+
+    for system in sorted(systems):
         jobs_submitted = 0
-        if 'SubmittedTo' in df.columns:
-            jobs_submitted = len(df[df['SubmittedTo'] == system])
-        
-        # Jobs scheduled/executed on this system
-        system_df = df[df['ScheduledOn'] == system].copy()
+        if "SubmittedTo" in df.columns:
+            jobs_submitted = len(df[df["SubmittedTo"] == system])
+
+        system_df = df[df["ScheduledOn"] == system].copy()
         total_jobs_scheduled = len(system_df)
-        
-        # Makespan for this system
-        if 'EndTime' in system_df.columns and 'SubmissionTime' in system_df.columns:
-            system_makespan = system_df['EndTime'].max() - system_df['SubmissionTime'].min()
+
+        if total_jobs_scheduled > 0:
+            system_makespan = system_df["EndTime"].max() - system_df["SubmissionTime"].min()
         else:
             system_makespan = 0
-        
-        # Throughput
+
         throughput = total_jobs_scheduled / system_makespan if system_makespan > 0 else 0
-        
-        # Node utilization
-        if 'Nodes' in system_df.columns and 'ExecutionTime' in system_df.columns:
-            total_node_minutes = (system_df['Nodes'] * system_df['ExecutionTime']).sum()
-            system_capacity = system_capacities.get(system, {}).get('nodes', 1000)
-            available_node_minutes = system_capacity * system_makespan
-            node_utilization = (total_node_minutes / available_node_minutes * 100) if available_node_minutes > 0 else 0
+
+        if "Nodes" in system_df.columns and "ExecutionTime" in system_df.columns:
+            total_node_seconds = (system_df["Nodes"] * system_df["ExecutionTime"]).sum()
+            system_capacity = system_capacities.get(system, {}).get("nodes", 1000)
+            available_node_seconds = system_capacity * system_makespan
+            node_utilization = (
+                total_node_seconds / available_node_seconds * 100
+                if available_node_seconds > 0 else 0
+            )
         else:
             node_utilization = 0
-        
-        # Storage utilization
-        if 'RequestedStorageGB' in system_df.columns and 'ExecutionTime' in system_df.columns:
-            total_storage_gb_minutes = (system_df['RequestedStorageGB'] * system_df['ExecutionTime']).sum()
-            storage_capacity = system_capacities.get(system, {}).get('storage_gb', 100_000_000)
-            # Multiply by 2 for 2 storage systems per site
-            available_storage_gb_minutes = (2 * storage_capacity) * system_makespan
-            storage_utilization = (total_storage_gb_minutes / available_storage_gb_minutes * 100) if available_storage_gb_minutes > 0 else 0
+
+        if "RequestedStorageGB" in system_df.columns and "ExecutionTime" in system_df.columns:
+            total_storage_gb_seconds = (
+                system_df["RequestedStorageGB"] * system_df["ExecutionTime"]
+            ).sum()
+            storage_capacity = system_capacities.get(system, {}).get(
+                "storage_gb", 100_000_000
+            )
+            available_storage_gb_seconds = 2 * storage_capacity * system_makespan
+            storage_utilization = (
+                total_storage_gb_seconds / available_storage_gb_seconds * 100
+                if available_storage_gb_seconds > 0 else 0
+            )
         else:
             storage_utilization = 0
-        
-        # Time statistics
-        mean_turnaround = system_df['TurnaroundTime'].mean() if 'TurnaroundTime' in system_df.columns else 0
-        mean_execution = system_df['ExecutionTime'].mean() if 'ExecutionTime' in system_df.columns else 0
-        mean_decision = system_df['DecisionTime'].mean() if 'DecisionTime' in system_df.columns else 0
-        
+
+        mean_turnaround = (
+            system_df["TurnaroundTime"].mean()
+            if "TurnaroundTime" in system_df.columns and total_jobs_scheduled > 0
+            else 0
+        )
+        mean_execution = (
+            system_df["ExecutionTime"].mean()
+            if "ExecutionTime" in system_df.columns and total_jobs_scheduled > 0
+            else 0
+        )
+        mean_decision = (
+            system_df["DecisionTime"].mean()
+            if "DecisionTime" in system_df.columns and total_jobs_scheduled > 0
+            else 0
+        )
+
         metrics.append({
-            'System': system,
-            'JobsSubmitted': jobs_submitted,
-            'JobsScheduled': total_jobs_scheduled,
-            'Makespan (min)': round(system_makespan, 2),
-            'Throughput (jobs/min)': round(throughput, 4),
-            'NodeUtilization (%)': round(node_utilization, 2),
-            'StorageUtilization (%)': round(storage_utilization, 2),
-            'MeanTurnaroundTime (min)': round(mean_turnaround, 2),
-            'MeanExecutionTime (min)': round(mean_execution, 2),
-            'MeanDecisionTime (sec)': round(mean_decision, 4)
+            "System": system,
+            "JobsSubmitted": jobs_submitted,
+            "JobsScheduled": total_jobs_scheduled,
+            "Makespan (sec)": round(system_makespan, 2),
+            "Throughput (jobs/sec)": round(throughput, 6),
+            "NodeUtilization (%)": round(node_utilization, 2),
+            "StorageUtilization (%)": round(storage_utilization, 2),
+            "MeanTurnaroundTime (sec)": round(mean_turnaround, 2),
+            "MeanExecutionTime (sec)": round(mean_execution, 2),
+            "MeanDecisionTime (sec)": round(mean_decision, 4),
         })
-    
-    metrics_df = pd.DataFrame(metrics)
-    return metrics_df
+
+    return pd.DataFrame(metrics)
+
 
 def print_per_system_metrics(metrics_df):
     """Pretty print per-system metrics."""
@@ -350,6 +408,33 @@ def print_summary_stats(df, makespan):
     
     print("="*60 + "\n")
 
+def make_plot_title(workload_name, bidding_method):
+
+    parts = workload_name.split("_")
+
+    rho_idx = next(i for i, p in enumerate(parts) if p.startswith("rho"))
+
+    rho = parts[rho_idx].replace("rho", "")
+    num_jobs = parts[rho_idx - 1]
+
+    workload_parts = parts[:rho_idx - 1]
+
+    day = workload_parts[0]
+    workload = "-".join(workload_parts[1:])
+
+    if day == "business":
+        day = "Business-day"
+
+    strategy = bidding_method.replace("Bidding", " bidding")
+
+    return (
+        f"{day} | {workload} | "
+        f"{num_jobs} jobs | "
+        f"rho={rho} | "
+        f"{strategy}"
+    )
+
+
 def main():
     import argparse
     
@@ -364,6 +449,7 @@ def main():
     csv_stem_parts = csv_path.stem.split('_')
     bidding_method = csv_stem_parts[-1]
     workload_name = '_'.join(csv_stem_parts[:-1])
+    plot_title = make_plot_title(workload_name, bidding_method)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
@@ -417,12 +503,23 @@ def main():
     
     # Generate plots
     print("\nGenerating plots...")
-    plot_utilization_percentage(df_valid, system_capacities, output_dir / f'utilization_percentage_{workload_name}_{bidding_method}.png')
+    plot_resource_utilization(
+    df_valid,
+    system_capacities,
+    plot_title,
+    output_dir / f'resource_utilization_{workload_name}_{bidding_method}.png'
+)
 
+    plot_utilization_percentage(
+    df_valid,
+    system_capacities,
+    plot_title,
+    output_dir / f'utilization_percentage_{workload_name}_{bidding_method}.png'
+)
     thrhput = calculate_throughput(df_valid)
     print(f"\nThroughput: {thrhput:.2f} jobs/time unit")
     
-    node_utili, storage_utili = calculate_resource_utilization(df, system_capacities)
+    node_utili, storage_utili = calculate_resource_utilization(df_valid, system_capacities)
     print(f"\nOverall Node Utilization: {node_utili}%")
     print(f"Overall Storage Utilization: {storage_utili}%")
 

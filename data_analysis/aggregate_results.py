@@ -25,7 +25,7 @@ DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
 TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]
 
 PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]
-BASELINE_POLICIES = ["RandomBidding", "PureLocal"]
+BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding", 
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 
 
@@ -37,23 +37,33 @@ def _to_numeric(df, cols):
 
 
 def filter_valid_jobs(df):
-    """Remove rejected / failed / unscheduled jobs."""
     filtered = df.copy()
-
-    if "FailureCause" in filtered.columns:
-        fc = filtered["FailureCause"].astype("string")
-        fc_norm = fc.str.strip().str.lower()
-        valid = fc_norm.isna() | fc_norm.isin(["", "none"])
-        filtered = filtered[valid]
-
+    if "FinalStatus" in filtered.columns:
+        status = filtered["FinalStatus"].astype("string").str.lower()
+        success_mask = (
+            status.str.contains("success", na=False)
+            | status.str.contains("completed", na=False)
+            | status.str.contains("finished", na=False)
+        )
+        failure_mask = (
+            status.str.contains("fail", na=False)
+            | status.str.contains("reject", na=False)
+            | status.str.contains("unscheduled", na=False)
+        )
+        if success_mask.any():
+            filtered = filtered[success_mask]
+        else:
+            filtered = filtered[~failure_mask]
     if "ScheduledOn" in filtered.columns:
-        filtered = filtered[filtered["ScheduledOn"].notna()]
-
+        filtered = filtered[
+            filtered["ScheduledOn"].notna()
+            & (filtered["ScheduledOn"].astype(str).str.strip() != "")
+        ]
     if "ExecutionTime" in filtered.columns:
         filtered = filtered[filtered["ExecutionTime"] > 0]
-
     if "EndTime" in filtered.columns:
         filtered = filtered[filtered["EndTime"].notna()]
+        filtered = filtered[filtered["EndTime"] > 0]
 
     return filtered
 
@@ -93,8 +103,8 @@ def calculate_metrics(csv_path):
         df["TurnaroundTime"] = df["EndTime"] - df["SubmissionTime"]
 
     # Makespan
-    makespan_minutes = None
-    throughput_jobs_per_hour = None
+    makespan_seconds = None
+    throughput_jobs_per_second = None
 
     if not df.empty and {"EndTime","SubmissionTime"}.issubset(df.columns):
 
@@ -104,10 +114,8 @@ def calculate_metrics(csv_path):
         if pd.notna(min_submit) and pd.notna(max_end):
 
             makespan_seconds = max_end - min_submit
-            makespan_minutes = makespan_seconds / 60
-
             if makespan_seconds > 0:
-                throughput_jobs_per_hour = completed_jobs / (makespan_seconds / 3600)
+                throughput_jobs_per_second = completed_jobs / makespan_seconds
 
     turnaround_mean, turnaround_std = mean_std(df["TurnaroundTime"]) if "TurnaroundTime" in df else (None,None)
     waiting_mean, waiting_std = mean_std(df["WaitingTime"]) if "WaitingTime" in df else (None,None)
@@ -119,8 +127,8 @@ def calculate_metrics(csv_path):
         "completed_jobs": completed_jobs,
         "failed_jobs": failed_jobs,
         "completion_ratio": completion_ratio,
-        "makespan_minutes": makespan_minutes,
-        "throughput_jobs_per_hour": throughput_jobs_per_hour,
+        "makespan_seconds": makespan_seconds,
+        "throughput_jobs_per_second": throughput_jobs_per_second,
         "turnaround_mean": turnaround_mean,
         "turnaround_std": turnaround_std,
         "waiting_mean": waiting_mean,
@@ -170,7 +178,7 @@ def main():
     column_order = [
         "mode","day","workload_type","num_jobs","rho","strategy",
         "total_jobs","completed_jobs","failed_jobs","completion_ratio",
-        "makespan_minutes","throughput_jobs_per_hour",
+        "makespan_seconds","throughput_jobs_per_second",
         "turnaround_mean","turnaround_std",
         "waiting_mean","waiting_std",
         "execution_mean","execution_std",
@@ -184,9 +192,9 @@ def main():
     )
 
     # Compute percent change vs PureLocal for key metrics
-    for metric in ["makespan_minutes", "waiting_mean", "execution_mean", "turnaround_mean"]:
+    for metric in ["makespan_seconds", "waiting_mean", "execution_mean", "turnaround_mean"]:
         pct_col = f"{metric}_pct_vs_purelocal"
-        # Find PureLocal baseline for each group
+
         purelocal = df_summary[df_summary["strategy"] == "PureLocal"]
         # Merge to align each row with its PureLocal baseline
         merged = df_summary.merge(
@@ -196,17 +204,20 @@ def main():
             how="left"
         )
 
-        # add arrow if increase/decrease
-        def format_pct_change(row):
-            if pd.isna(row[f"{metric}_purelocal"]):
-                return None
-            change = row[metric] - row[f"{metric}_purelocal"]
-            arrow = "↑" if change > 0 else "↓" if change < 0 else ""
-            return f"{row[pct_col]}% {arrow}"
-
         # Compute percent change
-        merged[pct_col] = ((merged[metric] - merged[f"{metric}_purelocal"]) / merged[f"{metric}_purelocal"] * 100).round(2)
-        merged[pct_col] = merged.apply(format_pct_change, axis=1)
+        merged[pct_col] = (
+            (merged[metric] - merged[f"{metric}_purelocal"])
+            / merged[f"{metric}_purelocal"]
+            * 100
+        ).round(2)
+
+        def format_pct_change(val):
+            if pd.isna(val):
+                return None
+            arrow = "↑" if val > 0 else "↓" if val < 0 else ""
+            return f"{val}% {arrow}"
+
+        merged[pct_col] = merged[pct_col].apply(format_pct_change)
         df_summary[pct_col] = merged[pct_col]
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)

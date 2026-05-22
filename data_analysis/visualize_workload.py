@@ -248,9 +248,15 @@ def create_figure(
     # Generate figure title
     workload_name = Path(workload).stem
     parts = workload_name.split("_")
-    rho = next((p.replace("rho", "") for p in parts if p.startswith("rho")), "unknown")
-
-    num_jobs = next((p for p in parts if p.isdigit()), "unknown")
+    rho_idx = next((i for i, p in enumerate(parts) if p.startswith("rho")), None)
+    if rho_idx is not None:
+        rho = parts[rho_idx].replace("rho", "")
+    else:
+        rho = "unknown"
+    if rho_idx is not None and rho_idx > 0:
+        num_jobs = parts[rho_idx - 1]
+    else:
+        num_jobs = "unknown"
 
     if workload_name.startswith("business"):
         day_type = "Business Day"

@@ -24,14 +24,14 @@ import pandas as pd
 
 
 OBJECTIVE_COLUMNS = [
-	"makespan_minutes",
+	"makespan_seconds",
 	"waiting_mean",
 	"execution_mean",
 	"turnaround_mean",
 ]
 
 OBJECTIVE_LABELS = {
-	"makespan_minutes": "makespan",
+	"makespan_seconds": "makespan",
 	"waiting_mean": "waiting mean",
 	"execution_mean": "execution mean",
 	"turnaround_mean": "turnaround mean",

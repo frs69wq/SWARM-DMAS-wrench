@@ -22,7 +22,7 @@ declare -A SCENARIO_NJOBS_RHO_09=(
 )
 
 DAYS=("business" "bursty_low_stress" "bursty_high_stress")           # 
-TYPES=("mixed_80_20" "mixed_20_80" "large_long" "small_short")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
+TYPES=("mixed_80_20"  "mixed_20_80" "large_long" "small_short")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
 RHO_VALUES=(1.5 0.9)            #   1.5 0.9
 
 
@@ -55,8 +55,8 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 
 # Bidding strategies to evaluate
 PYTHON_BIDDERS=(
-    "python_scripts/HeuristicBidding.py"
-    "python_scripts/EmbeddingBidding.py"
+    # "python_scripts/HeuristicBidding.py"
+    # "python_scripts/EmbeddingBidding.py"
 )
 
 BASELINE_POLICIES=(
@@ -179,13 +179,13 @@ for entry in "${WORKLOADS[@]}"; do
     #     run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
     # done
 
-    # for policy in "${BASELINE_POLICIES[@]}"; do
-    #     throttle_jobs
-    #     run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
-    # done
+    for policy in "${BASELINE_POLICIES[@]}"; do
+        throttle_jobs
+        run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
+    done
 
-    throttle_jobs
-    run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
+    # throttle_jobs
+    # run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
     # run_centralized "$workload" "$platform_file" "EmbeddingBidding" "$workload_name" &
 done
 
