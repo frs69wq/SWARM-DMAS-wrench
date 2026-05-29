@@ -40,11 +40,11 @@ RESOURCE_COMPATIBILITY_TABLE = {
     ("HYB", True,  "HYB", False):  (0.00, 0.00),
     ("HYB", True,  "STO", False):  (0.00, 0.00),
 
-    ("HYB", False, "HPC", True):   (0.80, 0.90),
-    ("HYB", False, "AI", True):    (0.80, 0.90),
-    ("HYB", False, "HYB", True):   (0.80, 0.90),
-    ("HYB", False, "HYB", False):  (1.00, 1.00),
-    ("HYB", False, "STO", False):  (0.75, 0.85),
+    ("HYB", False, "HPC", True):   (0.80, 0.90),  # 10-20% penalty
+    ("HYB", False, "AI", True):    (0.80, 0.90),  # 10-20% penalty
+    ("HYB", False, "HYB", True):   (0.80, 0.90),  # 10-20% penalty
+    ("HYB", False, "HYB", False):  (1.00, 1.00),  # No penalty for non-GPU HYB job on non-GPU HYB system
+    ("HYB", False, "STO", False):  (0.75, 0.85),  # 15-25% penalty
 
     # ================= STO JOB =================
     ("STO", False, "HPC", True):   (0.70, 0.80),
@@ -53,7 +53,14 @@ RESOURCE_COMPATIBILITY_TABLE = {
     ("STO", False, "HYB", False):  (0.90, 0.95),
     ("STO", False, "STO", False):  (1.00, 1.00),
 }
-
+TYPE_ALIASES = {
+    "HPC": "HPC",
+    "AI": "AI",
+    "HYB": "HYB",
+    "HYBRID": "HYB",
+    "STO": "STO",
+    "STORAGE": "STO",
+}
 def fnum(x, default=0.0):
     try:
         if x is None:
@@ -62,7 +69,12 @@ def fnum(x, default=0.0):
     except Exception:
         return float(default)
 
-
+def normalize_type_label(value):
+    if value is None:
+        return ""
+    label = str(value).strip().upper()
+    return TYPE_ALIASES.get(label, label)
+    
 def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
     BASE_SPEED = 1.5e12
     scaling_factor = fnum(node_speed, BASE_SPEED) / BASE_SPEED
@@ -82,15 +94,15 @@ def compute_bid(job_description, system_description, system_status, current_simu
     req_mem = job_description.get("requested_memory_gb")
     req_storage = job_description.get("requested_storage_gb")
     req_walltime = job_description.get("walltime") 
-    job_type = job_description.get("job_type")
+    job_type = normalize_type_label(job_description.get("job_type"))
     job_site = job_description.get("hpc_site") 
-    job_submission_time = job_description.get("submission_time") # in hours
+    job_submission_time = job_description.get("submission_time") # in seconds
 
     # System configuration
     sys_nodes = system_description.get("num_nodes")
     sys_has_gpu = system_description.get("has_gpu")
     sys_name = system_description.get("name")
-    sys_type = system_description.get("type")
+    sys_type = normalize_type_label(system_description.get("type"))
     sys_site = system_description.get("site") 
     sys_speed = fnum(system_description.get("node_speed"), 1.5e12)
     sys_total_storage = system_description.get("storage_amount_in_gb", float('inf'))
@@ -115,10 +127,30 @@ def compute_bid(job_description, system_description, system_status, current_simu
         return 0.0
         
     # --- 2. Utilization Score (Preference for availability) ---
-    # Goal: Prefer systems that aren't hammered, but don't kill busy systems if they are fast.
+    # how much i am busy?
     used_nodes = sys_nodes - sys_avail_nodes
     node_util = used_nodes / max(1.0, float(sys_nodes))
     score_util = 1.0 - node_util 
+    
+    # Node-fit bonus based on job fraction and headroom
+    total_nodes = max(1.0, float(sys_nodes))
+    required_nodes = max(0.0, float(nodes_req))
+    effective_available = max(0.0, float(sys_avail_nodes))
+    # how much of the system do i need?
+    job_fraction = required_nodes / total_nodes
+    
+    node_fit_bonus = 0.0
+    if job_fraction < 0.2: # <20% of system needed
+        node_fit_bonus += 0.12
+    elif job_fraction < 0.3: # <30% of system needed
+        node_fit_bonus += 0.08
+    else:
+        node_fit_bonus += 0.04 # even large jobs get a small bonus for fitting at all
+
+    # how much headroom do i have?
+    if sys_avail_nodes >= required_nodes * 2.0:
+        node_fit_bonus += 0.1
+    
     
     # --- 3. Resource Compatibility (Type Matching) ---
     # Goal: Prefer systems that are a good match for the job type and requirements.
@@ -126,22 +158,25 @@ def compute_bid(job_description, system_description, system_status, current_simu
     
     if lookup_key in RESOURCE_COMPATIBILITY_TABLE:
         min_score, max_score = RESOURCE_COMPATIBILITY_TABLE[lookup_key]
-        
+        # print(f"jobid: {job_description.get('job_id')} | lookup_key: {lookup_key} => score range: ({min_score:.2f}, {max_score:.2f})", file=sys.stderr)
         # Create deterministic seed from job_id and system_type
         job_id_str = str(job_description.get("job_id"))
         seed_string = f"{job_id_str}_{sys_type}_{job_type}_{req_gpu}_{sys_has_gpu}"
         seed_value = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
         random.seed(seed_value)
         score_resource = random.uniform(min_score, max_score)
+        # print(f"jobid: {job_description.get('job_id')} | score_resource: {score_resource:.4f}", file=sys.stderr)
     else:
         # Fallback for unexpected combinations
         score_resource = 0.5    # Neutral compatibility, if new job types appear
+        # print(f"jobid: {job_description.get('job_id')} | lookup_key: {lookup_key} => score range: (0.50, 0.50)", file=sys.stderr)
     
     # --- 4. Time Cost Calculation ---
     # A. Queue Wait Time
     r_j = job_submission_time  # in seconds
     current_job_start_time_estimate = fnum(system_status.get("current_job_start_time_estimate"), job_submission_time)
     wait_time = max(0.0, current_job_start_time_estimate - r_j)
+    # print(f"jobid: {job_description.get('job_id')} | wait_time: {wait_time:.4f}", file=sys.stderr)
     
     # B. Execution Time (adjusted for hardware speed)
     pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
@@ -173,11 +208,8 @@ def compute_bid(job_description, system_description, system_status, current_simu
         (score_resource * w_resource) + 
         ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
     ) / (w_util + w_resource + w_speed)
-    # final_score = (
-    #     (score_util) + 
-    #     (score_resource) + 
-    #     ((norm_slowdown - ai_data_xfer_penalty)) 
-    # ) / (3.0)
+
+    final_score += node_fit_bonus
     
     return round(final_score, 4)
 
