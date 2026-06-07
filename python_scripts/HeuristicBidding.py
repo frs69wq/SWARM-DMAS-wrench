@@ -127,11 +127,11 @@ def compute_bid(job_description, system_description, system_status, current_simu
         return 0.0
         
     # --- 2. Utilization Score (Preference for availability) ---
-    # how much i am busy?
     used_nodes = sys_nodes - sys_avail_nodes
     node_util = used_nodes / max(1.0, float(sys_nodes))
     score_util = 1.0 - node_util 
     
+    # --- 3. Node Fit Bonus (Preference for jobs that fit well within available resources) ---
     # Node-fit bonus based on job fraction and headroom
     total_nodes = max(1.0, float(sys_nodes))
     required_nodes = max(0.0, float(nodes_req))
@@ -149,52 +149,64 @@ def compute_bid(job_description, system_description, system_status, current_simu
 
     # how much headroom do i have?
     if sys_avail_nodes >= required_nodes * 2.0:
-        node_fit_bonus += 0.1
+        node_fit_bonus += 0.10
     
     
-    # --- 3. Resource Compatibility (Type Matching) ---
+    # --- 4. Resource Compatibility (Type Matching) ---
     # Goal: Prefer systems that are a good match for the job type and requirements.
     lookup_key = (job_type, req_gpu, sys_type, sys_has_gpu)
     
     if lookup_key in RESOURCE_COMPATIBILITY_TABLE:
         min_score, max_score = RESOURCE_COMPATIBILITY_TABLE[lookup_key]
-        # print(f"jobid: {job_description.get('job_id')} | lookup_key: {lookup_key} => score range: ({min_score:.2f}, {max_score:.2f})", file=sys.stderr)
         # Create deterministic seed from job_id and system_type
         job_id_str = str(job_description.get("job_id"))
         seed_string = f"{job_id_str}_{sys_type}_{job_type}_{req_gpu}_{sys_has_gpu}"
         seed_value = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
         random.seed(seed_value)
         score_resource = random.uniform(min_score, max_score)
-        # print(f"jobid: {job_description.get('job_id')} | score_resource: {score_resource:.4f}", file=sys.stderr)
+
     else:
         # Fallback for unexpected combinations
         score_resource = 0.5    # Neutral compatibility, if new job types appear
-        # print(f"jobid: {job_description.get('job_id')} | lookup_key: {lookup_key} => score range: (0.50, 0.50)", file=sys.stderr)
+
     
-    # --- 4. Time Cost Calculation ---
+    # --- 5. Time Cost Calculation ---
     # A. Queue Wait Time
     r_j = job_submission_time  # in seconds
     current_job_start_time_estimate = fnum(system_status.get("current_job_start_time_estimate"), job_submission_time)
     wait_time = max(0.0, current_job_start_time_estimate - r_j)
-    # print(f"jobid: {job_description.get('job_id')} | wait_time: {wait_time:.4f}", file=sys.stderr)
     
     # B. Execution Time (adjusted for hardware speed)
     pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
     
     total_time_cost = wait_time + pred_exec_time
-    # total_time_cost = C_j -  r_j # in seconds
     
     slowdown = max(0.0, total_time_cost) / max(pred_exec_time , 1.0) # both in seconds
     alpha = 0.5
     norm_slowdown = math.exp(-alpha * slowdown) # lower slowdown => higher score
-   
-    # --- 5. Weighted Aggregation ---
-    # Define importance of each factor
-    w_util = 0.3      # Change to Low weight: Don't worry too much if system is busy ~ 0.1
-    w_resource = 0.1  # Change to Medium: Prefer correct hardware types ~ 0.3
-    w_speed = 0.6    # Change to High: User cares most about "When is my job done?" ~ 0.6
     
-    # --- 6. AI data-transfer penalty on final score (10-20%) ---
+    # C. Speed penalty based on system speed relative to a baseline
+    BASE_SPEED = 1.5e12
+    MAX_SPEED_RATIO = 7.5
+
+    speed_ratio = sys_speed / BASE_SPEED
+    if sys_has_gpu:
+        speed_ratio = min(MAX_SPEED_RATIO, speed_ratio / 10.0)
+
+    speed_penalty = MAX_SPEED_RATIO - speed_ratio
+    speed_penalty_score = 1.0 - (speed_penalty / MAX_SPEED_RATIO)
+
+    # A+B, C combined into a single time score (equally weighted)
+    time_score = 0.5 * norm_slowdown + 0.5 * speed_penalty_score
+    
+    # --- 6. Weighted Aggregation ---
+    # Define importance of each factor
+    w_util = 0.3      
+    w_resource = 0.1  
+    w_speed = 0.4    
+    w_node_fit = 0.2    
+    
+    # --- 7. AI data-transfer penalty on final score (10-20%) ---
     ai_data_xfer_penalty = 0.0
     if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
         seed_string = f"{job_description.get('job_id')}_{sys_name}_ai_xfer"
@@ -205,19 +217,18 @@ def compute_bid(job_description, system_description, system_status, current_simu
     # Normalization
     final_score = (
         (score_util * w_util) + 
-        (score_resource * w_resource) + 
-        ((norm_slowdown - ai_data_xfer_penalty) * w_speed) 
-    ) / (w_util + w_resource + w_speed)
+        (score_resource * w_resource) +     
+        ((time_score - ai_data_xfer_penalty) * w_speed) + 
+        (node_fit_bonus * w_node_fit)
+    ) / (w_util + w_resource + w_speed + w_node_fit)
 
-    final_score += node_fit_bonus
-    
     return round(final_score, 4)
 
 def main():
     try:
         input_data = sys.stdin.read()
         data = json.loads(input_data)
-
+        
         job_description = data["job_description"]
         system_description = data["hpc_system_description"]
         system_status = data["hpc_system_status"]
