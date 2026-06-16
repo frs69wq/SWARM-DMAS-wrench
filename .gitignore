@@ -42,3 +42,10 @@ CMakeFiles/
 __pycache__/
 *.pdf
 temp_config.json
+swarm-dmas-llm.env
+swarm-dmas-gcloud-credentials.json
+logs/
+*.log
+
+logs/
+*.log
