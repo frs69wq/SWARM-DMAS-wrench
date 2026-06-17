@@ -24,8 +24,8 @@ OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
 TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]
 
-PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding"]
-BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding", 
+PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding"]     # "LLMBidding"
+BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding",  
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 
 
@@ -150,7 +150,7 @@ def main():
                 num_jobs = scenario_njobs[workload_type]
                 workload_name = f"{day}_{workload_type}_{num_jobs}_rho{rho}"
 
-                for mode, base_dir in [("decentralized", RESULTS_DIR), ("centralized", CENTRALIZED_DIR),]:
+                for mode, base_dir in [("decentralized", RESULTS_DIR), ("centralized", CENTRALIZED_DIR)]:       # 
                     for strategy in ALL_STRATEGIES:
                         csv_path = base_dir / f"{workload_name}_{strategy}.csv"
                         if not csv_path.exists():
