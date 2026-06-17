@@ -6,19 +6,21 @@ import logging
 import re
 from pathlib import Path
 from HeuristicBidding import compute_bid
-
+import google.auth
+from google.auth.transport.requests import Request
 from anthropic import AnthropicVertex
 from google.oauth2 import service_account
 
-
-#################################
-# Model Setup
+# -----------------------------
+# Model setup
+# -----------------------------
 CLAUDE_LOCATION   = os.getenv("CLAUDE_LOCATION")
 CLAUDE_PROJECT_ID = os.getenv("CLAUDE_PROJECT_ID")
 CLAUDE_MODEL      = os.getenv("CLAUDE_MODEL")
 TEMP = 0
 MAX_TOKENS = 5000
-os.environ["ANTHROPIC_LOG"] = "debug"
+TIMEOUT = 30.0 # seconds
+MAX_RETRIES = 0 # no retries
 
 # -----------------------------
 # Logging setup
@@ -82,7 +84,11 @@ def setup_logger(data):
 # )
 # logger = logging.getLogger(__name__)
 #################################
-# Feasibility check function to short-circuit obviously infeasible jobs before calling the LLM
+
+
+# -----------------------------
+# Feasibility check function to short-circuit obviously infeasible jobs before calling the LLM to save time and cost on LLM calls
+# -----------------------------
 def is_feasible_system(job_description, system_description):
     nodes_req = job_description.get("num_nodes")
     req_gpu = job_description.get("needs_gpu")
@@ -107,7 +113,7 @@ def is_feasible_system(job_description, system_description):
     return True, ""
 
 def main():
-    start_time = time.perf_counter()
+    
     llm_response = ""
     job_description = None
     system_description = None
@@ -119,7 +125,7 @@ def main():
         data = json.loads(input_data)
 
         logger = setup_logger(data)
-
+        logger.info(f"="*80)
         job_description = data["job_description"]
         system_description = data["hpc_system_description"]
         system_status = data["hpc_system_status"]
@@ -154,27 +160,46 @@ def main():
             .replace("{system_status}", json.dumps(system_status, indent=2))
         )
 
-        # job id, system status, system name instead of long prompt in logs to save space
+        # To save log space, only log Job id, system status, system name instead of full prompt
         logger.info("Prompt for job %s submitted on system %s with status %s", job_description.get("job_id", "unknown"), system_description.get("name", "unknown"), system_status)
+        # Uncomment the following line to log the full prompt, but be aware it can be very long 
         # logger.info("Prompt:\n%s", prompt)
 
         # Step2: Format prompt
         message = [{"role": "user", "content": prompt}]
 
-        # Step3: Setup Openai client
-        client = AnthropicVertex(region=CLAUDE_LOCATION, project_id=CLAUDE_PROJECT_ID)
+        # Measure (isolated) OAuth token acquisition/refresh explicitly
+        oauth_t0 = time.perf_counter()
+        credentials, _ = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        credentials.refresh(Request())
+        oauth_elapsed = time.perf_counter() - oauth_t0
 
-        # Step4: Get completion
+        logger.info("OAuth refresh time_seconds=%.6f", oauth_elapsed)
+        
+        # Step3: Setup Anthropic client on Vertex AI for all requests made by this client instance
+        client = AnthropicVertex(
+            region=CLAUDE_LOCATION,
+            project_id=CLAUDE_PROJECT_ID,
+            timeout=TIMEOUT,
+            max_retries=MAX_RETRIES,
+        )
+
+        # Step4: Get completion (LLM inference timing)
+        llm_t0 = time.perf_counter()
         response = client.messages.create(
             model=CLAUDE_MODEL,
             messages=message,
             max_tokens=MAX_TOKENS,
             temperature=TEMP,
         )
+        llm_elapsed = time.perf_counter() - llm_t0
+        logger.info("LLM inference call time_seconds=%.6f", llm_elapsed)
+
         for content_block in response.content:
             llm_response = content_block.text
 
-        # if LOG_PROMPT_AND_RESPONSE:
         logger.info("Response:\n%s", llm_response)
 
     except Exception as e:
@@ -199,7 +224,7 @@ def main():
     bid_score_pattern = r'"bid_score":\s*([0-9]*\.?[0-9]+)'
     match = re.search(bid_score_pattern, llm_response)
 
-    # Step6: Fallback to the Heuristic bid if parsing fails
+    # Compute heuristic bid for logging and fallback
     heuristic_bid = compute_bid(job_description, system_description, system_status)
 
     if logger:
@@ -210,8 +235,10 @@ def main():
             match.group(1) if match else "parsing_failed"
         )
     
+    # Step6: Fallback to the Heuristic bid if parsing fails
     bid = float(match.group(1)) if match else heuristic_bid
 
+    # Log which bid is being used (LLM vs Heuristic)
     if logger:
         logger.info(
             "Job %s: Using %s bid",
