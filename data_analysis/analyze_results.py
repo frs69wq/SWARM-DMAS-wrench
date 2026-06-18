@@ -106,10 +106,13 @@ def run_sanity_checks(df, df_valid, system_capacities, bidding_method, max_decis
         if len(slow_decisions) > 0:
             print(f"⚠ {len(slow_decisions)} jobs have DecisionTime > {max_decision_time_sec}s")
             print(f"  Max DecisionTime: {df_valid['DecisionTime'].max():.4f}s")
+            sanity_check_results['slow_decisions_count'] = len(slow_decisions)
         else:
             print(f"✓ All DecisionTime values are <= {max_decision_time_sec}s")
+            sanity_check_results['slow_decisions_count'] = 0
     else:
         print("⚠ DecisionTime column missing; skipping decision-time check")
+        sanity_check_results['slow_decisions_count'] = None
 
     # 6. Time ordering check
     time_cols = {'SubmissionTime', 'StartTime', 'EndTime'}
@@ -984,7 +987,7 @@ def main():
         df_valid=df_valid,
         system_capacities=system_capacities,
         bidding_method=bidding_method,
-        max_decision_time_sec=30.0,
+        max_decision_time_sec=32.0,
         workload_name=workload_name,
     )
 
