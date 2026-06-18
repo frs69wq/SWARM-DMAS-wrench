@@ -20,7 +20,185 @@ BASE_SYSTEM_CAPACITIES = {
     'Perlmutter-Phase-1': {'nodes': 1536, 'storage_gb': 220_000_000},
     'Perlmutter-Phase-2': {'nodes': 3072, 'storage_gb': 700_000_000}
 }
+################ CSV sanity_checks ################
+def run_sanity_checks(df, df_valid, system_capacities, bidding_method, max_decision_time_sec=32.0, workload_name=""):
+    """
+    Log lightweight sanity checks for simulation CSV files.
+    These checks help catch invalid outputs early during batch analysis.
+    They do not stop the script; they only report results to the validation csv file.
+    """
+    sanity_check_results = {}
+    
+    sanity_check_results['bidding_method'] = bidding_method
+    sanity_check_results['workload'] = workload_name
+    sanity_check_results['total_jobs'] = len(df)
+    sanity_check_results['failed_jobs'] = len(df) - len(df_valid)
+    
+    # If bidding method is LLM-based, attempt to read the log file to calculate heuristic fallback rate
+    if "LLM" in bidding_method:
+        log_path = Path("logs") / "llm_bidding" / f"{workload_name}.log"
+        if log_path.exists():
+            with open(log_path, 'r') as f:
+                log_content = f.read()
+            heuristic_fallbacks = len(re.findall(r"Using Heuristic bid", log_content))
+            sanity_check_results['#heuristic_fallback'] = heuristic_fallbacks
+            total_jobs_logged = len(re.findall(r"Prompt for job", log_content))
+            fallback_rate = heuristic_fallbacks / total_jobs_logged if total_jobs_logged > 0 else 0
+            print(f"✓ LLM fallback to heuristic bid rate: {fallback_rate:.2%} ({heuristic_fallbacks}/{total_jobs_logged})")
+            sanity_check_results['llm_heuristic_fallback_rate%'] = fallback_rate
+        else:
+            print(f"⚠ Log file not found for LLM fallback rate calculation: {log_path}")
+            sanity_check_results['llm_heuristic_fallback_rate%'] = None
 
+    else:
+        # print(f"✓ Non-LLM bidding method; skipping heuristic fallback rate check")
+        sanity_check_results['llm_heuristic_fallback_rate%'] = "N/A"
+
+    # 2. Completed/successful job check
+    if 'FinalStatus' in df.columns:
+        completed_count = len(df[df['FinalStatus'] == 'COMPLETED'])
+        non_completed_count = len(df) - completed_count
+        sanity_check_results['non_completed_jobs'] = non_completed_count
+        if non_completed_count > 0:
+            print(f"⚠ {non_completed_count} jobs are not COMPLETED")
+        else:
+            print("✓ All jobs have FinalStatus == COMPLETED")
+    else:
+        print("⚠ FinalStatus column missing; using scheduled/end/execution-time filtering only")
+
+    # 3. Required columns for core metrics and plots
+    required_cols = [
+        'JobId', 'ScheduledOn', 'StartTime', 'EndTime',
+        'ExecutionTime', 'SubmissionTime', 'Nodes'
+    ]
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        print(f"⚠ Missing expected columns: {missing_cols}")
+    else:
+        print("✓ Required metric columns are present")
+
+    # 4. Bid range check: skip PureLocal or any CSV without Bids
+    if 'Bids' in df_valid.columns:
+        def check_bids(bids_str):
+            try:
+                bids = [float(bid.strip()) for bid in str(bids_str).split(':')]
+                return all(0.0 <= bid <= 1.0 for bid in bids)
+            except Exception:
+                return False
+
+        bids_valid = df_valid['Bids'].apply(check_bids)
+        invalid_bids_count = len(df_valid[~bids_valid])
+
+        if invalid_bids_count > 0:
+            print(f"⚠ {invalid_bids_count} jobs have bid values outside [0, 1] or unparsable bids")
+            sanity_check_results['invalid_bids_count'] = invalid_bids_count
+        else:
+            print("✓ All bid values are within [0, 1]")
+            sanity_check_results['invalid_bids_count'] = 0
+
+    else:
+        print(f"✓ No Bids column found; skipping bid check for {bidding_method}")
+        sanity_check_results['invalid_bids_count'] = None
+
+    # 5. Decision time sanity_check
+    if 'DecisionTime' in df_valid.columns:
+        slow_decisions = df_valid[df_valid['DecisionTime'] > max_decision_time_sec]
+        if len(slow_decisions) > 0:
+            print(f"⚠ {len(slow_decisions)} jobs have DecisionTime > {max_decision_time_sec}s")
+            print(f"  Max DecisionTime: {df_valid['DecisionTime'].max():.4f}s")
+        else:
+            print(f"✓ All DecisionTime values are <= {max_decision_time_sec}s")
+    else:
+        print("⚠ DecisionTime column missing; skipping decision-time check")
+
+    # 6. Time ordering check
+    time_cols = {'SubmissionTime', 'StartTime', 'EndTime'}
+    if time_cols.issubset(df_valid.columns):
+        bad_time_order = df_valid[
+            (df_valid['StartTime'] < df_valid['SubmissionTime']) |
+            (df_valid['EndTime'] < df_valid['StartTime'])
+        ]
+
+        if len(bad_time_order) > 0:
+            print(f"⚠ {len(bad_time_order)} jobs have invalid time ordering")
+            sanity_check_results['bad_time_order_count'] = len(bad_time_order)
+        else:
+            print("✓ Time ordering is valid: SubmissionTime <= StartTime <= EndTime")
+            sanity_check_results['bad_time_order_count'] = 0
+    else:
+        print("⚠ Missing time columns; skipping time-ordering check")
+
+    # 7. Positive execution time check
+    if 'ExecutionTime' in df_valid.columns:
+        bad_exec = df_valid[df_valid['ExecutionTime'] <= 0]
+        if len(bad_exec) > 0:
+            print(f"⚠ {len(bad_exec)} jobs have non-positive ExecutionTime")
+            sanity_check_results['non_positive_execution_time'] = len(bad_exec)
+        else:
+            print("✓ All completed jobs have positive ExecutionTime")
+            sanity_check_results['non_positive_execution_time'] = 0
+
+    # 8. Per-job node capacity check
+    if {'ScheduledOn', 'Nodes'}.issubset(df_valid.columns):
+        bad_node_requests = []
+        for _, row in df_valid.iterrows():
+            system = row['ScheduledOn']
+            requested_nodes = row['Nodes']
+            capacity = system_capacities.get(system, {}).get('nodes')
+
+            if capacity is not None and requested_nodes > capacity:
+                bad_node_requests.append(row['JobId'])
+
+        if bad_node_requests:
+            print(f"⚠ {len(bad_node_requests)} jobs request more nodes than system capacity")
+            sanity_check_results['bad_node_requests'] = len(bad_node_requests)
+        else:
+            print("✓ No single job exceeds scheduled system node capacity")
+            sanity_check_results['bad_node_requests'] = 0
+    else:
+        print("⚠ Missing ScheduledOn or Nodes; skipping node-capacity check")
+
+    # 9. Oversubscription check using NodeList if available
+    if {'ScheduledOn', 'NodeList', 'StartTime', 'EndTime', 'JobId'}.issubset(df_valid.columns):
+        total_conflict_pairs = 0
+
+        for system in sorted(df_valid['ScheduledOn'].dropna().unique()):
+            system_df = df_valid[df_valid['ScheduledOn'] == system].copy()
+            jobs = []
+
+            for _, row in system_df.iterrows():
+                try:
+                    intervals = GanttVisualization.parse_nodelist_intervals(row['NodeList'])
+                    jobs.append({
+                        'job_id': row['JobId'],
+                        'start': float(row['StartTime']) / 3600.0,
+                        'end': float(row['EndTime']) / 3600.0,
+                        'intervals': intervals,
+                    })
+                except Exception:
+                    print(f"⚠ Could not parse NodeList for JobId={row.get('JobId')}")
+                    continue
+
+            fig, ax = plt.subplots()
+            viz = GanttVisualization(ax)
+            conflict_pairs, conflicted_jobs = viz._validate_contention(jobs)
+            plt.close(fig)
+
+            total_conflict_pairs += conflict_pairs
+
+            if conflict_pairs > 0:
+                print(f"⚠ {system}: {conflict_pairs} oversubscription/contention pairs involving {len(conflicted_jobs)} jobs")
+                sanity_check_results[f'{system}_conflict_pairs'] = conflict_pairs
+                sanity_check_results[f'{system}_conflicted_jobs'] = len(conflicted_jobs)
+
+        if total_conflict_pairs == 0:
+            print("✓ No node oversubscription detected from NodeList")
+    else:
+        print("⚠ NodeList or timing columns missing; skipping exact oversubscription check")
+
+    print("="*70 + "\n")
+    return sanity_check_results
+    
 ################ JOB DEFINITIONS ################
 def load_job_definitions(workload_path):
     """Load job definitions from workload JSON file."""
@@ -801,6 +979,26 @@ def main():
     print(f"Jobs Failed/Unscheduled: {total_jobs - completed_jobs}")
     
     system_capacities = BASE_SYSTEM_CAPACITIES
+    results = run_sanity_checks(
+        df=df,
+        df_valid=df_valid,
+        system_capacities=system_capacities,
+        bidding_method=bidding_method,
+        max_decision_time_sec=30.0,
+        workload_name=workload_name,
+    )
+
+    # logs results under results/validation_logs.csv
+    validation_logs_path = Path('results/validation_logs.csv')
+    validation_logs_path.parent.mkdir(exist_ok=True, parents=True)
+    if validation_logs_path.exists():
+        validation_logs_df = pd.read_csv(validation_logs_path)
+    else:
+        validation_logs_df = pd.DataFrame()
+    validation_logs_df = pd.concat([validation_logs_df, pd.DataFrame([results])], ignore_index=True)
+    validation_logs_df.to_csv(validation_logs_path, index=False)
+    print(f"✓ Validation logs updated: {validation_logs_path}")
+    
     scenario_label = build_scenario_label(workload_name, bidding_method, run_mode)
     shared_xmax_hours, counterpart_csv = compute_shared_xmax_hours(csv_path, df_valid)
     if counterpart_csv is not None:
