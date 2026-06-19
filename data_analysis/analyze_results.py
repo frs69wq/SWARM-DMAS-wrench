@@ -931,6 +931,7 @@ def main():
     parser.add_argument('--metrics-dir', '-m', default='./results', help='Output directory for metrics (default: ./results)')
     parser.add_argument('--gantt-note', default='', help='Custom note text box for Gantt figure (optional)')
     parser.add_argument('--hide-jobids', action='store_true', help='Hide job-id text labels from Gantt rectangles')
+    parser.add_argument('--skip-gantt', action='store_true', help='Skip standalone per-mode Gantt chart generation')
     
     args = parser.parse_args()
     
@@ -951,7 +952,8 @@ def main():
         gantt_output_dir = output_dir / 'gantt_decentralized'
         run_mode = 'decentralized'
     utilization_output_dir.mkdir(exist_ok=True, parents=True)
-    gantt_output_dir.mkdir(exist_ok=True, parents=True)
+    if not args.skip_gantt:
+        gantt_output_dir.mkdir(exist_ok=True, parents=True)
     metrics_dir = Path(args.metrics_dir)
     metrics_dir.mkdir(exist_ok=True, parents=True)
     
@@ -1034,15 +1036,18 @@ def main():
         utilization_output_dir / f'utilisation_percentage_{workload_name}_{bidding_method}.png',
         x_max_hours=shared_xmax_hours,
     )
-    plot_system_gantt(
-        df_valid,
-        system_capacities,
-        gantt_output_dir / f'gantt_{workload_name}_{bidding_method}.png',
-        note_text=args.gantt_note,
-        scenario_label=scenario_label,
-        show_job_ids=(not args.hide_jobids),
-        x_max_hours=shared_xmax_hours,
-    )
+    if args.skip_gantt:
+        print("Skipping standalone Gantt plot generation")
+    else:
+        plot_system_gantt(
+            df_valid,
+            system_capacities,
+            gantt_output_dir / f'gantt_{workload_name}_{bidding_method}.png',
+            note_text=args.gantt_note,
+            scenario_label=scenario_label,
+            show_job_ids=(not args.hide_jobids),
+            x_max_hours=shared_xmax_hours,
+        )
 
     thrhput = calculate_throughput(df_valid)
     print(f"\nThroughput: {thrhput:.2f} jobs/time unit")

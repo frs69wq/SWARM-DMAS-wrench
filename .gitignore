@@ -49,3 +49,5 @@ logs/
 
 logs/
 *.log
+swarm-dmas-gcloud-credentials.json
+swarm-dmas-llm.env

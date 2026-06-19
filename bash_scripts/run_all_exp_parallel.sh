@@ -5,8 +5,8 @@ EXEC_FILE=./build/swarm_dmas
 WRENCH_ARGS="--wrench-commport-pool-size=80000"     # --cfg=precision/work-amount:1e-12
 
 # Number of concurrent runs
-MAX_JOBS=16
-
+MAX_JOBS=1
+SLEEP_BETWEEN_RUNS=60   # seconds
 
 declare -A SCENARIO_NJOBS_RHO_15=(
     ["mixed_80_20"]=415
@@ -21,8 +21,8 @@ declare -A SCENARIO_NJOBS_RHO_09=(
     ["small_short"]=2880
 )
 
-DAYS=("business" "bursty_low_stress" "bursty_high_stress")           # 
-TYPES=("mixed_80_20"  "mixed_20_80" "large_long" "small_short")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
+DAYS=("business" "bursty_low_stress" "bursty_high_stress")           #  "bursty_low_stress" "bursty_high_stress"
+TYPES=("mixed_80_20")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
 RHO_VALUES=(1.5 0.9)            #   1.5 0.9
 
 
@@ -57,12 +57,28 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 PYTHON_BIDDERS=(
     # "python_scripts/HeuristicBidding.py"
     # "python_scripts/EmbeddingBidding.py"
+    "python_scripts/llm_claude_bidder.py"
 )
 
 BASELINE_POLICIES=(
     # "RandomBidding"
     "PureLocal"
 )
+
+python_bidder_label() {
+    local bidder="$1"
+    local bidder_name
+
+    bidder_name=$(basename "$bidder" .py)
+    case "$bidder_name" in
+        llm_claude_bidder)
+            echo "LLMBidding"
+            ;;
+        *)
+            echo "$bidder_name"
+            ;;
+    esac
+}
 
 
 run_decentralized_python() {
@@ -72,7 +88,7 @@ run_decentralized_python() {
     local workload_name="$4"
     local bidder_name output_file temp_json
 
-    bidder_name=$(basename "$bidder" .py)
+    bidder_name=$(python_bidder_label "$bidder")
     output_file="$RESULT_DIR/${workload_name}_${bidder_name}.csv"
     temp_json=$(mktemp /tmp/swarm_dec_py_XXXXXX.json)
 
@@ -88,6 +104,8 @@ run_decentralized_python() {
         ' "$DEC_TEMPLATE" > "$temp_json"
 
     echo "Running DECENTRALIZED - $bidder_name on $workload_name"
+    LLM_WORKLOAD_NAME="$workload_name" \
+    LLM_LOG_DIR="logs/llm_bidding" \
     "$EXEC_FILE" "$temp_json" $WRENCH_ARGS > "$output_file"
     rm -f "$temp_json"
 }
@@ -174,15 +192,20 @@ for entry in "${WORKLOADS[@]}"; do
     echo "Using platform: $platform_file"
     echo "==============================================="
 
-    # for bidder in "${PYTHON_BIDDERS[@]}"; do
-    #     throttle_jobs
-    #     run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
-    # done
-
-    for policy in "${BASELINE_POLICIES[@]}"; do
+    for bidder in "${PYTHON_BIDDERS[@]}"; do
         throttle_jobs
-        run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
+        run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
+
+        wait -n || true
+
+        echo "Sleeping ${SLEEP_BETWEEN_RUNS}s before next run..."
+        sleep "$SLEEP_BETWEEN_RUNS"
     done
+
+    # for policy in "${BASELINE_POLICIES[@]}"; do
+    #     throttle_jobs
+    #     run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
+    # done
 
     # throttle_jobs
     # run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &

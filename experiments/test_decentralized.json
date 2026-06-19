@@ -1,9 +1,10 @@
 {
     "platform": "platforms/AmSC.xml",
-    "workload": "workloads/bursty_low_stress_small_short_4800_rho1.5.json",
+    "workload": "data_generation/data/bursty_low_stress_small_short_4800_rho1.5.json",
     "centralized_submission": false,
     "decentralized_policy": "PythonBidding",
-    "decentralized_bidder": "python_scripts/EmbeddingBidding.py",
+    "decentralized_bidder": "python_scripts/llm_claude_bidder.py",
+    "bidder_prompt_file": "prompts/llm_prompt_balanced.txt",
     "heartbeat_period": 5,
     "heartbeat_expiration": 15,
     "hardware_failure_profile": "hardware_failure_profiles/test.json"

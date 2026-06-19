@@ -24,7 +24,7 @@ OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
 TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]
 
-PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding"]     # "LLMBidding"
+PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding", "LLMBidding"]     # "LLMBidding"
 BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding",  
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 

@@ -11,8 +11,11 @@ BIDDING_SCRIPT="$PROJECT_ROOT/data_analysis/biddingComparison.Rscript"
 MODE_SCRIPT="$PROJECT_ROOT/data_analysis/compareToCentralized.Rscript"
 
 PLOTS_DIR="$PROJECT_ROOT/plots/comparison"
-
 mkdir -p "$PLOTS_DIR"
+
+GANTT_SCRIPT="$PROJECT_ROOT/data_analysis/compare_gantt.py"
+GANTT_DIR="$PLOTS_DIR/gantt"
+mkdir -p "$GANTT_DIR"
 
 if [ ! -f "$AGGREGATED_FILE" ]; then
     echo "Error: $AGGREGATED_FILE not found"
@@ -32,5 +35,10 @@ if [ -d "$CENTRALIZED_DIR" ] && [ -n "$(ls -A "$CENTRALIZED_DIR" 2>/dev/null)" ]
 else
     echo "Skipping centralized comparison (no results found in $CENTRALIZED_DIR)"
 fi
+
+echo "Generating centralized vs decentralized Gantt comparisons..."
+python "$GANTT_SCRIPT" \
+    --results-dir "$RESULTS_DIR" \
+    --output-dir "$GANTT_DIR"
 
 echo "All comparison plots saved under $PLOTS_DIR"

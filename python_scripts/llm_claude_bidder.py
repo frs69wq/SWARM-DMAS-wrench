@@ -46,7 +46,7 @@ def setup_logger(data):
 
     log_file = os.getenv("LLM_LOG_FILE")
     if not log_file:
-        log_dir = os.getenv("LLM_LOG_DIR", "logs/llm_bidding")
+        log_dir = os.getenv("LLM_LOG_DIR", "logs")
         log_file = os.path.join(
             log_dir,
             f"{safe_name(workload_name)}.log"
@@ -205,6 +205,7 @@ def main():
     except Exception as e:
         if logger:
             logger.error("Claude bidder request failed; will fall back to heuristic: %s", e)
+            # logger.exception("Claude bidder request failed; will fall back to heuristic")
         else:
             print(f"Claude bidder failed before logger setup: {e}", file=sys.stderr)
 

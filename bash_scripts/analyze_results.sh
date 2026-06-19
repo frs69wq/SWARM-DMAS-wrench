@@ -26,11 +26,11 @@ RESULT_DIRS=("results" "results/centralized"
 DAYS=("business" "bursty_low_stress" "bursty_high_stress")       
 TYPES=("small_short" "large_long" "mixed_80_20" "mixed_20_80")
 METHODS=(
-    "HeuristicBidding"
-    "EmbeddingBidding"
+    # "HeuristicBidding"
+    # "EmbeddingBidding"
     "LLMBidding"
-    "RandomBidding"
-    "PureLocal"
+    # "RandomBidding"
+    # "PureLocal"
 )
 
 PLOTS_DIR="plots/individual"
@@ -66,7 +66,8 @@ for rho in "${RHO_VALUES[@]}"; do
                             python "$PY_ANALYZER" \
                                 --csv_file "$csv_file" \
                                 --output-dir "$PLOTS_DIR" \
-                                --metrics-dir "$dir"
+                                --metrics-dir "$dir" \
+                                --skip-gantt
 
                             Rscript "$R_ANALYZER" \
                                 "$csv_file" \
@@ -75,7 +76,8 @@ for rho in "${RHO_VALUES[@]}"; do
                             python "$PY_ANALYZER" \
                                 --csv_file "$csv_file" \
                                 --output-dir "$PLOTS_DIR_CENTRALIZED" \
-                                --metrics-dir "$dir"
+                                --metrics-dir "$dir" \
+                                --skip-gantt
 
                             Rscript "$R_ANALYZER" \
                                 "$csv_file" \
@@ -89,4 +91,3 @@ for rho in "${RHO_VALUES[@]}"; do
         done
     done
 done
-
