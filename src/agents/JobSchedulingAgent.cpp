@@ -4,7 +4,10 @@
 #include "messages/ControlMessages.h"
 #include "utils/utils.h"
 
+#include <cstdint>
+#include <functional>
 #include <nlohmann/json.hpp>
+#include <random>
 #include <simgrid/s4u/Host.hpp>
 #include <string>
 #include <wrench/services/helper_services/action_execution_service/ActionExecutionService.h>
@@ -220,8 +223,11 @@ void JobSchedulingAgent::processEventTimer(const std::shared_ptr<wrench::TimerEv
 
   // Step 4: Broadcast the local bid to the network of agents
 
-  std::random_device rd;  // Seed
-  std::mt19937 gen(rd()); // Mersenne Twister engine
+  constexpr uint64_t SEED = 42;
+  auto job_id_val         = static_cast<uint64_t>(j["job_description"]["job_id"].get<int>());
+  uint64_t mixed          = SEED ^ (job_id_val * 6364136223846793005ULL)
+                                 ^ std::hash<std::string>{}(hpc_system_description_->get_name());
+  std::mt19937_64 gen(mixed);
   std::uniform_real_distribution<double> dis(0.0, 100.0);
   auto tie_breaker = dis(gen);
 
