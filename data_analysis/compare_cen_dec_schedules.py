@@ -68,7 +68,7 @@ def load_workload_jobs(workload_json_path: Path) -> pd.DataFrame:
         rows.append(
             {
                 "JobId": int(item["JobID"]),
-                "job_json": json.dumps(item, separators=(",", ":"), sort_keys=True),
+                "Job_json": json.dumps(item, separators=(",", ":"), sort_keys=True),
             }
         )
 
