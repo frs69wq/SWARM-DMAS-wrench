@@ -2,6 +2,8 @@ import sys
 import json
 import time
 import math
+import random
+import hashlib
 import numpy as np
 
 JOB_TYPES = ["HPC", "AI", "HYBRID", "STORAGE"]
@@ -53,7 +55,7 @@ def embed_job(job):
 
     NODES_MAX = 8600.0
     WALL_MAX = 60.0 * 60.0   # 1 day in seconds
-    MEM_MAX = 512       #1e6
+    MEM_MAX = 512 * NODES_MAX      #1e6
     STORAGE_MAX = 500.0 * 1000
 
     def log01(x, cap):
@@ -64,17 +66,15 @@ def embed_job(job):
     x_num = np.array([
         log01(nodes, NODES_MAX),
         log01(wall, WALL_MAX),
-        log01(mem/nodes, MEM_MAX),
+        log01(mem, MEM_MAX),
         log01(storage, STORAGE_MAX),
         gpu,
     ], dtype=np.float32)
 
     x_type = one_hot(job_type, JOB_TYPES)
-    # x_site = one_hot(job_site, SITES)
 
     w_num  = 1.0
     w_type = 0.7
-    # w_site = 0.5
 
     x = np.concatenate([w_num * x_num, w_type * x_type], axis=0)
     return l2_normalize(x)
@@ -105,7 +105,7 @@ def embed_system(sysdesc, job_site_hint=None):
     x_num = np.array([
         log01(sys_nodes, NODES_MAX),
         log01(sys_speed, SPEED_MAX),
-        log01(sys_mem_per_node, MEM_MAX),
+        log01(sys_mem_per_node * sys_nodes, MEM_MAX),
         log01(sys_storage_cap, STORAGE_MAX),
         sys_has_gpu,
     ], dtype=np.float32)
@@ -178,19 +178,28 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     est_start_time = fnum(status.get("current_job_start_time_estimate"), job_submission_time)
     wait_time = max(0, est_start_time - job_submission_time) 
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
-    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
+    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, 
+                                     has_gpu=(req_gpu and sys_has_gpu))
     slowdown = (wait_time + pred_exec_time) / max(1.0, pred_exec_time)
     alpha = 0.5
     slowdown_feat = math.exp(-alpha * slowdown)
 
-    dynamic_bid = 0.5 * headroom_feat + 0.5 * slowdown_feat
+    # Apply AI cross-site data transfer penalty to the time component, mirroring
+    # HeuristicBidding.py's component-level penalty instead of reducing the full bid.
+    ai_data_xfer_penalty = 0.0
+    if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
+        seed_string = f"{job.get('job_id')}_{sysdesc.get('name')}_ai_xfer"
+        seed_value = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
+        rng = random.Random(seed_value)
+        ai_data_xfer_penalty = rng.uniform(0.10, 0.20)
+        slowdown_feat = max(0.0, slowdown_feat - ai_data_xfer_penalty)
+
+    dynamic_bid = 0.3 * headroom_feat + 0.7 * slowdown_feat
 
     raw = float(np.dot(e_job, e_sys)) 
     static_bid = max(0.0, raw)
     bid = 0.3 * static_bid + 0.7 * dynamic_bid
 
-    if job_type == "AI" and job_site and sys_site and (job_site != sys_site):
-        bid *= 0.95
     if not math.isfinite(bid):
         bid = 0.0
 

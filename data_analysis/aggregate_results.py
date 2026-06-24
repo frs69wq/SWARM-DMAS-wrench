@@ -22,9 +22,9 @@ CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
 DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
-TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]
+TYPES = ["large_long", "mixed_20_80", "mixed_80_20", "small_short"]        # "mixed_80_20",  "small_short", 
 
-PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding", "LLMBidding"]     # "LLMBidding"
+PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding"]     # "LLMBidding"
 BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding",  
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 

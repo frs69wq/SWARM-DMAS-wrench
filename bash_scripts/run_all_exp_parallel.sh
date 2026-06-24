@@ -4,8 +4,25 @@ set -euo pipefail
 EXEC_FILE=./build/swarm_dmas
 WRENCH_ARGS="--wrench-commport-pool-size=80000"     # --cfg=precision/work-amount:1e-12
 
+if [[ -z "${SWARM_DMAS_PYTHON:-}" ]]; then
+    if [[ -n "${CONDA_PREFIX:-}" && "${CONDA_DEFAULT_ENV:-}" != "base" && -x "$CONDA_PREFIX/bin/python" ]]; then
+        SWARM_DMAS_PYTHON="$CONDA_PREFIX/bin/python"
+    elif [[ -n "${CONDA_EXE:-}" ]]; then
+        conda_root=$(dirname "$(dirname "$CONDA_EXE")")
+        if [[ -x "$conda_root/envs/swarm/bin/python" ]]; then
+            SWARM_DMAS_PYTHON="$conda_root/envs/swarm/bin/python"
+        else
+            SWARM_DMAS_PYTHON="$(command -v python3)"
+        fi
+    else
+        SWARM_DMAS_PYTHON="$(command -v python3)"
+    fi
+fi
+export SWARM_DMAS_PYTHON
+echo "Using Python for bidding scripts: $SWARM_DMAS_PYTHON"
+
 # Number of concurrent runs
-MAX_JOBS=1
+MAX_JOBS=8
 SLEEP_BETWEEN_RUNS=60   # seconds
 
 declare -A SCENARIO_NJOBS_RHO_15=(
@@ -21,9 +38,9 @@ declare -A SCENARIO_NJOBS_RHO_09=(
     ["small_short"]=2880
 )
 
-DAYS=("business" "bursty_low_stress" "bursty_high_stress")           #  "bursty_low_stress" "bursty_high_stress"
-TYPES=("mixed_80_20")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
-RHO_VALUES=(1.5 0.9)            #   1.5 0.9
+DAYS=("bursty_low_stress" "bursty_high_stress" "business")           #  "bursty_low_stress" "bursty_high_stress" "business" 
+TYPES=("small_short" "mixed_80_20"  "mixed_20_80" "large_long")       #    "mixed_80_20"  "mixed_20_80" "large_long" "small_short"
+RHO_VALUES=(0.9 1.5)            #   1.5 0.9
 
 
 # Build workload list with per-scenario job counts
@@ -56,8 +73,8 @@ mkdir -p "$RESULT_DIR_CENTRALIZED"
 # Bidding strategies to evaluate
 PYTHON_BIDDERS=(
     # "python_scripts/HeuristicBidding.py"
-    # "python_scripts/EmbeddingBidding.py"
-    "python_scripts/llm_claude_bidder.py"
+    "python_scripts/EmbeddingBidding.py"
+    # "python_scripts/llm_claude_bidder.py"
 )
 
 BASELINE_POLICIES=(
@@ -192,24 +209,24 @@ for entry in "${WORKLOADS[@]}"; do
     echo "Using platform: $platform_file"
     echo "==============================================="
 
-    for bidder in "${PYTHON_BIDDERS[@]}"; do
-        throttle_jobs
-        run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
+    # for bidder in "${PYTHON_BIDDERS[@]}"; do
+    #     throttle_jobs
+    #     run_decentralized_python "$workload" "$platform_file" "$bidder" "$workload_name" &
 
-        wait -n || true
+    #     # wait -n || true
 
-        echo "Sleeping ${SLEEP_BETWEEN_RUNS}s before next run..."
-        sleep "$SLEEP_BETWEEN_RUNS"
-    done
+    #     # echo "Sleeping ${SLEEP_BETWEEN_RUNS}s before next run..."
+    #     # sleep "$SLEEP_BETWEEN_RUNS"
+    # done
 
     # for policy in "${BASELINE_POLICIES[@]}"; do
     #     throttle_jobs
     #     run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
     # done
 
-    # throttle_jobs
-    # run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
-    # run_centralized "$workload" "$platform_file" "EmbeddingBidding" "$workload_name" &
+    throttle_jobs
+    run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
+    run_centralized "$workload" "$platform_file" "EmbeddingBidding" "$workload_name" &
 done
 
 wait || true

@@ -42,6 +42,7 @@ int main(int argc, char** argv)
   std::string workload                 = j["workload"];
   bool centralized_submission          = j.value("centralized_submission", false);
   std::string centralized_policy       = j.value("centralized_policy", "");
+  std::string centralized_bidder       = j.value("centralized_bidder", "");
   std::string decentralized_policy     = j.value("decentralized_policy", "PureLocal");
   std::string decentralized_bidder     = j.value("decentralized_bidder", "");
   std::string bidder_prompt_file       = j.value("bidder_prompt_file", "");
@@ -135,7 +136,8 @@ int main(int argc, char** argv)
 
   // Instantiate a workload submission agent that will generate jobs and assign jobs to scheduling agents
   if (centralized_submission) {
-    auto centralized_scheduling_policy = std::make_shared<CentralizedSchedulingPolicy>(centralized_policy);
+    auto centralized_scheduling_policy =
+        std::make_shared<CentralizedSchedulingPolicy>(centralized_policy, centralized_bidder);
     auto workload_submission_agent     = simulation->add(new wrench::WorkloadCentralizedSubmissionAgent(
         "ASCR.doe.gov", workload, job_scheduling_agent_network, centralized_scheduling_policy));
     workload_submission_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);

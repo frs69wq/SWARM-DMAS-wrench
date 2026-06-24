@@ -3,6 +3,7 @@
     "workload": "workloads/idle_only_large_long_100.json",
     "centralized_submission": true,
     "centralized_policy": "python_scripts/CentralizedScheduling.py",
+    "centralized_bidder": "python_scripts/HeuristicBidding.py",
     "heartbeat_period": 5,
     "heartbeat_expiration": 15,
     "hardware_failure_profile": "hardware_failure_profiles/test.json"
