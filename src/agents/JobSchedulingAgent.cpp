@@ -38,14 +38,15 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
         WRENCH_DEBUG("Job #%d did not pass acceptance tests. Notifying the Job Lifecycle Tracker Agent", job_id);
         tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
             job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
-            JobLifecycleEventType::REJECT, "", get_failure_cause_as_string(failure_code)));
+            JobLifecycleEventType::REJECT, job_request_message->get_bids(), get_failure_cause_as_string(failure_code)));
       } else {
         WRENCH_DEBUG("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                      job_description->get_num_nodes(), job_description->get_walltime(),
                      hpc_system_description_->get_cname());
         tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(job_id, hpc_system_description_->get_name(),
                                                                         wrench::S4U_Simulation::getClock(),
-                                                                        JobLifecycleEventType::SCHEDULING, ""));
+                                                                        JobLifecycleEventType::SCHEDULING,
+                                                                        job_request_message->get_bids()));
 
         build_and_submit_job(job_id, job_description);
       }

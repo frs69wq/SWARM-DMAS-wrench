@@ -3,7 +3,7 @@ import json
 import time
 
 # Reuse the compute_bid function from HeuristicBidding
-from HeuristicBidding import compute_bid
+from EmbeddingBidding import compute_bid
 
 
 def main():

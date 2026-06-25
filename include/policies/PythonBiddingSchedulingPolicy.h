@@ -2,7 +2,6 @@
 #define PYTHON_BIDDING_SCHEDULING_POLICY_H
 
 #include <algorithm>
-#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -73,11 +72,7 @@ public:
       close(to_python[0]);
       close(from_python[1]);
 
-      const char* python_executable = std::getenv("SWARM_DMAS_PYTHON");
-      if (python_executable == nullptr || std::string(python_executable).empty())
-        python_executable = "python3";
-
-      execlp(python_executable, python_executable, python_script_name_.c_str(), nullptr);
+      execlp("python3", "python3", python_script_name_.c_str(), nullptr);
       perror("execlp failed");
       exit(1);
     } else {

@@ -16,22 +16,27 @@ class JobRequestMessage : public ExecutionControllerCustomEventMessage {
   std::shared_ptr<JobDescription> job_description_;
   bool can_forward_;
   bool skip_bidding_;
+  std::string bids_;
 
 public:
   /// @brief
   /// @param job_description job description
   /// @param can_forward whether the job can be forwarded to another job scheduling agent
   /// @param skip_bidding whether to skip the bidding process (true when sent by centralized scheduler)
-  JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward, bool skip_bidding = false)
+  /// @param bids already computed bids when skip_bidding is true
+  JobRequestMessage(const std::shared_ptr<JobDescription>& job_description, bool can_forward, bool skip_bidding = false,
+                    const std::string& bids = "")
       : ExecutionControllerCustomEventMessage(can_forward ? CONTROL_MESSAGE_SIZE : BROADCAST_MESSAGE_SIZE)
       , job_description_(job_description)
       , can_forward_(can_forward)
       , skip_bidding_(skip_bidding)
+      , bids_(bids)
   {
   }
   bool can_be_forwarded() const { return can_forward_; }
   bool should_skip_bidding() const { return skip_bidding_; }
   const std::shared_ptr<JobDescription>& get_job_description() const { return job_description_; }
+  const std::string& get_bids() const { return bids_; }
 };
 
 /// Message to send a bid

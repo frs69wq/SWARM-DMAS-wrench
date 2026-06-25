@@ -22,6 +22,7 @@
 #include "info/HPCSystemDescription.h"
 #include "info/HPCSystemStatus.h"
 #include "info/JobDescription.h"
+#include "utils/utils.h"
 
 XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 
@@ -30,6 +31,12 @@ struct HPCSystemInfo {
   std::shared_ptr<wrench::JobSchedulingAgent> agent;
   std::shared_ptr<HPCSystemDescription> description;
   std::shared_ptr<HPCSystemStatus> status;
+};
+
+struct CentralizedSchedulingDecision {
+  std::shared_ptr<wrench::JobSchedulingAgent> target_agent;
+  double decision_time;
+  std::string bids;
 };
 
 class CentralizedSchedulingPolicy {
@@ -44,12 +51,12 @@ public:
   // parallel — mirroring exactly what the decentralized agents do — and returning the
   // winner together with the wall-clock duration of the parallel execution (which becomes
   // the simulated DecisionTime for this job).
-  std::pair<std::shared_ptr<wrench::JobSchedulingAgent>, double>
+  CentralizedSchedulingDecision
   select_best_system(const std::shared_ptr<JobDescription>& job_description,
                      const std::vector<HPCSystemInfo>& systems_info)
   {
     if (systems_info.empty())
-      return {nullptr, 0.0};
+      return {nullptr, 0.0, ""};
 
     if (access(python_script_name_.c_str(), F_OK) != 0)
       throw std::runtime_error("Python script not found: " + python_script_name_);
@@ -122,21 +129,25 @@ public:
       const auto& sys_name   = systems_info[i].description->get_name();
       uint64_t mixed         = SEED ^ (job_id_val * 6364136223846793005ULL)
                                     ^ std::hash<std::string>{}(sys_name);
-      double tie_breaker     = std::uniform_real_distribution<double>(0.0, 100.0)(std::mt19937_64(mixed));
+      // double tie_breaker     = std::uniform_real_distribution<double>(0.0, 100.0)(std::mt19937_64(mixed));
+      std::mt19937_64 rng(mixed);
+      std::uniform_real_distribution<double> dist(0.0, 100.0);
+      double tie_breaker = dist(rng);
       all_bids[systems_info[i].agent] = {bid, tie_breaker};
     }
 
     double decision_time =
         std::chrono::duration<double>(std::chrono::steady_clock::now() - wall_start).count();
+    auto bids = get_all_bids_as_string(all_bids);
 
     // Same comparator as PythonBiddingSchedulingPolicy::determine_bid_winner
     auto max_it = std::max_element(all_bids.begin(), all_bids.end(),
                                    [](const auto& a, const auto& b) { return a.second < b.second; });
 
     if (max_it->second.first <= 0.0)
-      return {nullptr, decision_time};
+      return {nullptr, decision_time, bids};
 
-    return {max_it->first, decision_time};
+    return {max_it->first, decision_time, bids};
   }
 };
 
