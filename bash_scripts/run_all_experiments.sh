@@ -117,28 +117,28 @@ for workload in "${WORKLOADS[@]}"; do
     done
 
     # --------------------------------------------------
-    # CENTRALIZED
+    # CENTRALIZED - Python bidders (one subprocess per system, parallel)
     # --------------------------------------------------
+    for bidder in "${PYTHON_BIDDERS[@]}"; do
+        bidder_name=$(basename "$bidder" .py)
+        output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder_name}.csv"
+        temp_json="temp_config_centralized.json"
 
-    # bidder="HeuristicBidding"   # Must match CentralizedScheduling.py
-    # output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
-    # temp_json="temp_config.json"
+        jq \
+        --arg workload "$workload" \
+        --arg platform "$platform_file" \
+        --arg bidder "$bidder" \
+        '
+        .workload = $workload |
+        .platform = $platform |
+        .centralized_policy = $bidder
+        ' "$CENT_TEMPLATE" > "$temp_json"
 
-    # jq \
-    # --arg workload "$workload" \
-    # --arg platform "$platform_file" \
-    # --arg bidder "$bidder" \
-    # '
-    # .workload = $workload |
-    # .platform = $platform |
-    # .centralized_bidder = $bidder
-    # ' "$CENT_TEMPLATE" > "$temp_json"
+        echo "Running CENTRALIZED - $bidder_name"
 
-    # echo "Running CENTRALIZED - $bidder"
-
-    # # $EXEC_FILE "$temp_json" > "$output_file"
-    # $EXEC_FILE "$temp_json" $WRENCH_ARGS > "$output_file"
-    # rm "$temp_json"
+        $EXEC_FILE "$temp_json" $WRENCH_ARGS > "$output_file"
+        rm "$temp_json"
+    done
 
 done
 

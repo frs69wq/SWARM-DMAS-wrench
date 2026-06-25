@@ -158,24 +158,26 @@ run_decentralized_baseline() {
 run_centralized() {
     local workload="$1"
     local platform_file="$2"
-    local bidder="$3"
+    local bidder_script="$3"   # full path e.g. python_scripts/HeuristicBidding.py
     local workload_name="$4"
     local output_file temp_json
 
-    output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder}.csv"
+    local bidder_name
+    bidder_name=$(basename "$bidder_script" .py)
+    output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder_name}.csv"
     temp_json=$(mktemp /tmp/swarm_cent_XXXXXX.json)
 
     jq \
         --arg workload "$workload" \
         --arg platform "$platform_file" \
-        --arg bidder "$bidder" \
+        --arg bidder "$bidder_script" \
         '
         .workload = $workload |
         .platform = $platform |
-        .centralized_bidder = $bidder
+        .centralized_policy = $bidder
         ' "$CENT_TEMPLATE" > "$temp_json"
 
-    echo "Running CENTRALIZED - $bidder on $workload_name"
+    echo "Running CENTRALIZED - $bidder_name on $workload_name"
     "$EXEC_FILE" "$temp_json" $WRENCH_ARGS > "$output_file"
     rm -f "$temp_json"
 }
@@ -224,9 +226,9 @@ for entry in "${WORKLOADS[@]}"; do
     #     run_decentralized_baseline "$workload" "$platform_file" "$policy" "$workload_name" &
     # done
 
-    throttle_jobs
-    run_centralized "$workload" "$platform_file" "HeuristicBidding" "$workload_name" &
-    run_centralized "$workload" "$platform_file" "EmbeddingBidding" "$workload_name" &
+    # throttle_jobs
+    # run_centralized "$workload" "$platform_file" "python_scripts/HeuristicBidding.py" "$workload_name" &
+    # run_centralized "$workload" "$platform_file" "python_scripts/EmbeddingBidding.py" "$workload_name" &
 done
 
 wait || true
