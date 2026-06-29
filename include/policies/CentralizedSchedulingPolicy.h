@@ -101,10 +101,14 @@ public:
       read_fds[i] = from_child[0];
     }
 
-    // Collect all responses (children are running in parallel)
+    // Collect all responses (children are running in parallel).
+    // Use the Python-reported bid_generation_time_seconds — consistent with the decentralized
+    // path which also uses that field — rather than C++ wall-clock time which includes Python
+    // interpreter startup overhead (~100 ms) and would distort the simulation clock.
     std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>> all_bids;
     constexpr uint64_t SEED  = 42;
     auto job_id_val           = static_cast<uint64_t>(job_description->get_job_id());
+    double decision_time      = 0.0; // max(bid_generation_time_seconds) across all systems
 
     for (int i = 0; i < N; i++) {
       std::string response;
@@ -124,20 +128,20 @@ public:
                   systems_info[i].description->get_name().c_str(), result.dump().c_str());
         if (result.contains("bid") && result["bid"].is_number())
           bid = result["bid"].get<double>();
-      } catch (...) { /* treat parse error as bid = 0 */ }
+        if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number())
+          decision_time = std::max(decision_time, result["bid_generation_time_seconds"].get<double>());
+      } catch (...) { /* treat parse error as bid = 0, no update to decision_time */ }
 
       const auto& sys_name   = systems_info[i].description->get_name();
       uint64_t mixed         = SEED ^ (job_id_val * 6364136223846793005ULL)
                                     ^ std::hash<std::string>{}(sys_name);
-      // double tie_breaker     = std::uniform_real_distribution<double>(0.0, 100.0)(std::mt19937_64(mixed));
       std::mt19937_64 rng(mixed);
       std::uniform_real_distribution<double> dist(0.0, 100.0);
       double tie_breaker = dist(rng);
       all_bids[systems_info[i].agent] = {bid, tie_breaker};
     }
 
-    double decision_time =
-        std::chrono::duration<double>(std::chrono::steady_clock::now() - wall_start).count();
+    (void)wall_start; // kept in case wall-clock measurement is needed in future
     auto bids = get_all_bids_as_string(all_bids);
 
     // Same comparator as PythonBiddingSchedulingPolicy::determine_bid_winner
