@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from pandas.errors import EmptyDataError
 
 RHO_VALUES = [1.5, 0.9]
 SCENARIO_NJOBS_BY_RHO = {
@@ -21,10 +22,10 @@ RESULTS_DIR = Path("results")
 CENTRALIZED_DIR = RESULTS_DIR / "centralized"
 OUTPUT_FILE = RESULTS_DIR / "aggregated_metrics.csv"
 
-DAYS = ["business", "bursty_low_stress", "bursty_high_stress"]
-TYPES = ["large_long", "mixed_20_80", "mixed_80_20", "small_short"]        # "mixed_80_20",  "small_short", 
+DAYS = ["bursty_low_stress", "bursty_high_stress", "business"]      # "business", 
+TYPES = ["small_short", "large_long", "mixed_80_20", "mixed_20_80"]     # , "large_long", "mixed_80_20", "mixed_20_80"
 
-PYTHON_BIDDERS = ["EmbeddingBidding", "HeuristicBidding"]     # "LLMBidding"
+PYTHON_BIDDERS = ["HeuristicBidding", "EmbeddingBidding", "LLMBidding"]     #    "EmbeddingBidding", 
 BASELINE_POLICIES = ["PureLocal"]           # "RandomBidding",  
 ALL_STRATEGIES = PYTHON_BIDDERS + BASELINE_POLICIES
 
@@ -74,11 +75,36 @@ def mean_std(series):
         return None, None
     return float(s.mean()), float(s.std(ddof=1)) if len(s) > 1 else 0.0
 
+def empty_metrics():
+    return {
+        "total_jobs": 0,
+        "completed_jobs": 0,
+        "failed_jobs": 0,
+        "completion_ratio": None,
+        "makespan_seconds": None,
+        "throughput_jobs_per_second": None,
+        "turnaround_mean": None,
+        "turnaround_std": None,
+        "waiting_mean": None,
+        "waiting_std": None,
+        "execution_mean": None,
+        "execution_std": None,
+        "decision_mean": None,
+        "decision_std": None,
+    }
+
 
 def calculate_metrics(csv_path):
+    try:
+        raw_df = pd.read_csv(csv_path)
+    except EmptyDataError:
+        print(f"Warning: empty CSV file: {csv_path}")
+        return empty_metrics()
 
-    raw_df = pd.read_csv(csv_path)
-
+    if raw_df.empty:
+        print(f"Warning: CSV has headers but no rows: {csv_path}")
+        return empty_metrics()
+ 
     time_cols = [
         "SubmissionTime",
         "SchedulingTime",
