@@ -103,7 +103,7 @@ combined <- pC + pB +
         legend.title     = element_text(size = 8),
         legend.key.size  = unit(0.35, "cm"))
 
-out <- "/home/suter/ORNL/AGENTIC/SWARM-DMAS-wrench/data_analysis/ta_breakdown"
+out <- "./ta_breakdown"
 ggsave(paste0(out, ".pdf"), combined, width = 5.5, height = 2.8, device = "pdf")
 ggsave(paste0(out, ".png"), combined, width = 5.5, height = 2.8, dpi = 300)
 cat("Saved", out, "\n")

@@ -40,7 +40,7 @@ p <- ggplot(data, aes(x = Strategy, y = MeanTurnaround, color = Strategy)) +
   theme_bw(base_size = 11) +
   theme(legend.position = "none")
 
-out <- "/home/suter/ORNL/AGENTIC/SWARM-DMAS-wrench/data_analysis/turnaround_boxplot"
+out <- "./turnaround_boxplot"
 ggsave(paste0(out, ".pdf"), p, width = 5.0, height = 2.82, device = "pdf")
 ggsave(paste0(out, ".png"), p, width = 5.0, height = 2.82, dpi = 300)
 cat("Saved", out, "\n")
