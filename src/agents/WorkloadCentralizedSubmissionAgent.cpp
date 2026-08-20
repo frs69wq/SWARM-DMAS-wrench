@@ -19,24 +19,67 @@ int WorkloadCentralizedSubmissionAgent::main()
   size_t total_num_jobs  = jobs->size();
   int    next_job_to_submit = 0;
 
-  // Two-phase state: arrival fires the Python decision; dispatch fires after decision_time
-  // has elapsed in simulated time, matching the decentralized per-agent overhead.
-  bool awaiting_dispatch = false;
-  std::shared_ptr<wrench::JobSchedulingAgent> pending_target = nullptr;
-  std::string pending_bids;
+  // Track pending decisions for all in-flight jobs
+  struct PendingDecision {
+    std::shared_ptr<wrench::JobSchedulingAgent> target_agent;
+    std::string bids;
+    std::shared_ptr<JobDescription> job_desc;
+    double dispatch_time;
+  };
+  std::map<int, PendingDecision> pending_decisions;
 
   this->setTimer(jobs->at(0)->get_submission_time(), "arrival");
 
-  while (next_job_to_submit < total_num_jobs) {
+  while (next_job_to_submit < total_num_jobs || !pending_decisions.empty()) {
 
+    // Calculate next timer based on upcoming arrivals and dispatches
+    double next_timer = std::numeric_limits<double>::max();
+    if (next_job_to_submit < total_num_jobs) {
+      next_timer = std::min(next_timer, jobs->at(next_job_to_submit)->get_submission_time());
+    }
+    for (const auto& [job_id, decision] : pending_decisions) {
+      next_timer = std::min(next_timer, decision.dispatch_time);
+    }
+
+    this->setTimer(next_timer, "arrival");
     auto event = this->waitForNextEvent();
 
     if (std::dynamic_pointer_cast<TimerEvent>(event)) {
+      double now = S4U_Simulation::getClock();
 
-      if (!awaiting_dispatch) {
-        // ── Arrival phase ──────────────────────────────────────────────────────
-        // Query system statuses at arrival time and run the parallel Python decision.
+      // ── Dispatch phase ─────────────────────────────────────────────────────
+      // Dispatch all jobs whose decision_time has elapsed
+      for (auto it = pending_decisions.begin(); it != pending_decisions.end(); ) {
+        if (it->second.dispatch_time <= now) {
+          int job_id = it->first;
+          auto decision = it->second;
+
+          if (decision.target_agent == nullptr) {
+            WRENCH_INFO("Job #%d cannot run on any system (all bids = 0)", job_id);
+            tracker_->commport->dputMessage(
+                new JobLifecycleTrackingMessage(job_id, "WorkloadCentralizedSubmissionAgent",
+                                                S4U_Simulation::getClock(),
+                                                JobLifecycleEventType::REJECT, decision.bids, "No feasible HPC system"));
+          } else {
+            auto selected_system = decision.target_agent->get_hpc_system_name();
+            WRENCH_DEBUG("Sending Job #%d to centrally-selected system '%s'", job_id, selected_system.c_str());
+            decision.target_agent->commport->dputMessage(new JobRequestMessage(decision.job_desc, false, true, decision.bids));
+            tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
+                job_id, "WorkloadCentralizedSubmissionAgent", wrench::S4U_Simulation::getClock(),
+                JobLifecycleEventType::SUBMISSION, selected_system));
+          }
+
+          it = pending_decisions.erase(it);
+        } else {
+          ++it;
+        }
+      }
+
+      // ── Arrival phase ──────────────────────────────────────────────────────
+      // Process all job arrivals whose submission_time has passed
+      while (next_job_to_submit < total_num_jobs && jobs->at(next_job_to_submit)->get_submission_time() <= now) {
         auto next_job = jobs->at(next_job_to_submit);
+        int job_id = next_job->get_job_id();
 
         std::vector<HPCSystemInfo> systems_info;
         for (const auto& agent : job_scheduling_agents_) {
@@ -50,38 +93,14 @@ int WorkloadCentralizedSubmissionAgent::main()
         }
 
         auto decision = scheduling_policy_->select_best_system(next_job, systems_info);
-        pending_target = decision.target_agent;
-        pending_bids   = decision.bids;
-        awaiting_dispatch = true;
-        this->setTimer(S4U_Simulation::getClock() + decision.decision_time, "dispatch");
+        PendingDecision pending_dec;
+        pending_dec.target_agent = decision.target_agent;
+        pending_dec.bids = decision.bids;
+        pending_dec.job_desc = next_job;
+        pending_dec.dispatch_time = now + decision.decision_time;
+        pending_decisions[job_id] = pending_dec;
 
-      } else {
-        // ── Dispatch phase ─────────────────────────────────────────────────────
-        // The simulated clock has now advanced by decision_time; dispatch the job.
-        auto next_job = jobs->at(next_job_to_submit);
-        auto job_id   = next_job->get_job_id();
-
-        if (pending_target == nullptr) {
-          WRENCH_INFO("Job #%d cannot run on any system (all bids = 0)", job_id);
-          tracker_->commport->dputMessage(
-              new JobLifecycleTrackingMessage(job_id, "WorkloadCentralizedSubmissionAgent",
-                                              S4U_Simulation::getClock(),
-                                              JobLifecycleEventType::REJECT, pending_bids, "No feasible HPC system"));
-        } else {
-          auto selected_system = pending_target->get_hpc_system_name();
-          WRENCH_DEBUG("Sending Job #%d to centrally-selected system '%s'", job_id, selected_system.c_str());
-          pending_target->commport->dputMessage(new JobRequestMessage(next_job, false, true, pending_bids));
-          tracker_->commport->dputMessage(new JobLifecycleTrackingMessage(
-              job_id, "WorkloadCentralizedSubmissionAgent", wrench::S4U_Simulation::getClock(),
-              JobLifecycleEventType::SUBMISSION, selected_system));
-        }
-
-        awaiting_dispatch = false;
-        pending_target    = nullptr;
-        pending_bids.clear();
         next_job_to_submit++;
-        if (next_job_to_submit < total_num_jobs)
-          this->setTimer(jobs->at(next_job_to_submit)->get_submission_time(), "arrival");
       }
     }
   }
