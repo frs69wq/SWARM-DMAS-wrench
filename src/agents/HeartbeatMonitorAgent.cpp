@@ -8,7 +8,7 @@ namespace wrench {
 void HeartbeatMonitorAgent::send_heartbeats()
 {
   for (const auto& agent : heartbeat_monitor_agent_network_) {
-    agent->commport->dputMessage(new HeartbeatMessage(shared_from_this()));
+    agent->_commport->dputMessage(new HeartbeatMessage(shared_from_this()));
     WRENCH_DEBUG("Sent heartbeat to %s", agent->getName().c_str());
   }
 }
@@ -19,7 +19,7 @@ void HeartbeatMonitorAgent::check_expired_heartbeats()
   for (const auto& [agent, last_time] : last_heartbeat_time_) {
     if (now - last_time > expiration_) {
       WRENCH_WARN("Agent %s failed to send heartbeat (last at %.2f)", agent->getName().c_str(), last_time);
-      job_scheduling_agent_->commport->dputMessage(new HeartbeatFailureNotificationMessage(agent));
+      job_scheduling_agent_->_commport->dputMessage(new HeartbeatFailureNotificationMessage(agent));
     }
   }
 }
