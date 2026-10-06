@@ -5,6 +5,7 @@ import math
 import random
 import hashlib
 import numpy as np
+from HeuristicBidding import DEFAULT_RUNTIME_FRACTION_LOWER_BOUND, get_runtime_fraction_lower_bound
 
 JOB_TYPES = ["HPC", "AI", "HYBRID", "STORAGE"]
 SITES = ["NERSC", "ALCF", "OLCF"]
@@ -125,7 +126,9 @@ def embed_system(sysdesc, job_site_hint=None):
     return l2_normalize(x)  
 
 
-def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
+# Expected execution time of a job on a system (f_j is unknown, so use its mean f_hat = (1 + f_min) / 2)
+def scaled_walltime(walltime_seconds, node_speed, has_gpu=False,
+                    runtime_fraction_lower_bound=DEFAULT_RUNTIME_FRACTION_LOWER_BOUND):
     BASE_SPEED = 1.5e12
     scaling_factor = fnum(node_speed, BASE_SPEED) / BASE_SPEED
 
@@ -133,11 +136,13 @@ def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
         scaling_factor = min(7.5, scaling_factor / 10.0)
 
     scaling_factor = max(1e-9, scaling_factor)
-    return fnum(walltime_seconds, 0.0) / scaling_factor
+    f_hat = (1.0 + fnum(runtime_fraction_lower_bound, DEFAULT_RUNTIME_FRACTION_LOWER_BOUND)) / 2.0
+    return fnum(walltime_seconds, 0.0) * (f_hat + (1.0 - f_hat) / scaling_factor)
 
 
 # Function that computes bid based on embeddings
-def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
+def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
+                runtime_fraction_lower_bound=DEFAULT_RUNTIME_FRACTION_LOWER_BOUND):
 
     # Feasibility 
     nodes_req    = fnum(job.get("num_nodes"), 0.0)
@@ -208,7 +213,8 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0):
     wait_time = max(0.0, est_start_time - now)
     
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
-    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
+    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu,
+                                     runtime_fraction_lower_bound=runtime_fraction_lower_bound)
     slowdown = (wait_time + pred_exec_time) / max(1.0, pred_exec_time)
     alpha = 0.5
     slowdown_feat = math.exp(-alpha * slowdown)
@@ -260,7 +266,8 @@ def main():
 
     # Compute bids
     try:
-        bid = compute_bid(job_description, system_description, system_status, current_simulated_time=current_simulated_time)
+        bid = compute_bid(job_description, system_description, system_status, current_simulated_time=current_simulated_time,
+                          runtime_fraction_lower_bound=get_runtime_fraction_lower_bound(data))
     except Exception as e:
         print(json.dumps({"error": str(e)}))
 

@@ -74,8 +74,17 @@ def normalize_type_label(value):
         return ""
     label = str(value).strip().upper()
     return TYPE_ALIASES.get(label, label)
-    
-def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
+
+# The simulator runs a job for walltime / speedup + f_j * (walltime - walltime / speedup),
+# with f_j drawn uniformly in [f_min, 1). f_min is sent by the simulator as 'runtime_fraction_lower_bound'.
+DEFAULT_RUNTIME_FRACTION_LOWER_BOUND = 0.3
+
+def get_runtime_fraction_lower_bound(data):
+    return fnum(data.get("runtime_fraction_lower_bound"), DEFAULT_RUNTIME_FRACTION_LOWER_BOUND)
+
+# Expected execution time of a job on a system (f_j is unknown, so use its mean f_hat = (1 + f_min) / 2)
+def scaled_walltime(walltime_seconds, node_speed, has_gpu=False,
+                    runtime_fraction_lower_bound=DEFAULT_RUNTIME_FRACTION_LOWER_BOUND):
     BASE_SPEED = 1.5e12
     scaling_factor = fnum(node_speed, BASE_SPEED) / BASE_SPEED
 
@@ -83,10 +92,12 @@ def scaled_walltime(walltime_seconds, node_speed, has_gpu=False):
         scaling_factor = min(7.5, scaling_factor / 10.0)
 
     scaling_factor = max(1e-9, scaling_factor)
-    return fnum(walltime_seconds, 0.0) / scaling_factor
+    f_hat = (1.0 + fnum(runtime_fraction_lower_bound, DEFAULT_RUNTIME_FRACTION_LOWER_BOUND)) / 2.0
+    return fnum(walltime_seconds, 0.0) * (f_hat + (1.0 - f_hat) / scaling_factor)
 
 
-def compute_bid(job_description, system_description, system_status, current_simulated_time=0.0):
+def compute_bid(job_description, system_description, system_status, current_simulated_time=0.0,
+                runtime_fraction_lower_bound=DEFAULT_RUNTIME_FRACTION_LOWER_BOUND):
 
     # Job details
     nodes_req = job_description.get("num_nodes")
@@ -177,7 +188,8 @@ def compute_bid(job_description, system_description, system_status, current_simu
     wait_time = max(0.0, current_job_start_time_estimate - r_j)
     
     # B. Execution Time (adjusted for hardware speed)
-    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu)
+    pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu,
+                                     runtime_fraction_lower_bound=runtime_fraction_lower_bound)
     
     total_time_cost = wait_time + pred_exec_time
     
@@ -238,7 +250,8 @@ def main():
 
         # Do not modify before here
         # Add logic to generate a bid based on the job and system descriptions and system status here
-        bid = compute_bid(job_description, system_description, system_status)
+        bid = compute_bid(job_description, system_description, system_status,
+                          runtime_fraction_lower_bound=get_runtime_fraction_lower_bound(data))
 
         # End timing
         end_time = time.perf_counter()
