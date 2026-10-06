@@ -5,7 +5,7 @@ import time
 import logging
 import re
 from pathlib import Path
-from HeuristicBidding import compute_bid
+from HeuristicBidding import compute_bid, scaled_walltime, get_runtime_fraction_lower_bound
 import google.auth
 from google.auth.transport.requests import Request
 from anthropic import AnthropicVertex
@@ -112,12 +112,27 @@ def is_feasible_system(job_description, system_description):
 
     return True, ""
 
+# -----------------------------
+# System status shown to the LLM: adds the expected execution time of the job on this system,
+# computed exactly as the heuristic does, so that the LLM does not have to estimate it itself
+# -----------------------------
+def build_prompt_system_status(job_description, system_description, system_status, runtime_fraction_lower_bound):
+    prompt_system_status = dict(system_status)
+    prompt_system_status["estimated_runtime_seconds"] = scaled_walltime(
+        walltime_seconds=job_description.get("walltime"),
+        node_speed=system_description.get("node_speed"),
+        has_gpu=system_description.get("has_gpu"),
+        runtime_fraction_lower_bound=runtime_fraction_lower_bound,
+    )
+    return prompt_system_status
+
 def main():
     
     llm_response = ""
     job_description = None
     system_description = None
     system_status = None
+    runtime_fraction_lower_bound = None
     logger=None
 
     try:
@@ -130,6 +145,7 @@ def main():
         system_description = data["hpc_system_description"]
         system_status = data["hpc_system_status"]
         runtime_prompt = data.get("prompt")
+        runtime_fraction_lower_bound = get_runtime_fraction_lower_bound(data)
 
         start_time = time.perf_counter()
 
@@ -153,15 +169,17 @@ def main():
         if not isinstance(runtime_prompt, str) or not runtime_prompt.strip():
             raise ValueError("No prompt provided. Set 'bidder_prompt_file' in the experiment config.")
 
+        prompt_system_status = build_prompt_system_status(job_description, system_description, system_status,
+                                                          runtime_fraction_lower_bound)
         prompt = (
             runtime_prompt
             .replace("{job_description}", json.dumps(job_description, indent=2))
             .replace("{system_description}", json.dumps(system_description, indent=2))
-            .replace("{system_status}", json.dumps(system_status, indent=2))
+            .replace("{system_status}", json.dumps(prompt_system_status, indent=2))
         )
 
         # To save log space, only log Job id, system status, system name instead of full prompt
-        logger.info("Prompt for job %s submitted on system %s with status %s", job_description.get("job_id", "unknown"), system_description.get("name", "unknown"), system_status)
+        logger.info("Prompt for job %s submitted on system %s with status %s", job_description.get("job_id", "unknown"), system_description.get("name", "unknown"), prompt_system_status)
         # Uncomment the following line to log the full prompt, but be aware it can be very long 
         # logger.info("Prompt:\n%s", prompt)
 
@@ -226,7 +244,8 @@ def main():
     match = re.search(bid_score_pattern, llm_response)
 
     # Compute heuristic bid for logging and fallback
-    heuristic_bid = compute_bid(job_description, system_description, system_status)
+    heuristic_bid = compute_bid(job_description, system_description, system_status,
+                                runtime_fraction_lower_bound=runtime_fraction_lower_bound)
 
     if logger:
         logger.info(
