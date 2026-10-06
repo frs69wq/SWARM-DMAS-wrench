@@ -37,17 +37,19 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
 
       if (auto failure_code = do_not_pass_acceptance_tests(job_description, hpc_system_description_)) {
         WRENCH_DEBUG("Job #%d did not pass acceptance tests. Notifying the Job Lifecycle Tracker Agent", job_id);
-        tracker_->getCommPort()->dputMessage(new JobLifecycleTrackingMessage(
+        tracker_->getCommPort()->dputMessage((new JobLifecycleTrackingMessage(
             job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
-            JobLifecycleEventType::REJECT, job_request_message->get_bids(), get_failure_cause_as_string(failure_code)));
+            JobLifecycleEventType::REJECT, job_request_message->get_bids(), get_failure_cause_as_string(failure_code)))
+            ->set_num_top_bids(job_request_message->get_num_top_bids()));
       } else {
         WRENCH_DEBUG("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                      job_description->get_num_nodes(), job_description->get_walltime(),
                      hpc_system_description_->get_cname());
-        tracker_->getCommPort()->dputMessage(new JobLifecycleTrackingMessage(job_id, hpc_system_description_->get_name(),
+        tracker_->getCommPort()->dputMessage((new JobLifecycleTrackingMessage(job_id, hpc_system_description_->get_name(),
                                                                         wrench::S4U_Simulation::getClock(),
                                                                         JobLifecycleEventType::SCHEDULING,
-                                                                        job_request_message->get_bids()));
+                                                                        job_request_message->get_bids()))
+                                         ->set_num_top_bids(job_request_message->get_num_top_bids()));
 
         build_and_submit_job(job_id, job_description);
       }
@@ -109,20 +111,26 @@ void JobSchedulingAgent::processEventCustom(const std::shared_ptr<CustomEvent>& 
       // All the bids needed to take a decision in the competitive bidding process have been received
       // Step 5: Determine if this agent won the competitive bidding.
       if (this->getName() == scheduling_policy_->determine_bid_winner(all_bids_[job_id])->getName()) {
+        auto num_top_bids = count_top_bids(all_bids_[job_id]);
+        if (num_top_bids > 1)
+          WRENCH_INFO("Job #%d: %zu systems share the highest bid, the tie-breaker placed it on '%s'", job_id,
+                      num_top_bids, hpc_system_description_->get_cname());
         if (auto failure_code = do_not_pass_acceptance_tests(job_description, hpc_system_description_)) {
           WRENCH_DEBUG("Job #%d did not pass acceptance and has failed. Notifying the Job Lifecycle Tracker Agent",
                        job_id);
-          tracker_->getCommPort()->dputMessage(new JobLifecycleTrackingMessage(
+          tracker_->getCommPort()->dputMessage((new JobLifecycleTrackingMessage(
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
               JobLifecycleEventType::REJECT, get_all_bids_as_string(all_bids_[job_id]),
-              get_failure_cause_as_string(failure_code)));
+              get_failure_cause_as_string(failure_code)))
+              ->set_num_top_bids(num_top_bids));
         } else {
           WRENCH_DEBUG("Schedule Job #%d (%lu compute nodes for %llu seconds) on '%s'", job_id,
                        job_description->get_num_nodes(), job_description->get_walltime(),
                        hpc_system_description_->get_cname());
-          tracker_->getCommPort()->dputMessage(new JobLifecycleTrackingMessage(
+          tracker_->getCommPort()->dputMessage((new JobLifecycleTrackingMessage(
               job_id, hpc_system_description_->get_name(), wrench::S4U_Simulation::getClock(),
-              JobLifecycleEventType::SCHEDULING, get_all_bids_as_string(all_bids_[job_id])));
+              JobLifecycleEventType::SCHEDULING, get_all_bids_as_string(all_bids_[job_id])))
+              ->set_num_top_bids(num_top_bids));
 
           build_and_submit_job(job_id, job_description);
         }

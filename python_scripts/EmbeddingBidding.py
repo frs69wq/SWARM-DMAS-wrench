@@ -249,7 +249,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
     if not math.isfinite(bid):
         bid = 0.0
 
-    return round(float(bid), 2)
+    return round(float(bid), 3)
 
 
 def main():

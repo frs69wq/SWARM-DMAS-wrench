@@ -79,6 +79,8 @@ fraction f_j, drawn uniformly in [f_min, 1) from its job id, and runs for
 f_min is also passed to the bidders, which estimate the expected runtime by replacing f_j with its mean f_hat = (1 + f_min) / 2.
 The result files record f_j (`RuntimeFraction`), the actual runtime (`Runtime`), and this expected runtime on the
 system that ran the job (`EstimatedRuntime`), for every policy.
+`NumTopBids` is the number of systems that shared the highest bid for a job: when it is above 1, the tie-breaker
+decided the placement. The run summary (on stderr) reports how many placements the tie-breaker decided.
 
 ## 🧠 Agent Roles (in src/agents/)
 Each agent extends WRENCH's simulation API to implement custom behaviors.

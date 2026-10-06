@@ -129,7 +129,7 @@ get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent
   });
 
   std::ostringstream oss;
-  oss << std::fixed << std::setprecision(2) << "\"";
+  oss << std::fixed << std::setprecision(3) << "\"";
   for (auto it = ordered_bids.begin(); it != ordered_bids.end(); ++it) {
     oss << (*it)->second.first;
     if (std::next(it) != ordered_bids.end())
@@ -137,4 +137,15 @@ get_all_bids_as_string(const std::map<std::shared_ptr<wrench::JobSchedulingAgent
   }
   oss << "\"";
   return oss.str();
+}
+
+size_t
+count_top_bids(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids)
+{
+  if (all_bids.empty())
+    return 0;
+  auto top_bid = std::max_element(all_bids.begin(), all_bids.end(), [](const auto& a, const auto& b) {
+                   return a.second.first < b.second.first;
+                 })->second.first;
+  return std::count_if(all_bids.begin(), all_bids.end(), [top_bid](const auto& b) { return b.second.first == top_bid; });
 }

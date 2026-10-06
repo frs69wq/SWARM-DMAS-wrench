@@ -37,6 +37,7 @@ struct CentralizedSchedulingDecision {
   std::shared_ptr<wrench::JobSchedulingAgent> target_agent;
   double decision_time;
   std::string bids;
+  size_t num_top_bids; // number of systems sharing the highest bid
 };
 
 class CentralizedSchedulingPolicy {
@@ -145,16 +146,20 @@ public:
     }
 
     (void)wall_start; // kept in case wall-clock measurement is needed in future
-    auto bids = get_all_bids_as_string(all_bids);
+    auto bids         = get_all_bids_as_string(all_bids);
+    auto num_top_bids = count_top_bids(all_bids);
 
     // Same comparator as PythonBiddingSchedulingPolicy::determine_bid_winner
     auto max_it = std::max_element(all_bids.begin(), all_bids.end(),
                                    [](const auto& a, const auto& b) { return a.second < b.second; });
 
     if (max_it->second.first <= 0.0)
-      return {nullptr, decision_time, bids};
+      return {nullptr, decision_time, bids, num_top_bids};
 
-    return {max_it->first, decision_time, bids};
+    if (num_top_bids > 1)
+      XBT_CINFO(swarm_dmas, "Job #%d: %zu systems share the highest bid, the tie-breaker placed it on '%s'",
+                job_description->get_job_id(), num_top_bids, max_it->first->get_hpc_system_name().c_str());
+    return {max_it->first, decision_time, bids, num_top_bids};
   }
 };
 

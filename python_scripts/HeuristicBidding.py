@@ -234,7 +234,7 @@ def compute_bid(job_description, system_description, system_status, current_simu
         (node_fit_bonus * w_node_fit)
     ) / (w_util + w_resource + w_speed + w_node_fit)
 
-    return round(final_score, 2)
+    return round(final_score, 3)
 
 def main():
     try:

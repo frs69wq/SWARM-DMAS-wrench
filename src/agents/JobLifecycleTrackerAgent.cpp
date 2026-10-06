@@ -26,6 +26,7 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
         job_lifecycles_->at(pos)->set_scheduling_time(when);
         job_lifecycles_->at(pos)->set_scheduled_on(sender);
         job_lifecycles_->at(pos)->set_bids(message->get_bids());
+        job_lifecycles_->at(pos)->set_num_top_bids(message->get_num_top_bids());
         break;
       case JobLifecycleEventType::REJECT:
         WRENCH_INFO("Job #%d was rejected on %s: %s", job_id, sender.c_str(), message->get_failure_cause().c_str());
@@ -34,6 +35,7 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
         job_lifecycles_->at(pos)->set_scheduled_on(sender);
         job_lifecycles_->at(pos)->set_bids(message->get_bids());
         job_lifecycles_->at(pos)->set_failure_cause(message->get_failure_cause());
+        job_lifecycles_->at(pos)->set_num_top_bids(message->get_num_top_bids());
         num_rejected_jobs_++;
         break;
       case JobLifecycleEventType::START:
@@ -76,7 +78,7 @@ int JobLifecycleTrackerAgent::main()
   WRENCH_INFO("Summary: %d Completed / %d Failed / %d Rejected jobs", num_completed_jobs_, num_failed_jobs_,
               num_rejected_jobs_);
   std::cout << "JobId,FinalStatus,SubmittedTo,ScheduledOn,NodeList,SubmissionTime,SchedulingTime,StartTime,EndTime,"
-               "DecisionTime,WaitingTime,ExecutionTime,Bids,FailureCause,RuntimeFraction,Runtime,EstimatedRuntime"
+               "DecisionTime,WaitingTime,ExecutionTime,Bids,FailureCause,RuntimeFraction,Runtime,EstimatedRuntime,NumTopBids"
             << std::endl;
 
   // Statistics of all jobs
@@ -90,10 +92,18 @@ int JobLifecycleTrackerAgent::main()
   double min_tat  = std::numeric_limits<double>::infinity();
   double max_tat  = -std::numeric_limits<double>::infinity();
   size_t n_dec = 0, n_wait = 0, n_exec = 0, n_tat = 0;
+  size_t n_scheduled = 0, n_tie_breaks = 0;
 
   for (const auto& jl : *job_lifecycles_) {
     // individual job
     std::cout << jl->export_to_csv() << std::endl;
+
+    // placements decided by the tie-breaker
+    if (jl->get_final_status() != "REJECTED" && jl->get_num_top_bids() > 0) {
+      n_scheduled++;
+      if (jl->get_num_top_bids() > 1)
+        n_tie_breaks++;
+    }
 
     // decision time for all jobs
     double d = jl->get_decision_time();
@@ -152,6 +162,8 @@ int JobLifecycleTrackerAgent::main()
   print_agg("WaitingTime", sum_wait, min_wait, max_wait, n_wait);
   print_agg("ExecutionTime", sum_exec, min_exec, max_exec, n_exec);
   print_agg("TurnaroundTime", sum_tat, min_tat, max_tat, n_tat);
+  std::cerr << "TieBreaks: " << n_tie_breaks << " of " << n_scheduled << " placements ("
+            << (n_scheduled > 0 ? 100.0 * n_tie_breaks / n_scheduled : 0.0) << "%)\n";
 
   // for (const auto& jl : *job_lifecycles_)
   //   std::cout << jl->export_to_csv().c_str() << std::endl;

@@ -20,6 +20,9 @@ int do_not_pass_acceptance_tests(const std::shared_ptr<JobDescription>& job_desc
 std::string get_failure_cause_as_string(int failure_code);
 std::string get_all_bids_as_string(
     const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids);
+// Number of systems sharing the highest bid. When it is above 1, the tie-breaker decides the placement.
+size_t count_top_bids(
+    const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids);
 size_t get_queue_length(const std::shared_ptr<wrench::BatchComputeService>& batch);
 
 #endif // UTILS_H

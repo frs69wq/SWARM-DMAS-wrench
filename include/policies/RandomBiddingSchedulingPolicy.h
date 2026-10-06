@@ -30,8 +30,8 @@ public:
     std::mt19937 gen(rd()); // Mersenne Twister engine
     std::uniform_real_distribution<double> dis(0.0, std::nextafter(1.0, 2.0));
 
-    // Bids are rounded to 2 decimals, as in the Python bidders
-    return std::make_pair(std::round(dis(gen) * 100) / 100, 0.0);
+    // Bids are rounded to 3 decimals, as in the Python bidders
+    return std::make_pair(std::round(dis(gen) * 1000) / 1000, 0.0);
   }
 
   void broadcast_bid_on_job(const std::shared_ptr<wrench::S4U_Daemon>& bidder,

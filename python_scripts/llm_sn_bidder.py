@@ -81,7 +81,7 @@ def main():
     # Step5: Heuristic bid if parsing fails
     heuristic_bid = compute_bid(job_description, system_description, system_status)
 
-    bid = round(float(match.group(1)), 2) if match else heuristic_bid
+    bid = round(float(match.group(1)), 3) if match else heuristic_bid
     logger.debug(f"Final bid score: {bid} (using {'LLM' if match else 'heuristic'})")
     
     # Do not modify after here
