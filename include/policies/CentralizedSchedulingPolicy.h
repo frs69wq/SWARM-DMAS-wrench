@@ -41,9 +41,11 @@ struct CentralizedSchedulingDecision {
 
 class CentralizedSchedulingPolicy {
   std::string python_script_name_;
+  double runtime_fraction_lower_bound_;
 
 public:
-  explicit CentralizedSchedulingPolicy(const std::string& python_script_name) : python_script_name_(python_script_name)
+  CentralizedSchedulingPolicy(const std::string& python_script_name, double runtime_fraction_lower_bound)
+      : python_script_name_(python_script_name), runtime_fraction_lower_bound_(runtime_fraction_lower_bound)
   {
   }
 
@@ -94,6 +96,7 @@ public:
       j["hpc_system_description"] = systems_info[i].description->to_json();
       j["hpc_system_status"]      = systems_info[i].status->to_json();
       j["current_simulated_time"] = wrench::S4U_Simulation::getClock();
+      j["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
       std::string input = j.dump();
       write(to_child[1], input.c_str(), input.size());
       close(to_child[1]); // signal EOF so the child can start computing

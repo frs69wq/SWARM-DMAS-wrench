@@ -69,6 +69,12 @@ int main(int argc, char** argv)
   double heartbeat_period              = j["heartbeat_period"].get<double>();
   double heartbeat_expiration          = j["heartbeat_expiration"].get<double>();
   std::string hardware_failure_profile = j["hardware_failure_profile"];
+  // Lower bound f_min of the fraction f_j of its scaled walltime used by each job (f_j is drawn uniformly in [f_min, 1))
+  double runtime_fraction_lower_bound = j.value("runtime_fraction_lower_bound", 0.3);
+  if (runtime_fraction_lower_bound < 0 || runtime_fraction_lower_bound >= 1) {
+    std::cerr << "runtime_fraction_lower_bound must be in [0, 1)" << std::endl;
+    exit(1);
+  }
 
   // Initialize the simulation.
   auto simulation = wrench::Simulation::createSimulation();
@@ -100,13 +106,14 @@ int main(int argc, char** argv)
     // Create a Scheduling Policy for this simulation run
     // In centralized mode, use PureLocal since the centralized agent already made the decision
     auto scheduling_policy =
-        centralized_submission ? SchedulingPolicy::create_scheduling_policy("PureLocal", "")
+        centralized_submission ? SchedulingPolicy::create_scheduling_policy("PureLocal", "", "", runtime_fraction_lower_bound)
                    : SchedulingPolicy::create_scheduling_policy(decentralized_policy, decentralized_bidder,
-                                         bidder_prompt_file);
+                                         bidder_prompt_file, runtime_fraction_lower_bound);
 
     // Instantiate a job scheduling agent on the head node of this HPC system
     auto new_agent = simulation->add(
-        new wrench::JobSchedulingAgent(head_node, system_description, scheduling_policy, batch_service));
+        new wrench::JobSchedulingAgent(head_node, system_description, scheduling_policy, batch_service,
+                                       runtime_fraction_lower_bound));
     new_agent->setDaemonized(true);
     // Allow this agent to notify the job lifecycle tracker
     new_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);
@@ -135,7 +142,8 @@ int main(int argc, char** argv)
 
   // Instantiate a workload submission agent that will generate jobs and assign jobs to scheduling agents
   if (centralized_submission) {
-    auto centralized_scheduling_policy = std::make_shared<CentralizedSchedulingPolicy>(centralized_policy);
+    auto centralized_scheduling_policy = std::make_shared<CentralizedSchedulingPolicy>(centralized_policy,
+                                                                                         runtime_fraction_lower_bound);
     auto workload_submission_agent     = simulation->add(new wrench::WorkloadCentralizedSubmissionAgent(
         "ASCR.doe.gov", workload, job_scheduling_agent_network, centralized_scheduling_policy));
     workload_submission_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);

@@ -73,6 +73,13 @@ A JSOn file describing an experimental scenario is structured as follows:
 }
 ```
 
+The optional `runtime_fraction_lower_bound` parameter (f_min, default 0.3) controls job runtimes. Each job j uses a
+fraction f_j, drawn uniformly in [f_min, 1) from its job id, and runs for
+`walltime / speedup + f_j * (walltime - walltime / speedup)`. The batch schedulers still see the requested walltime.
+f_min is also passed to the bidders, which estimate the expected runtime by replacing f_j with its mean f_hat = (1 + f_min) / 2.
+The result files record f_j (`RuntimeFraction`), the actual runtime (`Runtime`), and this expected runtime on the
+system that ran the job (`EstimatedRuntime`), for every policy.
+
 ## 🧠 Agent Roles (in src/agents/)
 Each agent extends WRENCH's simulation API to implement custom behaviors.
 

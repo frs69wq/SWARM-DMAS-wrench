@@ -2,6 +2,7 @@
 #include "agents/JobLifecycleTrackerAgent.h"
 #include "info/HPCSystemStatus.h"
 #include "messages/ControlMessages.h"
+#include "utils/runtime_model.h"
 #include "utils/utils.h"
 
 #include <cstdint>
@@ -157,19 +158,24 @@ void JobSchedulingAgent::build_and_submit_job(int job_id, const std::shared_ptr<
                                            *start_time = wrench::S4U_Simulation::getClock();
                                          },
                                          {[](const std::shared_ptr<ActionExecutor>&) {}});
-  auto scaling_factor = this->getHost()->get_speed() / 1.5e12;
-  if (hpc_system_description_->has_gpu())
-    scaling_factor = std::min(7.5, scaling_factor / 10);
-  WRENCH_DEBUG("Scaling Job #%d walltime on '%s' from %llu to %f (scaling_factor = %f)", job_id,
-               hpc_system_description_->get_cname(), job_description->get_walltime(),
-               job_description->get_walltime() / scaling_factor, scaling_factor);
-  auto sleeper = job->addSleepAction("", job_description->get_walltime() / scaling_factor);
+  auto scaling_factor   = compute_speedup(this->getHost()->get_speed(), hpc_system_description_->has_gpu());
+  // The job only uses a fraction of its scaled walltime. The batch scheduler still sees the requested walltime.
+  auto runtime_fraction = get_runtime_fraction(job_id, runtime_fraction_lower_bound_);
+  auto runtime          = compute_runtime(job_description->get_walltime(), scaling_factor, runtime_fraction);
+  // Recorded for every policy, including those that do not estimate runtimes (PureLocal, RandomBidding)
+  auto estimated_runtime =
+      compute_expected_runtime(job_description->get_walltime(), scaling_factor, runtime_fraction_lower_bound_);
+  WRENCH_DEBUG("Job #%d on '%s': walltime = %llu, scaled walltime = %f (scaling_factor = %f), runtime = %f "
+               "(runtime_fraction = %f)",
+               job_id, hpc_system_description_->get_cname(), job_description->get_walltime(),
+               job_description->get_walltime() / scaling_factor, scaling_factor, runtime, runtime_fraction);
+  auto sleeper = job->addSleepAction("", runtime);
   job->addActionDependency(tracking, sleeper);
   // Logging action runs after the sleeper: queries allocated hosts directly from the
   // ActionExecutionService, builds a compact node range string, and sends the START event
   auto logging = job->addCustomAction(
       "", 0, 0,
-      [this, job_id, start_time](const std::shared_ptr<ActionExecutor>& executor) {
+      [this, job_id, start_time, runtime_fraction, runtime, estimated_runtime](const std::shared_ptr<ActionExecutor>& executor) {
         // Iterate all hosts allocated to this job by the batch service
         const auto& resources = executor->getActionExecutionService()->getComputeResources();
         std::vector<int> radicals;
@@ -196,7 +202,7 @@ void JobSchedulingAgent::build_and_submit_job(int job_id, const std::shared_ptr<
         }
         tracker_->getCommPort()->dputMessage(new JobLifecycleTrackingMessage(
             job_id, hpc_system_description_->get_name(), *start_time, JobLifecycleEventType::START, "", "",
-            node_list));
+            node_list, runtime_fraction, runtime, estimated_runtime));
       },
       {[](const std::shared_ptr<ActionExecutor>&) {}});
   job->addActionDependency(sleeper, logging);

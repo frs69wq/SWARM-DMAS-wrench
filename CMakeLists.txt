@@ -33,6 +33,7 @@ set(HEADER_FILES
   include/info/JobDescription.h
   include/info/JobLifecycle.h
   include/utils/PythonRunner.h
+  include/utils/runtime_model.h
   include/utils.h
 )
 

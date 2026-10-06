@@ -21,10 +21,14 @@ XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;
   std::string bidder_prompt_;
+  double runtime_fraction_lower_bound_;
 
 public:
-  PythonBiddingSchedulingPolicy(const std::string& python_script_name, const std::string& bidder_prompt_file)
-      : SchedulingPolicy(), python_script_name_(python_script_name)
+  PythonBiddingSchedulingPolicy(const std::string& python_script_name, const std::string& bidder_prompt_file,
+                                double runtime_fraction_lower_bound)
+      : SchedulingPolicy()
+      , python_script_name_(python_script_name)
+      , runtime_fraction_lower_bound_(runtime_fraction_lower_bound)
   {
     if (!bidder_prompt_file.empty()) {
       std::ifstream prompt_file(bidder_prompt_file);
@@ -86,6 +90,7 @@ public:
       j["hpc_system_description"] = hpc_system_description->to_json();
       j["hpc_system_status"]      = hpc_system_status->to_json();
       j["current_simulated_time"] = wrench::S4U_Simulation::getClock();
+      j["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
       if (!bidder_prompt_.empty())
         j["prompt"] = bidder_prompt_;
 

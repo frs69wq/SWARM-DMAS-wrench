@@ -40,6 +40,8 @@ void JobLifecycleTrackerAgent::processEventCustom(const std::shared_ptr<CustomEv
         WRENCH_INFO("Job #%d has started on nodes [%s]", job_id, message->get_node_list().c_str());
         job_lifecycles_->at(pos)->set_start_time(when);
         job_lifecycles_->at(pos)->set_node_list(message->get_node_list());
+        job_lifecycles_->at(pos)->set_runtime(message->get_runtime_fraction(), message->get_runtime(),
+                                              message->get_estimated_runtime());
         break;
       case JobLifecycleEventType::COMPLETION:
         WRENCH_INFO("Job #%d has completed", job_id);
@@ -74,7 +76,7 @@ int JobLifecycleTrackerAgent::main()
   WRENCH_INFO("Summary: %d Completed / %d Failed / %d Rejected jobs", num_completed_jobs_, num_failed_jobs_,
               num_rejected_jobs_);
   std::cout << "JobId,FinalStatus,SubmittedTo,ScheduledOn,NodeList,SubmissionTime,SchedulingTime,StartTime,EndTime,"
-               "DecisionTime,WaitingTime,ExecutionTime,Bids,FailureCause"
+               "DecisionTime,WaitingTime,ExecutionTime,Bids,FailureCause,RuntimeFraction,Runtime,EstimatedRuntime"
             << std::endl;
 
   // Statistics of all jobs
