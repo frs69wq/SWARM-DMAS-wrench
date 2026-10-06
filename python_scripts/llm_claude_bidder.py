@@ -256,7 +256,7 @@ def main():
         )
     
     # Step6: Fallback to the Heuristic bid if parsing fails
-    bid = float(match.group(1)) if match else heuristic_bid
+    bid = round(float(match.group(1)), 2) if match else heuristic_bid
 
     # Log which bid is being used (LLM vs Heuristic)
     if logger:

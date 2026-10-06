@@ -28,7 +28,7 @@ def main():
 
     # Do not modify after here
     result = {
-        "bid": bid,
+        "bid": round(bid, 2),
         "bid_generation_time_seconds": round(elapsed_time, 6)
     }
 
