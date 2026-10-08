@@ -142,8 +142,10 @@ int main(int argc, char** argv)
 
   // Instantiate a workload submission agent that will generate jobs and assign jobs to scheduling agents
   if (centralized_submission) {
+    // The centralized Claude bidder needs the same configured prompt as decentralized Python bidders.
     auto centralized_scheduling_policy = std::make_shared<CentralizedSchedulingPolicy>(centralized_policy,
-                                                                                         runtime_fraction_lower_bound);
+                                               bidder_prompt_file,
+                                               runtime_fraction_lower_bound);
     auto workload_submission_agent     = simulation->add(new wrench::WorkloadCentralizedSubmissionAgent(
         "ASCR.doe.gov", workload, job_scheduling_agent_network, centralized_scheduling_policy));
     workload_submission_agent->set_job_lifecycle_tracker(job_lifecycle_tracker_agent);
