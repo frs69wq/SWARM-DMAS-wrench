@@ -133,11 +133,13 @@ _cached_credentials = None
 _cached_client = None
 
 # Initialize lazily on the first feasible bid; reuse both afterward. The SDK refreshes credentials when they expire.
+# Also return the time spent creating the client (0 when it is reused), so that this one-time setup cost can be
+# excluded from the bid generation time: a deployed agent would keep its client alive.
 def get_client(logger):
     global _cached_credentials, _cached_client
 
     if _cached_client is not None:
-        return _cached_client
+        return _cached_client, 0.0
 
     oauth_t0 = time.perf_counter()
     credentials, _ = google.auth.default(
@@ -156,7 +158,9 @@ def get_client(logger):
     )
     _cached_credentials = credentials
     _cached_client = client
-    return client
+    setup_elapsed = time.perf_counter() - oauth_t0
+    logger.info("Client setup time_seconds=%.6f (excluded from bid generation time)", setup_elapsed)
+    return client, setup_elapsed
 
 
 def process_request(input_data):
@@ -168,6 +172,7 @@ def process_request(input_data):
     logger = None
     request_start_time = time.perf_counter()
     start_time = None
+    client_setup_time = 0.0
 
     try:
         data = json.loads(input_data)
@@ -219,7 +224,7 @@ def process_request(input_data):
         message = [{"role": "user", "content": prompt}]
 
         # Feasibility checks return above, so only feasible bids initialize auth and the client.
-        client = get_client(logger)
+        client, client_setup_time = get_client(logger)
 
         # Step4: Get completion (LLM inference timing)
         llm_t0 = time.perf_counter()
@@ -244,7 +249,7 @@ def process_request(input_data):
         else:
             print(f"Claude bidder failed before logger setup: {e}", file=sys.stderr)
 
-    elapsed_time = time.perf_counter() - (start_time or request_start_time)
+    elapsed_time = time.perf_counter() - (start_time or request_start_time) - client_setup_time
 
     if job_description is None or system_description is None or system_status is None:
         result = {
