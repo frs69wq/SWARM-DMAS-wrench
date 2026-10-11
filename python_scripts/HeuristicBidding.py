@@ -236,9 +236,8 @@ def compute_bid(job_description, system_description, system_status, current_simu
 
     return round(final_score, 3)
 
-def main():
+def process_request(input_data):
     try:
-        input_data = sys.stdin.read()
         data = json.loads(input_data)
         
         job_description = data["job_description"]
@@ -263,9 +262,17 @@ def main():
             "bid_generation_time_seconds": round(elapsed_time, 6)
         }
 
-        print(json.dumps(result))
+        print(json.dumps(result), flush=True)
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        print(json.dumps({"error": str(e)}), flush=True)
+
+
+def main():
+    # Process one JSON request per line, so that the simulator can keep this script running as a persistent worker.
+    # EOF from the parent ends the worker. A single request without a trailing newline also works.
+    for input_data in sys.stdin:
+        if input_data.strip():
+            process_request(input_data)
 
 if __name__ == "__main__":
     main()

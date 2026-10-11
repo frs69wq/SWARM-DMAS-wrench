@@ -252,8 +252,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
     return round(float(bid), 3)
 
 
-def main():
-    input_data = sys.stdin.read()
+def process_request(input_data):
     data = json.loads(input_data)
 
     job_description = data["job_description"]
@@ -269,7 +268,8 @@ def main():
         bid = compute_bid(job_description, system_description, system_status, current_simulated_time=current_simulated_time,
                           runtime_fraction_lower_bound=get_runtime_fraction_lower_bound(data))
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        print(json.dumps({"error": str(e)}), flush=True)
+        return
 
     # End timing
     end_time = time.perf_counter()
@@ -281,8 +281,16 @@ def main():
         "bid_generation_time_seconds": round(elapsed_time, 6)
     }
 
-    print(json.dumps(result))
+    print(json.dumps(result), flush=True)
 
+
+
+def main():
+    # Process one JSON request per line, so that the simulator can keep this script running as a persistent worker.
+    # EOF from the parent ends the worker. A single request without a trailing newline also works.
+    for input_data in sys.stdin:
+        if input_data.strip():
+            process_request(input_data)
 
 if __name__ == "__main__":
     main()
