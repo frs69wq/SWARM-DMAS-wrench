@@ -56,7 +56,8 @@ def setup_logger(data):
 
     logger = logging.getLogger("llm_claude_bidder")
     logger.setLevel(logging.INFO)
-    logger.handlers.clear()
+    if logger.handlers:
+        return logger
 
     file_handler = logging.FileHandler(log_file, mode="a")
     file_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s"))
@@ -126,17 +127,49 @@ def build_prompt_system_status(job_description, system_description, system_statu
     )
     return prompt_system_status
 
-def main():
-    
+
+# Keep one credentials object and Vertex client per long-lived Python worker.
+_cached_credentials = None
+_cached_client = None
+
+# Initialize lazily on the first feasible bid; reuse both afterward. The SDK refreshes credentials when they expire.
+def get_client(logger):
+    global _cached_credentials, _cached_client
+
+    if _cached_client is not None:
+        return _cached_client
+
+    oauth_t0 = time.perf_counter()
+    credentials, _ = google.auth.default(
+        scopes=["https://www.googleapis.com/auth/cloud-platform"]
+    )
+    credentials.refresh(Request())
+    oauth_elapsed = time.perf_counter() - oauth_t0
+    logger.info("OAuth refresh time_seconds=%.6f", oauth_elapsed)
+
+    client = AnthropicVertex(
+        region=CLAUDE_LOCATION,
+        project_id=CLAUDE_PROJECT_ID,
+        credentials=credentials,
+        timeout=TIMEOUT,
+        max_retries=MAX_RETRIES,
+    )
+    _cached_credentials = credentials
+    _cached_client = client
+    return client
+
+
+def process_request(input_data):
     llm_response = ""
     job_description = None
     system_description = None
     system_status = None
     runtime_fraction_lower_bound = None
-    logger=None
+    logger = None
+    request_start_time = time.perf_counter()
+    start_time = None
 
     try:
-        input_data = sys.stdin.read()
         data = json.loads(input_data)
 
         logger = setup_logger(data)
@@ -146,7 +179,6 @@ def main():
         system_status = data["hpc_system_status"]
         runtime_prompt = data.get("prompt")
         runtime_fraction_lower_bound = get_runtime_fraction_lower_bound(data)
-
         start_time = time.perf_counter()
 
         job_id = job_description.get("job_id", "unknown")
@@ -162,7 +194,7 @@ def main():
             }
             logger.info("Feasibility check failed (%s); returning zero bid", infeasible_reason)
             logger.info("Result: %s", json.dumps(result))
-            print(json.dumps(result))
+            print(json.dumps(result), flush=True)
             return
 
         # Step1: Prompt instructions
@@ -186,23 +218,8 @@ def main():
         # Step2: Format prompt
         message = [{"role": "user", "content": prompt}]
 
-        # Measure (isolated) OAuth token acquisition/refresh explicitly
-        oauth_t0 = time.perf_counter()
-        credentials, _ = google.auth.default(
-            scopes=["https://www.googleapis.com/auth/cloud-platform"]
-        )
-        credentials.refresh(Request())
-        oauth_elapsed = time.perf_counter() - oauth_t0
-
-        logger.info("OAuth refresh time_seconds=%.6f", oauth_elapsed)
-        
-        # Step3: Setup Anthropic client on Vertex AI for all requests made by this client instance
-        client = AnthropicVertex(
-            region=CLAUDE_LOCATION,
-            project_id=CLAUDE_PROJECT_ID,
-            timeout=TIMEOUT,
-            max_retries=MAX_RETRIES,
-        )
+        # Feasibility checks return above, so only feasible bids initialize auth and the client.
+        client = get_client(logger)
 
         # Step4: Get completion (LLM inference timing)
         llm_t0 = time.perf_counter()
@@ -227,7 +244,7 @@ def main():
         else:
             print(f"Claude bidder failed before logger setup: {e}", file=sys.stderr)
 
-    elapsed_time = time.perf_counter() - start_time
+    elapsed_time = time.perf_counter() - (start_time or request_start_time)
 
     if job_description is None or system_description is None or system_status is None:
         result = {
@@ -236,7 +253,7 @@ def main():
         }
         if logger:
             logger.error("Input unavailable after exception; returning zero bid")
-        print(json.dumps(result))
+        print(json.dumps(result), flush=True)
         return
 
     # Step5: Response Parsing
@@ -274,7 +291,14 @@ def main():
     if logger:
         logger.info(json.dumps(result))
 
-    print(json.dumps(result))
+    print(json.dumps(result), flush=True)
+
+
+def main():
+    # Process one JSON request per line; EOF from the parent ends the persistent worker.
+    for input_data in sys.stdin:
+        if input_data.strip():
+            process_request(input_data)
 
 if __name__ == "__main__":
     main()
