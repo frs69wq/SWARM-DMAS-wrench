@@ -108,6 +108,9 @@ int WorkloadCentralizedSubmissionAgent::main()
       }
     }
   }
+  // Always reported, so that failing bidders do not go unnoticed (details with --log=swarm_dmas.thres:warning)
+  std::cerr << "BidderFailures: " << scheduling_policy_->get_num_failed_bids() << " of "
+            << scheduling_policy_->get_num_requested_bids() << " bids (counted as 0)\n";
   return 0;
 }
 

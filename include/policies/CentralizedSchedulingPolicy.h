@@ -48,6 +48,9 @@ class CentralizedSchedulingPolicy {
   double runtime_fraction_lower_bound_;
   // CEN keeps one persistent worker per system, so that each system reuses its own bidder process (and LLM client).
   std::map<std::string, std::unique_ptr<PersistentPythonWorker>> python_workers_;
+  // Bids requested from the bidders, and those that failed (no response or no valid bid, counted as 0)
+  size_t num_requested_bids_ = 0;
+  size_t num_failed_bids_    = 0;
 
   PersistentPythonWorker& worker_for_system(const std::string& system_name)
   {
@@ -73,6 +76,9 @@ public:
     }
   }
 
+  size_t get_num_requested_bids() const { return num_requested_bids_; }
+  size_t get_num_failed_bids() const { return num_failed_bids_; }
+
   // Select the best system for a job by collecting one bid from each system.
   CentralizedSchedulingDecision
   select_best_system(const std::shared_ptr<JobDescription>& job_description,
@@ -86,6 +92,7 @@ public:
 
     const int N = static_cast<int>(systems_info.size());
     std::vector<std::string> responses(N);
+    std::vector<std::string> failures(N); // why no response was obtained from a system's worker, if so
 
     std::vector<PersistentPythonWorker*> workers(N, nullptr);
 
@@ -103,8 +110,9 @@ public:
       try {
         workers[i] = &worker_for_system(systems_info[i].description->get_name());
         workers[i]->send_request(input);
-      } catch (const std::exception&) {
-        workers[i] = nullptr;
+      } catch (const std::exception& e) {
+        workers[i]  = nullptr;
+        failures[i] = e.what();
       }
     }
 
@@ -113,8 +121,9 @@ public:
         continue;
       try {
         responses[i] = workers[i]->read_response().dump();
-      } catch (const std::exception&) {
+      } catch (const std::exception& e) {
         responses[i].clear();
+        failures[i] = e.what();
       }
     }
 
@@ -125,18 +134,35 @@ public:
     double decision_time      = 0.0; // max(bid_generation_time_seconds) across all systems
 
     for (int i = 0; i < N; i++) {
+      const auto& sys_name = systems_info[i].description->get_name();
+      // A system without a valid bid bids 0 (and does not update decision_time), but the failure is reported.
       double bid = 0.0;
-      try {
-        nlohmann::json result = nlohmann::json::parse(responses[i]);
-        XBT_CVERB(swarm_dmas, "Centralized bid from %s: %s",
-                  systems_info[i].description->get_name().c_str(), result.dump().c_str());
-        if (result.contains("bid") && result["bid"].is_number())
-          bid = result["bid"].get<double>();
-        if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number())
-          decision_time = std::max(decision_time, result["bid_generation_time_seconds"].get<double>());
-      } catch (...) { /* treat parse error as bid = 0, no update to decision_time */ }
+      num_requested_bids_++;
+      if (!failures[i].empty()) {
+        num_failed_bids_++;
+        XBT_CWARN(swarm_dmas, "Job #%d: no bid from the '%s' bidder (bid = 0): %s", job_description->get_job_id(),
+                  sys_name.c_str(), failures[i].c_str());
+      } else {
+        try {
+          nlohmann::json result = nlohmann::json::parse(responses[i]);
+          XBT_CVERB(swarm_dmas, "Centralized bid from %s: %s", sys_name.c_str(), result.dump().c_str());
+          if (result.contains("bid") && result["bid"].is_number())
+            bid = result["bid"].get<double>();
+          else {
+            num_failed_bids_++;
+            XBT_CWARN(swarm_dmas, "Job #%d: invalid response from the '%s' bidder (bid = 0): %s",
+                      job_description->get_job_id(), sys_name.c_str(), result.dump().c_str());
+          }
+          if (result.contains("bid_generation_time_seconds") && result["bid_generation_time_seconds"].is_number())
+            decision_time = std::max(decision_time, result["bid_generation_time_seconds"].get<double>());
+        } catch (const std::exception& e) {
+          num_failed_bids_++;
+          XBT_CWARN(swarm_dmas, "Job #%d: unparsable response from the '%s' bidder (bid = 0): %s",
+                    job_description->get_job_id(), sys_name.c_str(), e.what());
+        }
+      }
 
-      const auto& sys_name   = systems_info[i].description->get_name();
+
       uint64_t mixed         = SEED ^ (job_id_val * 6364136223846793005ULL)
                                     ^ std::hash<std::string>{}(sys_name);
       std::mt19937_64 rng(mixed);
