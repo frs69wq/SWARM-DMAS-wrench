@@ -46,7 +46,7 @@ class CentralizedSchedulingPolicy {
   std::string python_script_name_;
   std::string bidder_prompt_;
   double runtime_fraction_lower_bound_;
-  // CEN keeps one worker per system so each system reuses its own client and credentials.
+  // CEN keeps one persistent worker per system, so that each system reuses its own bidder process (and LLM client).
   std::map<std::string, std::unique_ptr<PersistentPythonWorker>> python_workers_;
 
   PersistentPythonWorker& worker_for_system(const std::string& system_name)
@@ -87,82 +87,34 @@ public:
     const int N = static_cast<int>(systems_info.size());
     std::vector<std::string> responses(N);
 
-    if (uses_persistent_claude_worker(python_script_name_)) {
-      std::vector<PersistentPythonWorker*> workers(N, nullptr);
+    std::vector<PersistentPythonWorker*> workers(N, nullptr);
 
-      // Send to every system before waiting, preserving parallel model requests.
-      for (int i = 0; i < N; i++) {
-        nlohmann::json input;
-        input["job_description"]        = job_description->to_json();
-        input["hpc_system_description"] = systems_info[i].description->to_json();
-        input["hpc_system_status"]      = systems_info[i].status->to_json();
-        input["current_simulated_time"] = wrench::S4U_Simulation::getClock();
-        input["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
-        // Forward the configured prompt just as DEC does; otherwise the Claude bidder falls back.
-        if (!bidder_prompt_.empty())
-          input["prompt"] = bidder_prompt_;
-        try {
-          workers[i] = &worker_for_system(systems_info[i].description->get_name());
-          workers[i]->send_request(input);
-        } catch (const std::exception&) {
-          workers[i] = nullptr;
-        }
+    // One persistent worker per system. Send to every system before waiting, so that bids are computed in parallel.
+    for (int i = 0; i < N; i++) {
+      nlohmann::json input;
+      input["job_description"]        = job_description->to_json();
+      input["hpc_system_description"] = systems_info[i].description->to_json();
+      input["hpc_system_status"]      = systems_info[i].status->to_json();
+      input["current_simulated_time"] = wrench::S4U_Simulation::getClock();
+      input["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
+      // Forward the configured prompt just as DEC does; otherwise the Claude bidder falls back.
+      if (!bidder_prompt_.empty())
+        input["prompt"] = bidder_prompt_;
+      try {
+        workers[i] = &worker_for_system(systems_info[i].description->get_name());
+        workers[i]->send_request(input);
+      } catch (const std::exception&) {
+        workers[i] = nullptr;
       }
+    }
 
-      for (int i = 0; i < N; i++) {
-        if (workers[i] == nullptr)
-          continue;
-        try {
-          responses[i] = workers[i]->read_response().dump();
-        } catch (const std::exception&) {
-          responses[i].clear();
-        }
-      }
-    } else {
-      std::vector<int> read_fds(N, -1);
-      std::vector<pid_t> pids(N, -1);
-
-      for (int i = 0; i < N; i++) {
-        int to_child[2], from_child[2];
-        if (pipe(to_child) == -1 || pipe(from_child) == -1)
-          throw std::runtime_error("Failed to create pipes");
-
-        pids[i] = fork();
-        if (pids[i] == 0) {
-          dup2(to_child[0], STDIN_FILENO);
-          dup2(from_child[1], STDOUT_FILENO);
-          close(to_child[0]); close(to_child[1]);
-          close(from_child[0]); close(from_child[1]);
-          execlp("python3", "python3", python_script_name_.c_str(), nullptr);
-          perror("execlp failed");
-          exit(1);
-        }
-        close(to_child[0]);
-        close(from_child[1]);
-
-        nlohmann::json input;
-        input["job_description"]        = job_description->to_json();
-        input["hpc_system_description"] = systems_info[i].description->to_json();
-        input["hpc_system_status"]      = systems_info[i].status->to_json();
-        input["current_simulated_time"] = wrench::S4U_Simulation::getClock();
-        input["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
-        if (!bidder_prompt_.empty())
-          input["prompt"] = bidder_prompt_;
-        const std::string serialized_input = input.dump();
-        write(to_child[1], serialized_input.c_str(), serialized_input.size());
-        close(to_child[1]);
-        read_fds[i] = from_child[0];
-      }
-
-      for (int i = 0; i < N; i++) {
-        char buffer[256];
-        ssize_t count;
-        while ((count = read(read_fds[i], buffer, sizeof(buffer) - 1)) > 0) {
-          buffer[count] = '\0';
-          responses[i] += buffer;
-        }
-        close(read_fds[i]);
-        waitpid(pids[i], nullptr, 0);
+    for (int i = 0; i < N; i++) {
+      if (workers[i] == nullptr)
+        continue;
+      try {
+        responses[i] = workers[i]->read_response().dump();
+      } catch (const std::exception&) {
+        responses[i].clear();
       }
     }
 

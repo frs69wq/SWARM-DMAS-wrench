@@ -21,7 +21,7 @@ XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 
 class PythonBiddingSchedulingPolicy : public SchedulingPolicy {
   std::string python_script_name_;
-  // This policy belongs to one machine agent, so its Claude worker is reused across that agent's bids.
+  // This policy belongs to one machine agent, so its Python worker is reused across that agent's bids.
   PersistentPythonWorker python_worker_;
   std::string bidder_prompt_;
   double runtime_fraction_lower_bound_;
@@ -69,9 +69,7 @@ public:
       input["prompt"] = bidder_prompt_;
 
     try {
-      nlohmann::json result = uses_persistent_claude_worker(python_script_name_)
-                                  ? python_worker_.request(input)
-                                  : run_python_script(python_script_name_, input);
+      nlohmann::json result = python_worker_.request(input);
       XBT_CVERB(swarm_dmas, "%s", result.dump().c_str());
       if (not result.contains("bid_generation_time_seconds") || not result["bid_generation_time_seconds"].is_number())
         throw std::runtime_error("Invalid response: 'bid_generation_time_seconds' not found or not a number");
