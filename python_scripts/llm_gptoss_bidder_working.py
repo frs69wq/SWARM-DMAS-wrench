@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 def process_request(input_data):
     response = ""
+    failure = None  # why the LLM bid could not be obtained, if so
     try:
         data = json.loads(input_data)
 
@@ -76,6 +77,7 @@ def process_request(input_data):
         print(f"LLM Response: {response}", file=sys.stderr)
 
     except Exception as e:
+        failure = str(e)
         logger.info(json.dumps({"error": str(e)}))
 
     # Log response for debugging
@@ -99,8 +101,12 @@ def process_request(input_data):
     # Do not modify after here
     result = {
         "bid": bid,
-        "bid_generation_time_seconds": round(elapsed_time, 6)
+        "bid_generation_time_seconds": round(elapsed_time, 6),
+        # Tell the simulator whether the LLM or the heuristic fallback produced this bid, so that fallbacks are counted
+        "bid_source": "llm" if match else "heuristic_fallback"
     }
+    if not match:
+        result["fallback_reason"] = failure or "no bid_score in the LLM answer"
 
     print(json.dumps(result), flush=True)
 

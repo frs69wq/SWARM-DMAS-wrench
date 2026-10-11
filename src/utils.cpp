@@ -9,6 +9,8 @@
 #include "info/JobLifecycle.h"
 #include "utils/utils.h"
 
+XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
+
 using json = nlohmann::json;
 
 template <typename T>
@@ -148,4 +150,24 @@ count_top_bids(const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::
                    return a.second.first < b.second.first;
                  })->second.first;
   return std::count_if(all_bids.begin(), all_bids.end(), [top_bid](const auto& b) { return b.second.first == top_bid; });
+}
+
+BidSourceStats& get_bid_source_stats()
+{
+  static BidSourceStats stats;
+  return stats;
+}
+
+void record_bid_source(const nlohmann::json& bidder_response, int job_id, const std::string& system_name)
+{
+  if (!bidder_response.contains("bid_source") || !bidder_response["bid_source"].is_string())
+    return; // this bidder does not report where its bids come from
+  const auto source = bidder_response["bid_source"].get<std::string>();
+  if (source == "llm") {
+    get_bid_source_stats().llm_bids++;
+  } else if (source == "heuristic_fallback" || source == "error") {
+    get_bid_source_stats().fallback_bids++;
+    XBT_CWARN(swarm_dmas, "Job #%d: the '%s' bidder fell back to the heuristic: %s", job_id, system_name.c_str(),
+              bidder_response.value("fallback_reason", std::string("unknown reason")).c_str());
+  } // "infeasible": no LLM call was needed
 }

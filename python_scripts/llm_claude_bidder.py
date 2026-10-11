@@ -173,6 +173,7 @@ def process_request(input_data):
     request_start_time = time.perf_counter()
     start_time = None
     client_setup_time = 0.0
+    failure = None  # why the LLM bid could not be obtained, if so
 
     try:
         data = json.loads(input_data)
@@ -195,7 +196,8 @@ def process_request(input_data):
             elapsed_time = time.perf_counter() - start_time
             result = {
                 "bid": 0.0,
-                "bid_generation_time_seconds": round(elapsed_time, 6)
+                "bid_generation_time_seconds": round(elapsed_time, 6),
+                "bid_source": "infeasible"
             }
             logger.info("Feasibility check failed (%s); returning zero bid", infeasible_reason)
             logger.info("Result: %s", json.dumps(result))
@@ -243,6 +245,7 @@ def process_request(input_data):
         logger.info("Response:\n%s", llm_response)
 
     except Exception as e:
+        failure = str(e)
         if logger:
             logger.error("Claude bidder request failed; will fall back to heuristic: %s", e)
             # logger.exception("Claude bidder request failed; will fall back to heuristic")
@@ -254,7 +257,9 @@ def process_request(input_data):
     if job_description is None or system_description is None or system_status is None:
         result = {
             "bid": 0.0,
-            "bid_generation_time_seconds": round(elapsed_time, 6)
+            "bid_generation_time_seconds": round(elapsed_time, 6),
+            "bid_source": "error",
+            "fallback_reason": failure or "input unavailable"
         }
         if logger:
             logger.error("Input unavailable after exception; returning zero bid")
@@ -290,8 +295,12 @@ def process_request(input_data):
 
     result = {
         "bid": bid,
-        "bid_generation_time_seconds": round(elapsed_time, 6)
+        "bid_generation_time_seconds": round(elapsed_time, 6),
+        # Tell the simulator whether the LLM or the heuristic fallback produced this bid, so that fallbacks are counted
+        "bid_source": "llm" if match else "heuristic_fallback"
     }
+    if not match:
+        result["fallback_reason"] = failure or "no bid_score in the LLM answer"
 
     if logger:
         logger.info(json.dumps(result))

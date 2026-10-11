@@ -16,6 +16,7 @@
 #include "messages/ControlMessages.h"
 #include "policies/SchedulingPolicy.h"
 #include "utils/PythonRunner.h"
+#include "utils/utils.h"
 
 XBT_LOG_EXTERNAL_CATEGORY(swarm_dmas);
 
@@ -71,6 +72,7 @@ public:
     try {
       nlohmann::json result = python_worker_.request(input);
       XBT_CVERB(swarm_dmas, "%s", result.dump().c_str());
+      record_bid_source(result, job_description->get_job_id(), hpc_system_description->get_name());
       if (not result.contains("bid_generation_time_seconds") || not result["bid_generation_time_seconds"].is_number())
         throw std::runtime_error("Invalid response: 'bid_generation_time_seconds' not found or not a number");
       if (result.contains("bid") && result["bid"].is_number()) {

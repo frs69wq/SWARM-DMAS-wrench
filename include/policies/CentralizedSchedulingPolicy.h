@@ -146,6 +146,7 @@ public:
         try {
           nlohmann::json result = nlohmann::json::parse(responses[i]);
           XBT_CVERB(swarm_dmas, "Centralized bid from %s: %s", sys_name.c_str(), result.dump().c_str());
+          record_bid_source(result, job_description->get_job_id(), sys_name);
           if (result.contains("bid") && result["bid"].is_number())
             bid = result["bid"].get<double>();
           else {

@@ -164,6 +164,11 @@ int JobLifecycleTrackerAgent::main()
   print_agg("TurnaroundTime", sum_tat, min_tat, max_tat, n_tat);
   std::cerr << "TieBreaks: " << n_tie_breaks << " of " << n_scheduled << " placements ("
             << (n_scheduled > 0 ? 100.0 * n_tie_breaks / n_scheduled : 0.0) << "%)\n";
+  // Only for bidders that report where their bids come from (LLM bidders); details with --log=swarm_dmas.thres:warning
+  const auto& bid_sources = get_bid_source_stats();
+  if (auto n_llm_calls = bid_sources.llm_bids + bid_sources.fallback_bids; n_llm_calls > 0)
+    std::cerr << "LLMFallbacks: " << bid_sources.fallback_bids << " of " << n_llm_calls
+              << " bids used the heuristic fallback (" << 100.0 * bid_sources.fallback_bids / n_llm_calls << "%)\n";
 
   // for (const auto& jl : *job_lifecycles_)
   //   std::cout << jl->export_to_csv().c_str() << std::endl;
