@@ -56,6 +56,8 @@ def setup_logger(data):
 
     logger = logging.getLogger("llm_claude_bidder")
     logger.setLevel(logging.INFO)
+    # A persistent worker handles many requests: its log file is chosen on the first request and kept afterwards.
+    # This is fine because a worker serves a single simulation run, hence a single workload.
     if logger.handlers:
         return logger
 

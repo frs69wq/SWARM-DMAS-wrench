@@ -7,6 +7,7 @@
 #include <wrench-dev.h>
 
 #include "info/HPCSystemDescription.h"
+#include "info/HPCSystemStatus.h"
 #include "info/JobDescription.h"
 #include "info/JobLifecycle.h"
 
@@ -24,6 +25,14 @@ std::string get_all_bids_as_string(
 // Number of systems sharing the highest bid. When it is above 1, the tie-breaker decides the placement.
 size_t count_top_bids(
     const std::map<std::shared_ptr<wrench::JobSchedulingAgent>, std::pair<double, double>>& all_bids);
+// Content of the prompt file given to the LLM bidders ("" when there is no prompt file)
+std::string load_bidder_prompt(const std::string& bidder_prompt_file);
+// JSON input sent to a Python bidder for one job and one system, in both decentralized and centralized modes
+nlohmann::json build_bidder_input(const std::shared_ptr<JobDescription>& job_description,
+                                  const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
+                                  const std::shared_ptr<HPCSystemStatus>& hpc_system_status,
+                                  double runtime_fraction_lower_bound, const std::string& bidder_prompt);
+
 // Origin of the bids returned by the bidders that report it in a 'bid_source' field (the LLM bidders), counted over
 // the whole run: bids produced by the LLM, and bids for which the bidder fell back to the heuristic.
 struct BidSourceStats {

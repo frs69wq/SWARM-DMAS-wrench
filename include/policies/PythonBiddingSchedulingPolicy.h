@@ -2,7 +2,6 @@
 #define PYTHON_BIDDING_SCHEDULING_POLICY_H
 
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -33,17 +32,9 @@ public:
       : SchedulingPolicy()
       , python_script_name_(python_script_name)
       , python_worker_(python_script_name_)
+      , bidder_prompt_(load_bidder_prompt(bidder_prompt_file))
       , runtime_fraction_lower_bound_(runtime_fraction_lower_bound)
   {
-    if (!bidder_prompt_file.empty()) {
-      std::ifstream prompt_file(bidder_prompt_file);
-      if (!prompt_file.is_open())
-        throw std::runtime_error("Failed to open bidder prompt file: " + bidder_prompt_file);
-
-      bidder_prompt_.assign((std::istreambuf_iterator<char>(prompt_file)), std::istreambuf_iterator<char>());
-      if (bidder_prompt_.empty())
-        throw std::runtime_error("Bidder prompt file is empty: " + bidder_prompt_file);
-    }
   }
 
   void broadcast_job_description(const std::string& agent_name,
@@ -60,14 +51,8 @@ public:
                                         const std::shared_ptr<HPCSystemDescription>& hpc_system_description,
                                         const std::shared_ptr<HPCSystemStatus>& hpc_system_status) override
   {
-    nlohmann::json input;
-    input["job_description"]        = job_description->to_json();
-    input["hpc_system_description"] = hpc_system_description->to_json();
-    input["hpc_system_status"]      = hpc_system_status->to_json();
-    input["current_simulated_time"] = wrench::S4U_Simulation::getClock();
-    input["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
-    if (!bidder_prompt_.empty())
-      input["prompt"] = bidder_prompt_;
+    auto input = build_bidder_input(job_description, hpc_system_description, hpc_system_status,
+                                    runtime_fraction_lower_bound_, bidder_prompt_);
 
     try {
       nlohmann::json result = python_worker_.request(input);

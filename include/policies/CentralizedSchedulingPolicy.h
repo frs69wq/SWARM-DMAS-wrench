@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
-#include <fstream>
 #include <functional>
 #include <map>
 #include <memory>
@@ -63,17 +62,10 @@ class CentralizedSchedulingPolicy {
 public:
   CentralizedSchedulingPolicy(const std::string& python_script_name, const std::string& bidder_prompt_file,
                               double runtime_fraction_lower_bound)
-      : python_script_name_(python_script_name), runtime_fraction_lower_bound_(runtime_fraction_lower_bound)
+      : python_script_name_(python_script_name)
+      , bidder_prompt_(load_bidder_prompt(bidder_prompt_file))
+      , runtime_fraction_lower_bound_(runtime_fraction_lower_bound)
   {
-    if (!bidder_prompt_file.empty()) {
-      std::ifstream prompt_file(bidder_prompt_file);
-      if (!prompt_file.is_open())
-        throw std::runtime_error("Failed to open bidder prompt file: " + bidder_prompt_file);
-
-      bidder_prompt_.assign((std::istreambuf_iterator<char>(prompt_file)), std::istreambuf_iterator<char>());
-      if (bidder_prompt_.empty())
-        throw std::runtime_error("Bidder prompt file is empty: " + bidder_prompt_file);
-    }
   }
 
   size_t get_num_requested_bids() const { return num_requested_bids_; }
@@ -98,15 +90,8 @@ public:
 
     // One persistent worker per system. Send to every system before waiting, so that bids are computed in parallel.
     for (int i = 0; i < N; i++) {
-      nlohmann::json input;
-      input["job_description"]        = job_description->to_json();
-      input["hpc_system_description"] = systems_info[i].description->to_json();
-      input["hpc_system_status"]      = systems_info[i].status->to_json();
-      input["current_simulated_time"] = wrench::S4U_Simulation::getClock();
-      input["runtime_fraction_lower_bound"] = runtime_fraction_lower_bound_;
-      // Forward the configured prompt just as DEC does; otherwise the Claude bidder falls back.
-      if (!bidder_prompt_.empty())
-        input["prompt"] = bidder_prompt_;
+      auto input = build_bidder_input(job_description, systems_info[i].description, systems_info[i].status,
+                                      runtime_fraction_lower_bound_, bidder_prompt_);
       try {
         workers[i] = &worker_for_system(systems_info[i].description->get_name());
         workers[i]->send_request(input);
