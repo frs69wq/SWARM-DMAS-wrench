@@ -1,0 +1,4 @@
+Q4. Decision overhead
+Best quality strategy: HeuristicBidding (composite_score=1.0470, decision_overhead_vs_purelocal=0.000233s, waiting_saved=27571.10s, turnaround_saved=28281.66s, makespan_saved=362890.54s).
+Lowest non-PureLocal decision overhead: HeuristicBidding (0.000233s vs PureLocal).
+Pareto-efficient non-PureLocal strategies: HeuristicBidding.

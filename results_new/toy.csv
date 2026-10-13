@@ -1,0 +1,5 @@
+JobId,FinalStatus,SubmittedTo,ScheduledOn,NodeList,SubmissionTime,SchedulingTime,StartTime,EndTime,DecisionTime,WaitingTime,ExecutionTime,Bids,FailureCause
+1,"COMPLETED","Perlmutter-Phase-2","Aurora","1-20",0,0.301594,0.301594,13.6349,0.301594,0,13.3333,"0.57:0.75:0.63:0.70:0.62:0.65","None"
+2,"COMPLETED","Crux","Aurora","21-40",10,10.2591,10.2591,23.5925,0.259122,0,13.3333,"0.57:0.75:0.62:0.70:0.62:0.65","None"
+3,"COMPLETED","Aurora","Aurora","1-20",20,20.2538,20.2538,33.5871,0.253783,0,13.3333,"0.00:0.76:0.00:0.65:0.56:0.00","None"
+4,"COMPLETED","Perlmutter-Phase-1","Aurora","1-20",40,40.2566,40.2566,53.5899,0.256595,0,13.3333,"0.57:0.75:0.63:0.70:0.63:0.65","None"

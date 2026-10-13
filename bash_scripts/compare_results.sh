@@ -17,6 +17,8 @@ GANTT_SCRIPT="$PROJECT_ROOT/data_analysis/compare_gantt.py"
 GANTT_DIR="$PLOTS_DIR/gantt"
 mkdir -p "$GANTT_DIR"
 
+CENTRALIZED_DIR="$RESULTS_DIR/centralized"
+
 if [ ! -f "$AGGREGATED_FILE" ]; then
     echo "Error: $AGGREGATED_FILE not found"
     exit 1
@@ -27,7 +29,6 @@ echo "Processing aggregated metrics: $AGGREGATED_FILE"
 echo "Generating bidding method comparisons..."
 Rscript "$BIDDING_SCRIPT" "$AGGREGATED_FILE" "$PLOTS_DIR"
 
-CENTRALIZED_DIR="$RESULTS_DIR/centralized"
 
 if [ -d "$CENTRALIZED_DIR" ] && [ -n "$(ls -A "$CENTRALIZED_DIR" 2>/dev/null)" ]; then
     echo "Generating centralized vs decentralized comparisons..."

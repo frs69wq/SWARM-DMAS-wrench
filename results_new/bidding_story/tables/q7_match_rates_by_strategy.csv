@@ -1,0 +1,3 @@
+strategy,strategy_label,scheduled_jobs,scenario_count,exact_type_match_rate_pct,compatible_type_match_rate_pct,average_compatibility_score,mismatch_rate_pct
+HeuristicBidding,Heuristic Bidding,26010,24,33.55247981545559,100.0,0.9007400999615532,0.0
+PureLocal,Predefined Allocation,26010,24,30.91118800461361,100.0,0.9057987312572088,0.0

@@ -1,0 +1,5 @@
+workload_type,available_scenarios,matched_scenarios
+large_long,6,6
+mixed_20_80,6,6
+mixed_80_20,6,6
+small_short,6,6
