@@ -74,9 +74,8 @@ def embed_job(job):
 
     x_type = one_hot(job_type, JOB_TYPES)
 
-    w_num  = 1.0
+    w_num = 1.0
     w_type = 0.7
-    # w_site = 0.5
 
     x = np.concatenate([w_num * x_num, w_type * x_type], axis=0)
     return l2_normalize(x)
@@ -91,7 +90,7 @@ def embed_system(sysdesc, job_site_hint=None):
 
     sys_storage_cap = finite_or_inf(sysdesc.get("storage_amount_in_gb", float("inf")))
     if sys_storage_cap == float("inf"):
-        sys_storage_cap = 1e9 
+        sys_storage_cap = 1e9
 
     NODES_MAX = 10624.0         # Aurora has the most nodes
     SPEED_MAX = 312e12          # Aurora speed in FLOPS
@@ -113,12 +112,11 @@ def embed_system(sysdesc, job_site_hint=None):
 
     x_type = one_hot(sys_type, JOB_TYPES)
 
-    w_num  = 1.0
+    w_num = 1.0
     w_type = 0.7
-    # w_site = 0.5
 
     x = np.concatenate([w_num * x_num, w_type * x_type], axis=0)
-    return l2_normalize(x)  
+    return l2_normalize(x)
 
 
 # Expected execution time of a job on a system (f_j is unknown, so use its mean f_hat = (1 + f_min) / 2)
@@ -141,17 +139,17 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
 
     STATIC_BID_WEIGHT = fnum(os.environ.get("EMBEDDING_STATIC_BID_WEIGHT"), 0.2)
     STATIC_BID_WEIGHT = max(0.0, min(1.0, STATIC_BID_WEIGHT))
-    
-    # Feasibility 
-    nodes_req    = fnum(job.get("num_nodes"), 0.0)
-    req_gpu      = bool(job.get("needs_gpu", False))
-    req_mem      = fnum(job.get("requested_memory_gb"), 0.0)
-    req_storage  = fnum(job.get("requested_storage_gb"), 0.0)
+
+    # Feasibility
+    nodes_req = fnum(job.get("num_nodes"), 0.0)
+    req_gpu = bool(job.get("needs_gpu", False))
+    req_mem = fnum(job.get("requested_memory_gb"), 0.0)
+    req_storage = fnum(job.get("requested_storage_gb"), 0.0)
     req_walltime = fnum(job.get("walltime"), 0.0)
     job_submission_time = fnum(job.get("submission_time"), 0.0)
 
-    sys_nodes    = fnum(sysdesc.get("num_nodes"), 0.0)
-    sys_has_gpu  = bool(sysdesc.get("has_gpu", False))
+    sys_nodes = fnum(sysdesc.get("num_nodes"), 0.0)
+    sys_has_gpu = bool(sysdesc.get("has_gpu", False))
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
     sys_mem_per_node = fnum(sysdesc.get("memory_amount_in_gb"), 0.0)
     sys_total_mem = sys_mem_per_node * sys_nodes
@@ -167,7 +165,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
         return 0.0
     if req_walltime <= 0:
         return 0.0
-    
+
     job_type = job.get("job_type") or "OTHER"
     job_site = job.get("hpc_site") or ""
     sys_site = sysdesc.get("site") or ""
@@ -176,13 +174,8 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
     e_job = embed_job(job)
     e_sys = embed_system(sysdesc, job_site_hint=job.get("hpc_site"))
 
-    # Relative node availability 
-    # Availability / headroom
+    # Relative node availability / headroom
     sys_avail_nodes = fnum(status.get("current_num_available_nodes"), 0.0)
-
-    # headroom = sys_avail_nodes / max(1.0, nodes_req)
-    # headroom_feat = headroom / (1.0 + headroom)
-
     avail_frac = sys_avail_nodes / max(1.0, sys_nodes)
     relative_headroom = sys_avail_nodes / max(1.0, nodes_req)
     relative_headroom_feat = math.log1p(relative_headroom) / math.log1p(max(2.0, sys_nodes))
@@ -196,12 +189,12 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
     running_node_load = running_nodes / max(1.0, sys_nodes)
     queue_pressure = queue_jobs_per_node + 0.25 * running_node_load
     queue_feat = math.exp(-4.0 * queue_pressure)
-    
+
     # Estimated slowdown using system status
     est_start_time = fnum(status.get("current_job_start_time_estimate"), job_submission_time)
     now = max(current_simulated_time, job_submission_time)
     wait_time = max(0.0, est_start_time - now)
-    
+
     sys_speed = fnum(sysdesc.get("node_speed"), 1.0)
     pred_exec_time = scaled_walltime(walltime_seconds=req_walltime, node_speed=sys_speed, has_gpu=sys_has_gpu,
                                      runtime_fraction_lower_bound=runtime_fraction_lower_bound)
@@ -230,7 +223,7 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
 
     dynamic_bid = 0.15 * headroom_feat + 0.20 * slowdown_feat + 0.20 * queue_feat + 0.25 * speed_feat + 0.20 * completion_feat
 
-    raw = float(np.dot(e_job, e_sys)) 
+    raw = float(np.dot(e_job, e_sys))
     static_bid = max(0.0, raw)
     bid = STATIC_BID_WEIGHT * static_bid + (1.0 - STATIC_BID_WEIGHT) * dynamic_bid
 
@@ -240,40 +233,40 @@ def compute_bid(job, sysdesc, status, current_simulated_time=0.0,
     return round(float(bid), 3)
 
 
-def main():
-    input_data = sys.stdin.read()
-    data = json.loads(input_data)
-
-    job_description = data["job_description"]
-    system_description = data["hpc_system_description"]
-    system_status = data["hpc_system_status"]
-        
-    # Start timing
-    start_time = time.perf_counter()
-    current_simulated_time = fnum(data.get("current_simulated_time"), fnum(job_description.get("submission_time"), 0.0))
-
-    # Compute bids
+def process_request(input_data):
     try:
-        bid = compute_bid(job_description, system_description, system_status, current_simulated_time=current_simulated_time,
-                          runtime_fraction_lower_bound=get_runtime_fraction_lower_bound(data))
-    except Exception as e:
+        data = json.loads(input_data)
+        job_description = data["job_description"]
+        system_description = data["hpc_system_description"]
+        system_status = data["hpc_system_status"]
+
+        start_time = time.perf_counter()
+        current_simulated_time = fnum(
+            data.get("current_simulated_time"),
+            fnum(job_description.get("submission_time"), 0.0)
+        )
+        bid = compute_bid(
+            job_description,
+            system_description,
+            system_status,
+            current_simulated_time=current_simulated_time,
+            runtime_fraction_lower_bound=get_runtime_fraction_lower_bound(data)
+        )
+        elapsed_time = time.perf_counter() - start_time
+
         print(json.dumps({
-            "bid": 0.0,
-            "error": str(e)
-        }))
-        return
+            "bid": bid,
+            "bid_generation_time_seconds": round(elapsed_time, 6)
+        }), flush=True)
+    except Exception as e:
+        print(json.dumps({"error": str(e)}), flush=True)
 
-    # End timing
-    end_time = time.perf_counter()
-    elapsed_time = end_time - start_time
 
-    # Do not modify after here
-    result = {
-        "bid": bid,
-        "bid_generation_time_seconds": round(elapsed_time, 6)
-    }
-
-    print(json.dumps(result))
+def main():
+    # The simulator sends one JSON request per line to this persistent worker.
+    for input_data in sys.stdin:
+        if input_data.strip():
+            process_request(input_data)
 
 
 if __name__ == "__main__":
