@@ -1,0 +1,5 @@
+DecisionTime: avg=0.000362158 min=0.000272535 max=0.000453535 (n=4800)
+WaitingTime: avg=37107.1 min=0 max=90091.3 (n=4800)
+ExecutionTime: avg=4320.59 min=745.777 max=14119.3 (n=4800)
+TurnaroundTime: avg=41427.7 min=810.12 max=100617 (n=4800)
+TieBreaks: 260 of 4800 placements (5.41667%)

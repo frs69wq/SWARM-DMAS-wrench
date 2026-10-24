@@ -1,0 +1,6 @@
+BidderFailures: 0 of 546 bids (counted as 0)
+DecisionTime: avg=0.000471511 min=0.000420104 max=0.000875104 (n=91)
+WaitingTime: avg=21396.6 min=0 max=71408.2 (n=91)
+ExecutionTime: avg=32088.5 min=14507 max=69997.1 (n=91)
+TurnaroundTime: avg=53485.2 min=14507 max=114424 (n=91)
+TieBreaks: 4 of 91 placements (4.3956%)
