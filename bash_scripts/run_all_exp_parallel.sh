@@ -213,9 +213,9 @@ run_centralized() {
         unset EMBEDDING_STATIC_BID_WEIGHT
     fi
 
-    output_file="$RESULT_DIR_CENTRALIZED/${workload_name}_${bidder_name}${result_suffix}.csv"
-    stderr_file="$SIM_LOG_DIR/centralized_${workload_name}_${bidder_name}${result_suffix}.stderr.log"
-    llm_log_file="logs/llm_bidding/${workload_name}_${bidder_name}${result_suffix}.log"
+    output_file="$RESULT_DIR_CENTRALIZED/${workload_name}${result_suffix}_${bidder_name}.csv"
+    stderr_file="$SIM_LOG_DIR/centralized_${workload_name}${result_suffix}_${bidder_name}.stderr.log"
+    llm_log_file="logs/llm_bidding/${workload_name}${result_suffix}_${bidder_name}.log"
     temp_json=$(mktemp /tmp/swarm_cent_XXXXXX.json)
 
     jq \
