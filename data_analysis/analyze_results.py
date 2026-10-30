@@ -963,7 +963,7 @@ def main():
         return
     
 
-    workload_fname = '_'.join(csv_path.stem.split('_')[:-1])  
+    workload_fname = re.sub(r'_static[0-9.]+$', '', workload_name) 
     workload_path = Path(f'data_generation/data/{workload_fname}.json')
     print(f"Looking for workload file: {workload_fname} at {workload_path}")
     jobs_df = None
