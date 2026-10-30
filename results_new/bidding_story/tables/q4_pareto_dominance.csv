@@ -1,6 +1,0 @@
-strategy,scenario_count,pareto_efficient,dominated_by,decision_overhead_vs_purelocal,turnaround_seconds_saved_vs_purelocal,waiting_seconds_saved_vs_purelocal,makespan_seconds_saved_vs_purelocal,turnaround_saved_per_decision_second,waiting_saved_per_decision_second
-HeuristicBidding,24,True,,0.00023279182984603443,28281.658101504032,27571.095698341738,362890.5416666667,121489049.3373808,118436698.21478233
-EmbeddingBidding_static0.2,24,False,HeuristicBidding,0.0012847206079123594,26603.533639960588,25855.777919611235,360942.0,20707641.393867496,20125603.777482998
-EmbeddingBidding_static0.0,24,False,HeuristicBidding,0.0013571498600536136,26302.244797115385,25523.080127966154,361464.9583333333,19380501.425300464,18806383.05261136
-EmbeddingBidding_static0.5,24,False,HeuristicBidding;EmbeddingBidding_static0.2;EmbeddingBidding_static0.0,0.00141510446186273,25673.89779248207,25122.766341073653,252450.08333333334,18142757.997305024,17753294.557494406
-PureLocal,24,True,,0.0,-0.0,-0.0,-0.0,,
