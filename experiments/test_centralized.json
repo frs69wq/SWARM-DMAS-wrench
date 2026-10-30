@@ -2,7 +2,8 @@
     "platform": "platforms/AmSC.xml",
     "workload": "data_generation/data/test_workload.json",
     "centralized_submission": true,
-    "centralized_policy": "python_scripts/llm_claude_bidder_cen.py",
+    "centralized_policy": "python_scripts/llm_claude_bidder.py",
+    "bidder_prompt_file": "prompts/llm_prompt_balanced.txt",
     "heartbeat_period": 5,
     "heartbeat_expiration": 15,
     "hardware_failure_profile": "hardware_failure_profiles/test.json"

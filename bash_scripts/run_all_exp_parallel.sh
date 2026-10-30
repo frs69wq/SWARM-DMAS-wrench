@@ -6,7 +6,7 @@ WRENCH_ARGS="--wrench-commport-pool-size=80000"     # --cfg=precision/work-amoun
 
 # Number of concurrent runs
 MAX_JOBS=8
-SLEEP_BETWEEN_RUNS=60   # seconds
+SLEEP_BETWEEN_RUNS=120   # seconds
 
 declare -A SCENARIO_NJOBS_RHO_15=(
     ["mixed_80_20"]=415
@@ -61,7 +61,7 @@ FAILURE_COUNT=0
 PYTHON_BIDDERS=(
     # "python_scripts/HeuristicBidding.py"
     "python_scripts/EmbeddingBidding.py"
-    # "python_scripts/llm_claude_bidder_cen.py"
+    # "python_scripts/llm_claude_bidder.py"
 )
 
 EMBEDDING_STATIC_BID_WEIGHTS=(0.0 0.2 0.5)
@@ -312,11 +312,15 @@ for entry in "${WORKLOADS[@]}"; do
                 throttle_jobs
                 run_centralized "$workload" "$platform_file" "$bidder" "$workload_name" "$static_weight" &
                 wait -n || true
+                echo "Sleeping ${SLEEP_BETWEEN_RUNS}s before the next centralized run..."
+                sleep "$SLEEP_BETWEEN_RUNS"
             done
         else
             throttle_jobs
             run_centralized "$workload" "$platform_file" "$bidder" "$workload_name" &
             wait -n || true
+            echo "Sleeping ${SLEEP_BETWEEN_RUNS}s before the next centralized run..."
+            sleep "$SLEEP_BETWEEN_RUNS"
         fi
     done
 
