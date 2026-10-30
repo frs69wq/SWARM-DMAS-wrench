@@ -19,17 +19,19 @@ declare -A SCENARIO_NJOBS_RHO15=(
 PY_ANALYZER="data_analysis/analyze_results.py"
 R_ANALYZER="data_analysis/output_analysis.Rscript"
 
-RESULT_DIRS=("results/centralized" "results")     # "results" 
+RESULT_DIRS=("results" "results/centralized" )     # "results" 
 
 # Workload files
 DAYS=("business" "bursty_low_stress" "bursty_high_stress")       
 TYPES=("small_short" "large_long" "mixed_80_20" "mixed_20_80")
 METHODS=(
-    # "HeuristicBidding"
-    "EmbeddingBidding"
-    # "LLMBidding"
+    "HeuristicBidding"
+    "static0.0_EmbeddingBidding"
+    "static0.2_EmbeddingBidding"
+    "static0.5_EmbeddingBidding"
+    "LLMBidding"
     # "RandomBidding"
-    # "PureLocal"
+    "PureLocal"
 )
 
 PLOTS_DIR="plots/individual"
