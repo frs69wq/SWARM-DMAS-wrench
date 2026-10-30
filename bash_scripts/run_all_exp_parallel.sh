@@ -215,7 +215,7 @@ run_centralized() {
 
     output_file="$RESULT_DIR_CENTRALIZED/${workload_name}${result_suffix}_${bidder_name}.csv"
     stderr_file="$SIM_LOG_DIR/centralized_${workload_name}${result_suffix}_${bidder_name}.stderr.log"
-    llm_log_file="logs/llm_bidding/${workload_name}${result_suffix}_${bidder_name}.log"
+    llm_log_file="logs/llm_bidding/centralized_${workload_name}${result_suffix}_${bidder_name}.log"
     temp_json=$(mktemp /tmp/swarm_cent_XXXXXX.json)
 
     jq \
