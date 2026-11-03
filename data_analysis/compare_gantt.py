@@ -41,7 +41,9 @@ def workload_path_for(workload_name, data_dir):
 def load_valid_results(csv_path, data_dir):
     workload_name, _ = parse_result_name(csv_path)
     workload_path = workload_path_for(workload_name, data_dir)
-
+    # remove static part for embedding bidders
+    if "_static" in workload_path.name:
+        workload_path = Path(str(workload_path).replace("_static0.0", "").replace("_static0.2", "").replace("_static0.5", ""))
     jobs_df = None
     if workload_path.exists():
         jobs_df = load_job_definitions(workload_path)
