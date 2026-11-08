@@ -17278,9 +17278,9 @@ Processing job 2880 on machine Perlmutter-Phase-2
 Processing job 2880 on machine Perlmutter-Phase-1
 Processing job 2880 on machine Frontier
 Processing job 2880 on machine Andes
-DecisionTime: avg=12.9254 min=0.0474175 max=22.7511 (n=2880)
-WaitingTime: avg=19186.1 min=0 max=119425 (n=2880)
-ExecutionTime: avg=4390.15 min=756.213 max=14162.9 (n=2880)
-TurnaroundTime: avg=23589.2 min=1012.75 max=128433 (n=2880)
-TieBreaks: 303 of 2880 placements (10.5208%)
-LLMFallbacks: 466 of 12783 bids used the heuristic fallback (3.64547%)
+DecisionTime: avg=12.899 min=9.40289 max=25.7212 (n=2880)
+WaitingTime: avg=18755.8 min=0 max=93914 (n=2880)
+ExecutionTime: avg=4395.36 min=786.495 max=14198.2 (n=2880)
+TurnaroundTime: avg=23164.1 min=985.687 max=104126 (n=2880)
+TieBreaks: 366 of 2880 placements (12.7083%)
+LLMFallbacks: 0 of 12783 bids used the heuristic fallback (0%)
