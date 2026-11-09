@@ -7,7 +7,10 @@ files <- list.files(results_dir, pattern = "\\.csv$", full.names = TRUE)
 files <- files[!grepl("aggregated_metrics", files)]
 
 strategy_label <- function(bname) {
-  if (grepl("EmbeddingBidding", bname)) return("Embedding")
+  # Embedding = default static weight lambda = 0.2; the lambda = 0.0 and 0.5
+  # variants belong to the sensitivity study (compute_lambda_sensitivity.py)
+  if (grepl("static0.2_EmbeddingBidding", bname)) return("Embedding")
+  if (grepl("EmbeddingBidding", bname)) return(NA_character_)
   if (grepl("HeuristicBidding", bname)) return("Heuristic")
   if (grepl("LLMBidding",       bname)) return("LLM")
   if (grepl("PureLocal",        bname)) return("Pure Local")
@@ -28,8 +31,15 @@ data <- do.call(rbind, lapply(files, function(f) {
 data$Strategy <- factor(data$Strategy,
   levels = c("Pure Local", "Heuristic", "Embedding", "LLM"))
 
+# Number of scenarios per strategy; shown under a box only when a strategy
+# has fewer scenarios than the others (i.e., some runs are still missing)
+counts <- ddply(data, "Strategy", summarise, n = length(MeanTurnaround))
+counts <- counts[counts$n < max(counts$n), ]
+
 p <- ggplot(data, aes(x = Strategy, y = MeanTurnaround, color = Strategy)) +
   geom_boxplot(width = 0.48) +
+  geom_text(data = counts, aes(x = Strategy, y = 0, label = paste0("n=", n)),
+            inherit.aes = FALSE, vjust = -0.4, size = 2.6) +
   stat_summary(fun = mean, geom = "point", shape = 17, size = 2.2) +
   scale_y_continuous(
     name   = "Turnaround time (hours)",

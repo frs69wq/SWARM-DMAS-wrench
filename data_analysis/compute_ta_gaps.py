@@ -15,6 +15,11 @@ import csv
 import glob
 import os
 import statistics
+import sys
+
+# --matched: only keep scenarios for which every strategy has a result, so that
+# averages are not biased while some runs are still missing
+MATCHED = "--matched" in sys.argv
 from collections import defaultdict
 
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
@@ -42,11 +47,16 @@ ARRIVAL_MAP = {
 cells_arr  = defaultdict(list)   # keyed by (strategy, arrival)
 cells_wtype = defaultdict(list)  # keyed by (strategy, workload_type)
 
+per_scenario = {}   # (strategy, scenario) -> (arrival, wtype, mean TA)
 for csv_file in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.csv"))):
     if "aggregated_metrics" in csv_file:
         continue
     bname = os.path.basename(csv_file).replace(".csv", "")
 
+    # Embedding = default static weight lambda = 0.2; other lambda values
+    # belong to the sensitivity study (compute_lambda_sensitivity.py)
+    if "EmbeddingBidding" in bname and "static0.2_" not in bname:
+        continue
     strat = next((v for k, v in STRATEGY_MAP.items() if k in bname), None)
     wtype = next((v for k, v in WORKLOAD_MAP.items() if k in bname), None)
     arr   = next((v for k, v in ARRIVAL_MAP.items()  if k in bname), None)
@@ -63,7 +73,16 @@ for csv_file in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.csv"))):
             tas.append((end - sub) / 3600)
 
     if tas:
-        mean_ta = statistics.mean(tas)
+        scenario = bname.rsplit("_rho", 1)[0] + "_rho" + bname.rsplit("_rho", 1)[1].split("_")[0]
+        per_scenario[(strat, scenario)] = (arr, wtype, statistics.mean(tas))
+
+scenarios = {sc for (_, sc) in per_scenario}
+if MATCHED:
+    scenarios = {sc for sc in scenarios
+                 if all((s, sc) in per_scenario for s in STRATEGY_MAP.values())}
+    print(f"[--matched] {len(scenarios)} scenarios with results for all strategies\n")
+for (strat, sc), (arr, wtype, mean_ta) in per_scenario.items():
+    if sc in scenarios:
         cells_arr [(strat, arr)].append(mean_ta)
         cells_wtype[(strat, wtype)].append(mean_ta)
 

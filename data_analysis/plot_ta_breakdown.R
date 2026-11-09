@@ -8,7 +8,10 @@ files <- list.files(results_dir, pattern = "\\.csv$", full.names = TRUE)
 files <- files[!grepl("aggregated_metrics", files)]
 
 strategy_label <- function(bname) {
-  if (grepl("EmbeddingBidding", bname)) return("Embedding")
+  # Embedding = default static weight lambda = 0.2; the lambda = 0.0 and 0.5
+  # variants belong to the sensitivity study (compute_lambda_sensitivity.py)
+  if (grepl("static0.2_EmbeddingBidding", bname)) return("Embedding")
+  if (grepl("EmbeddingBidding", bname)) return(NA_character_)
   if (grepl("HeuristicBidding", bname)) return("Heuristic")
   if (grepl("LLMBidding",       bname)) return("LLM")
   if (grepl("PureLocal",        bname)) return("Pure Local")
@@ -56,9 +59,19 @@ scenario_data <- do.call(rbind, lapply(files, function(f) {
 scenario_data <- scenario_data[scenario_data$Strategy != "Pure Local", ]
 
 ta_wtype <- ddply(scenario_data, c("Strategy", "WorkloadType"), summarise,
-                  MeanTA = mean(MeanTA))
+                  n = length(MeanTA), MeanTA = mean(MeanTA))
 ta_arr   <- ddply(scenario_data, c("Strategy", "Arrival"),      summarise,
-                  MeanTA = mean(MeanTA))
+                  n = length(MeanTA), MeanTA = mean(MeanTA))
+
+# Flag bars averaged over fewer scenarios than the other strategies of the
+# same group (missing runs); the flag disappears once all runs are available
+flag_incomplete <- function(df, group) {
+  nmax <- ave(df$n, df[[group]], FUN = max)
+  df$Flag <- ifelse(df$n < nmax, "*", "")
+  df
+}
+ta_wtype <- flag_incomplete(ta_wtype, "WorkloadType")
+ta_arr   <- flag_incomplete(ta_arr,   "Arrival")
 
 ta_wtype$Strategy     <- factor(ta_wtype$Strategy,     levels = strat_levels)
 ta_wtype$WorkloadType <- factor(ta_wtype$WorkloadType,
@@ -70,6 +83,9 @@ ta_arr$Arrival  <- factor(ta_arr$Arrival,
 
 bar_args <- list(position = position_dodge(width = 0.72), width = 0.65, alpha = 0.85)
 
+flag_layer <- geom_text(aes(label = Flag), position = position_dodge(width = 0.72),
+                        vjust = -0.1, size = 3, show.legend = FALSE)
+
 scale_manual <- list(
   scale_fill_manual(values  = strat_colors),
   scale_color_manual(values = strat_colors)
@@ -78,10 +94,11 @@ scale_manual <- list(
 pC <- ggplot(ta_arr, aes(x = Arrival, y = MeanTA,
                           fill = Strategy, color = Strategy)) +
   do.call(geom_col, bar_args) +
+  flag_layer +
   scale_manual +
   scale_y_continuous(name   = "Mean turnaround time (hours)",
                      limits = c(0, NA),
-                     expand = expansion(mult = c(0, 0.04))) +
+                     expand = expansion(mult = c(0, 0.08))) +
   labs(x = "Arrival pattern", fill = "Strategy", color = "Strategy") +
   theme_bw(base_size = 9) +
   theme(legend.position = "none")
@@ -89,10 +106,11 @@ pC <- ggplot(ta_arr, aes(x = Arrival, y = MeanTA,
 pB <- ggplot(ta_wtype, aes(x = WorkloadType, y = MeanTA,
                             fill = Strategy, color = Strategy)) +
   do.call(geom_col, bar_args) +
+  flag_layer +
   scale_manual +
   scale_y_continuous(name   = "Mean turnaround time (hours)",
                      limits = c(0, NA),
-                     expand = expansion(mult = c(0, 0.04))) +
+                     expand = expansion(mult = c(0, 0.08))) +
   labs(x = "Workload type", fill = "Strategy", color = "Strategy") +
   theme_bw(base_size = 9) +
   theme(legend.position = "none")

@@ -6,7 +6,7 @@ time across completed jobs, take their ratio, then report the median of that
 ratio across all scenarios for each strategy.
 
 Used in the RQ2 paragraph:
-  "wait drops from 61% (Pure Local) to 2% (Embedding), 5% (Heuristic), 7% (LLM)"
+  (values reported in Section VI, RQ #2)
 """
 
 import csv
@@ -31,6 +31,10 @@ for csv_file in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.csv"))):
     if "aggregated_metrics" in csv_file:
         continue
     bname = os.path.basename(csv_file)
+    # Embedding = default static weight lambda = 0.2; other lambda values
+    # belong to the sensitivity study (compute_lambda_sensitivity.py)
+    if "EmbeddingBidding" in bname and "static0.2_" not in bname:
+        continue
     strat = None
     for key, label in STRATEGIES.items():
         if key in bname:
