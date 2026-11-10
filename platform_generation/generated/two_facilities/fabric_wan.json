@@ -1,0 +1,36 @@
+{
+  "facilities": [
+    {
+      "name": "ATLA",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "DALL",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    }
+  ],
+  "storage_systems": [],
+  "links": [
+    {
+      "name": "fabric_ATLA_DALL",
+      "bandwidth": "1200Gbps",
+      "latency": "8.339ms"
+    }
+  ],
+  "routes": [
+    {
+      "src": "ATLA",
+      "dst": "DALL",
+      "links": [
+        "fabric_ATLA_DALL"
+      ]
+    }
+  ],
+  "filesystems": []
+}

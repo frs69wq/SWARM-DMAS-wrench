@@ -1,0 +1,764 @@
+{
+  "available_physical_link_count": 33,
+  "default_bandwidth_gbps": 100.0,
+  "default_latency_ms": 10.0,
+  "disconnected_pairs": [],
+  "facility_count": 27,
+  "generated_at_utc": "2026-11-09T21:21:40.972569+00:00",
+  "included_physical_link_count": 33,
+  "latency_override_count": 0,
+  "latency_sources": {
+    "fabric_ATLA_DALL": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 16.682,
+          "one_way_ms": 8.341,
+          "record": "ATLA__DALL",
+          "src": "ATLA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 16.678,
+          "one_way_ms": 8.339,
+          "record": "DALL__ATLA",
+          "src": "DALL"
+        }
+      ],
+      "latency_ms": 8.339,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 16.678,
+        "one_way_ms": 8.339,
+        "record": "DALL__ATLA",
+        "src": "DALL"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_ATLA_FIU": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 12.565,
+          "one_way_ms": 6.2825,
+          "record": "FIU__ATLA",
+          "src": "FIU"
+        }
+      ],
+      "latency_ms": 6.2825,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 12.565,
+        "one_way_ms": 6.2825,
+        "record": "FIU__ATLA",
+        "src": "FIU"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_ATLA_STAR": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    },
+    "fabric_ATLA_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.736,
+          "one_way_ms": 6.368,
+          "record": "ATLA__WASH",
+          "src": "ATLA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.739,
+          "one_way_ms": 6.3695,
+          "record": "WASH__ATLA",
+          "src": "WASH"
+        }
+      ],
+      "latency_ms": 6.368,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 12.736,
+        "one_way_ms": 6.368,
+        "record": "ATLA__WASH",
+        "src": "ATLA"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_CLEM_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 16.369,
+          "one_way_ms": 8.1845,
+          "record": "CLEM__WASH",
+          "src": "CLEM"
+        }
+      ],
+      "latency_ms": 8.1845,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 16.369,
+        "one_way_ms": 8.1845,
+        "record": "CLEM__WASH",
+        "src": "CLEM"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_DALL_KANS": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 9.077,
+          "one_way_ms": 4.5385,
+          "record": "DALL__KANS",
+          "src": "DALL"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 9.093,
+          "one_way_ms": 4.5465,
+          "record": "KANS__DALL",
+          "src": "KANS"
+        }
+      ],
+      "latency_ms": 4.5385,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 9.077,
+        "one_way_ms": 4.5385,
+        "record": "DALL__KANS",
+        "src": "DALL"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_DALL_LOSA": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 34.989,
+          "one_way_ms": 17.4945,
+          "record": "DALL__LOSA",
+          "src": "DALL"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 34.995,
+          "one_way_ms": 17.4975,
+          "record": "LOSA__DALL",
+          "src": "LOSA"
+        }
+      ],
+      "latency_ms": 17.4945,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 34.989,
+        "one_way_ms": 17.4945,
+        "record": "DALL__LOSA",
+        "src": "DALL"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_EDUKY_STAR": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    },
+    "fabric_GATECH_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 13.993,
+          "one_way_ms": 6.9965,
+          "record": "GATECH__WASH",
+          "src": "GATECH"
+        }
+      ],
+      "latency_ms": 6.9965,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 13.993,
+        "one_way_ms": 6.9965,
+        "record": "GATECH__WASH",
+        "src": "GATECH"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_GPN_KANS": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 0.275,
+          "one_way_ms": 0.1375,
+          "record": "GPN__KANS",
+          "src": "GPN"
+        }
+      ],
+      "latency_ms": 0.1375,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 0.275,
+        "one_way_ms": 0.1375,
+        "record": "GPN__KANS",
+        "src": "GPN"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_HAWI_LOSA": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 49.123,
+          "one_way_ms": 24.5615,
+          "record": "HAWI__LOSA",
+          "src": "HAWI"
+        }
+      ],
+      "latency_ms": 24.5615,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 49.123,
+        "one_way_ms": 24.5615,
+        "record": "HAWI__LOSA",
+        "src": "HAWI"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_HAWI_SEAT": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 73.023,
+          "one_way_ms": 36.5115,
+          "record": "HAWI__SEAT",
+          "src": "HAWI"
+        }
+      ],
+      "latency_ms": 36.5115,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 73.023,
+        "one_way_ms": 36.5115,
+        "record": "HAWI__SEAT",
+        "src": "HAWI"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_INDI_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 4.628,
+          "one_way_ms": 2.314,
+          "record": "INDI__STAR",
+          "src": "INDI"
+        }
+      ],
+      "latency_ms": 2.314,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 4.628,
+        "one_way_ms": 2.314,
+        "record": "INDI__STAR",
+        "src": "INDI"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_KANS_SALT": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 19.859,
+          "one_way_ms": 9.9295,
+          "record": "KANS__SALT",
+          "src": "KANS"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 19.861,
+          "one_way_ms": 9.9305,
+          "record": "SALT__KANS",
+          "src": "SALT"
+        }
+      ],
+      "latency_ms": 9.9295,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 19.859,
+        "one_way_ms": 9.9295,
+        "record": "KANS__SALT",
+        "src": "KANS"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_KANS_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 10.997,
+          "one_way_ms": 5.4985,
+          "record": "KANS__STAR",
+          "src": "KANS"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 10.988,
+          "one_way_ms": 5.494,
+          "record": "STAR__KANS",
+          "src": "STAR"
+        }
+      ],
+      "latency_ms": 5.494,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 10.988,
+        "one_way_ms": 5.494,
+        "record": "STAR__KANS",
+        "src": "STAR"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_LOSA_SALT": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.242,
+          "one_way_ms": 6.121,
+          "record": "LOSA__SALT",
+          "src": "LOSA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.234,
+          "one_way_ms": 6.117,
+          "record": "SALT__LOSA",
+          "src": "SALT"
+        }
+      ],
+      "latency_ms": 6.117,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 12.234,
+        "one_way_ms": 6.117,
+        "record": "SALT__LOSA",
+        "src": "SALT"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_LOSA_SEAT": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 24.557,
+          "one_way_ms": 12.2785,
+          "record": "LOSA__SEAT",
+          "src": "LOSA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 24.553,
+          "one_way_ms": 12.2765,
+          "record": "SEAT__LOSA",
+          "src": "SEAT"
+        }
+      ],
+      "latency_ms": 12.2765,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 24.553,
+        "one_way_ms": 12.2765,
+        "record": "SEAT__LOSA",
+        "src": "SEAT"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_LOSA_SRI": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 8.137,
+          "one_way_ms": 4.0685,
+          "record": "SRI__LOSA",
+          "src": "SRI"
+        }
+      ],
+      "latency_ms": 4.0685,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 8.137,
+        "one_way_ms": 4.0685,
+        "record": "SRI__LOSA",
+        "src": "SRI"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_LOSA_UCSD": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 2.297,
+          "one_way_ms": 1.1485,
+          "record": "UCSD__LOSA",
+          "src": "UCSD"
+        }
+      ],
+      "latency_ms": 1.1485,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 2.297,
+        "one_way_ms": 1.1485,
+        "record": "UCSD__LOSA",
+        "src": "UCSD"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_MASS_NEWY": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    },
+    "fabric_MAX_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 1.741,
+          "one_way_ms": 0.8705,
+          "record": "MAX__WASH",
+          "src": "MAX"
+        }
+      ],
+      "latency_ms": 0.8705,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 1.741,
+        "one_way_ms": 0.8705,
+        "record": "MAX__WASH",
+        "src": "MAX"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_MICH_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 5.099,
+          "one_way_ms": 2.5495,
+          "record": "MICH__STAR",
+          "src": "MICH"
+        }
+      ],
+      "latency_ms": 2.5495,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 5.099,
+        "one_way_ms": 2.5495,
+        "record": "MICH__STAR",
+        "src": "MICH"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_NCSA_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 2.469,
+          "one_way_ms": 1.2345,
+          "record": "NCSA__STAR",
+          "src": "NCSA"
+        }
+      ],
+      "latency_ms": 1.2345,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 2.469,
+        "one_way_ms": 1.2345,
+        "record": "NCSA__STAR",
+        "src": "NCSA"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_NEWY_PRIN": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 1.334,
+          "one_way_ms": 0.667,
+          "record": "PRIN__NEWY",
+          "src": "PRIN"
+        }
+      ],
+      "latency_ms": 0.667,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 1.334,
+        "one_way_ms": 0.667,
+        "record": "PRIN__NEWY",
+        "src": "PRIN"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_NEWY_RUTG": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 1.025,
+          "one_way_ms": 0.5125,
+          "record": "RUTG__NEWY",
+          "src": "RUTG"
+        }
+      ],
+      "latency_ms": 0.5125,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 1.025,
+        "one_way_ms": 0.5125,
+        "record": "RUTG__NEWY",
+        "src": "RUTG"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_NEWY_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 21.878,
+          "one_way_ms": 10.939,
+          "record": "NEWY__STAR",
+          "src": "NEWY"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 21.88,
+          "one_way_ms": 10.94,
+          "record": "STAR__NEWY",
+          "src": "STAR"
+        }
+      ],
+      "latency_ms": 10.939,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 21.878,
+        "one_way_ms": 10.939,
+        "record": "NEWY__STAR",
+        "src": "NEWY"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_NEWY_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 5.083,
+          "one_way_ms": 2.5415,
+          "record": "NEWY__WASH",
+          "src": "NEWY"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 5.072,
+          "one_way_ms": 2.536,
+          "record": "WASH__NEWY",
+          "src": "WASH"
+        }
+      ],
+      "latency_ms": 2.536,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 5.072,
+        "one_way_ms": 2.536,
+        "record": "WASH__NEWY",
+        "src": "WASH"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_PSC_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 6.133,
+          "one_way_ms": 3.0665,
+          "record": "PSC__WASH",
+          "src": "PSC"
+        }
+      ],
+      "latency_ms": 3.0665,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 6.133,
+        "one_way_ms": 3.0665,
+        "record": "PSC__WASH",
+        "src": "PSC"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_SALT_SEAT": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    },
+    "fabric_SALT_STAR": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 30.748,
+          "one_way_ms": 15.374,
+          "record": "SALT__STAR",
+          "src": "SALT"
+        }
+      ],
+      "latency_ms": 15.374,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 30.748,
+        "one_way_ms": 15.374,
+        "record": "SALT__STAR",
+        "src": "SALT"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_SALT_UTAH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 0.214,
+          "one_way_ms": 0.107,
+          "record": "UTAH__SALT",
+          "src": "UTAH"
+        }
+      ],
+      "latency_ms": 0.107,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 0.214,
+        "one_way_ms": 0.107,
+        "record": "UTAH__SALT",
+        "src": "UTAH"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_STAR_TACC": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    },
+    "fabric_STAR_WASH": {
+      "latency_ms": 10.0,
+      "type": "explicit_fallback"
+    }
+  },
+  "link_name_map": {
+    "ATLA__DALL": "fabric_ATLA_DALL",
+    "ATLA__FIU": "fabric_ATLA_FIU",
+    "ATLA__STAR": "fabric_ATLA_STAR",
+    "ATLA__WASH": "fabric_ATLA_WASH",
+    "CLEM__WASH": "fabric_CLEM_WASH",
+    "DALL__KANS": "fabric_DALL_KANS",
+    "DALL__LOSA": "fabric_DALL_LOSA",
+    "EDUKY__STAR": "fabric_EDUKY_STAR",
+    "GATECH__WASH": "fabric_GATECH_WASH",
+    "GPN__KANS": "fabric_GPN_KANS",
+    "HAWI__LOSA": "fabric_HAWI_LOSA",
+    "HAWI__SEAT": "fabric_HAWI_SEAT",
+    "INDI__STAR": "fabric_INDI_STAR",
+    "KANS__SALT": "fabric_KANS_SALT",
+    "KANS__STAR": "fabric_KANS_STAR",
+    "LOSA__SALT": "fabric_LOSA_SALT",
+    "LOSA__SEAT": "fabric_LOSA_SEAT",
+    "LOSA__SRI": "fabric_LOSA_SRI",
+    "LOSA__UCSD": "fabric_LOSA_UCSD",
+    "MASS__NEWY": "fabric_MASS_NEWY",
+    "MAX__WASH": "fabric_MAX_WASH",
+    "MICH__STAR": "fabric_MICH_STAR",
+    "NCSA__STAR": "fabric_NCSA_STAR",
+    "NEWY__PRIN": "fabric_NEWY_PRIN",
+    "NEWY__RUTG": "fabric_NEWY_RUTG",
+    "NEWY__STAR": "fabric_NEWY_STAR",
+    "NEWY__WASH": "fabric_NEWY_WASH",
+    "PSC__WASH": "fabric_PSC_WASH",
+    "SALT__SEAT": "fabric_SALT_SEAT",
+    "SALT__STAR": "fabric_SALT_STAR",
+    "SALT__UTAH": "fabric_SALT_UTAH",
+    "STAR__TACC": "fabric_STAR_TACC",
+    "STAR__WASH": "fabric_STAR_WASH"
+  },
+  "links_using_fallback_bandwidth": [],
+  "links_using_fallback_latency": [
+    "ATLA__STAR",
+    "EDUKY__STAR",
+    "MASS__NEWY",
+    "SALT__SEAT",
+    "STAR__TACC",
+    "STAR__WASH"
+  ],
+  "links_without_direct_measurement": [
+    "ATLA__STAR",
+    "EDUKY__STAR",
+    "MASS__NEWY",
+    "SALT__SEAT",
+    "STAR__TACC",
+    "STAR__WASH"
+  ],
+  "route_count": 351,
+  "route_metric": "latency",
+  "route_used_physical_link_count": 33,
+  "selected_sites": [
+    "ATLA",
+    "CLEM",
+    "DALL",
+    "EDUKY",
+    "FIU",
+    "GATECH",
+    "GPN",
+    "HAWI",
+    "INDI",
+    "KANS",
+    "LOSA",
+    "MASS",
+    "MAX",
+    "MICH",
+    "NCSA",
+    "NEWY",
+    "PRIN",
+    "PSC",
+    "RUTG",
+    "SALT",
+    "SEAT",
+    "SRI",
+    "STAR",
+    "TACC",
+    "UCSD",
+    "UTAH",
+    "WASH"
+  ],
+  "skipped_links": [],
+  "source": "/home/ccb/ccb/Projects/SWARM-DMAS-wrench-system-extension/platform_generation/fabric_data/us_topology.json",
+  "transit_sites": [],
+  "warnings": [
+    "No eligible direct latency measurement for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH.",
+    "Using the explicitly supplied 10 ms fallback for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH."
+  ]
+}

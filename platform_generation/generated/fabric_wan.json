@@ -1,0 +1,3471 @@
+{
+  "facilities": [
+    {
+      "name": "ATLA",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "CLEM",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "DALL",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "EDUKY",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "FIU",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "GATECH",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "GPN",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "HAWI",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "INDI",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "KANS",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "LOSA",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "MASS",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "MAX",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "MICH",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "NCSA",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "NEWY",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "PRIN",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "PSC",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "RUTG",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "SALT",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "SEAT",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "SRI",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "STAR",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "TACC",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "UCSD",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "UTAH",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "WASH",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    }
+  ],
+  "storage_systems": [],
+  "links": [
+    {
+      "name": "fabric_ATLA_DALL",
+      "bandwidth": "1200Gbps",
+      "latency": "8.339ms"
+    },
+    {
+      "name": "fabric_ATLA_FIU",
+      "bandwidth": "100Gbps",
+      "latency": "6.2825ms"
+    },
+    {
+      "name": "fabric_ATLA_STAR",
+      "bandwidth": "100Gbps",
+      "latency": "10ms"
+    },
+    {
+      "name": "fabric_ATLA_WASH",
+      "bandwidth": "1200Gbps",
+      "latency": "6.368ms"
+    },
+    {
+      "name": "fabric_CLEM_WASH",
+      "bandwidth": "40Gbps",
+      "latency": "8.1845ms"
+    },
+    {
+      "name": "fabric_DALL_KANS",
+      "bandwidth": "100Gbps",
+      "latency": "4.5385ms"
+    },
+    {
+      "name": "fabric_DALL_LOSA",
+      "bandwidth": "1200Gbps",
+      "latency": "17.4945ms"
+    },
+    {
+      "name": "fabric_EDUKY_STAR",
+      "bandwidth": "10Gbps",
+      "latency": "10ms"
+    },
+    {
+      "name": "fabric_GATECH_WASH",
+      "bandwidth": "10Gbps",
+      "latency": "6.9965ms"
+    },
+    {
+      "name": "fabric_GPN_KANS",
+      "bandwidth": "100Gbps",
+      "latency": "0.1375ms"
+    },
+    {
+      "name": "fabric_HAWI_LOSA",
+      "bandwidth": "40Gbps",
+      "latency": "24.5615ms"
+    },
+    {
+      "name": "fabric_HAWI_SEAT",
+      "bandwidth": "40Gbps",
+      "latency": "36.5115ms"
+    },
+    {
+      "name": "fabric_INDI_STAR",
+      "bandwidth": "100Gbps",
+      "latency": "2.314ms"
+    },
+    {
+      "name": "fabric_KANS_SALT",
+      "bandwidth": "100Gbps",
+      "latency": "9.9295ms"
+    },
+    {
+      "name": "fabric_KANS_STAR",
+      "bandwidth": "100Gbps",
+      "latency": "5.494ms"
+    },
+    {
+      "name": "fabric_LOSA_SALT",
+      "bandwidth": "1200Gbps",
+      "latency": "6.117ms"
+    },
+    {
+      "name": "fabric_LOSA_SEAT",
+      "bandwidth": "100Gbps",
+      "latency": "12.2765ms"
+    },
+    {
+      "name": "fabric_LOSA_SRI",
+      "bandwidth": "10Gbps",
+      "latency": "4.0685ms"
+    },
+    {
+      "name": "fabric_LOSA_UCSD",
+      "bandwidth": "100Gbps",
+      "latency": "1.1485ms"
+    },
+    {
+      "name": "fabric_MASS_NEWY",
+      "bandwidth": "100Gbps",
+      "latency": "10ms"
+    },
+    {
+      "name": "fabric_MAX_WASH",
+      "bandwidth": "40Gbps",
+      "latency": "0.8705ms"
+    },
+    {
+      "name": "fabric_MICH_STAR",
+      "bandwidth": "100Gbps",
+      "latency": "2.5495ms"
+    },
+    {
+      "name": "fabric_NCSA_STAR",
+      "bandwidth": "100Gbps",
+      "latency": "1.2345ms"
+    },
+    {
+      "name": "fabric_NEWY_PRIN",
+      "bandwidth": "100Gbps",
+      "latency": "0.667ms"
+    },
+    {
+      "name": "fabric_NEWY_RUTG",
+      "bandwidth": "100Gbps",
+      "latency": "0.5125ms"
+    },
+    {
+      "name": "fabric_NEWY_STAR",
+      "bandwidth": "1200Gbps",
+      "latency": "10.939ms"
+    },
+    {
+      "name": "fabric_NEWY_WASH",
+      "bandwidth": "1200Gbps",
+      "latency": "2.536ms"
+    },
+    {
+      "name": "fabric_PSC_WASH",
+      "bandwidth": "40Gbps",
+      "latency": "3.0665ms"
+    },
+    {
+      "name": "fabric_SALT_SEAT",
+      "bandwidth": "100Gbps",
+      "latency": "10ms"
+    },
+    {
+      "name": "fabric_SALT_STAR",
+      "bandwidth": "1200Gbps",
+      "latency": "15.374ms"
+    },
+    {
+      "name": "fabric_SALT_UTAH",
+      "bandwidth": "100Gbps",
+      "latency": "0.107ms"
+    },
+    {
+      "name": "fabric_STAR_TACC",
+      "bandwidth": "10Gbps",
+      "latency": "10ms"
+    },
+    {
+      "name": "fabric_STAR_WASH",
+      "bandwidth": "100Gbps",
+      "latency": "10ms"
+    }
+  ],
+  "routes": [
+    {
+      "src": "ATLA",
+      "dst": "CLEM",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_CLEM_WASH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "DALL",
+      "links": [
+        "fabric_ATLA_DALL"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "EDUKY",
+      "links": [
+        "fabric_ATLA_STAR",
+        "fabric_EDUKY_STAR"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "FIU",
+      "links": [
+        "fabric_ATLA_FIU"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "GATECH",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "GPN",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "HAWI",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "INDI",
+      "links": [
+        "fabric_ATLA_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "KANS",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "LOSA",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "MASS",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "MAX",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "MICH",
+      "links": [
+        "fabric_ATLA_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "NCSA",
+      "links": [
+        "fabric_ATLA_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "NEWY",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "PRIN",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "PSC",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "RUTG",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "SALT",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "SEAT",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "SRI",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "STAR",
+      "links": [
+        "fabric_ATLA_STAR"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "TACC",
+      "links": [
+        "fabric_ATLA_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "UCSD",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "UTAH",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "ATLA",
+      "dst": "WASH",
+      "links": [
+        "fabric_ATLA_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "DALL",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_ATLA_WASH",
+        "fabric_ATLA_DALL"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "EDUKY",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_EDUKY_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "FIU",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_ATLA_WASH",
+        "fabric_ATLA_FIU"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "GATECH",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "GPN",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_KANS_STAR",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "HAWI",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "INDI",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "KANS",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "LOSA",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "MASS",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "MAX",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "MICH",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "NCSA",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "NEWY",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "PRIN",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "PSC",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "RUTG",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "SALT",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "SEAT",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "SRI",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "STAR",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "TACC",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "UCSD",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "UTAH",
+      "links": [
+        "fabric_CLEM_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "CLEM",
+      "dst": "WASH",
+      "links": [
+        "fabric_CLEM_WASH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "EDUKY",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR",
+        "fabric_EDUKY_STAR"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "FIU",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_FIU"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "GATECH",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "GPN",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "HAWI",
+      "links": [
+        "fabric_DALL_LOSA",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "INDI",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "KANS",
+      "links": [
+        "fabric_DALL_KANS"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "LOSA",
+      "links": [
+        "fabric_DALL_LOSA"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "MASS",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "MAX",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "MICH",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "NCSA",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "NEWY",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "PRIN",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "PSC",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "RUTG",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "SALT",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "SEAT",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "SRI",
+      "links": [
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "STAR",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "TACC",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "UCSD",
+      "links": [
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "UTAH",
+      "links": [
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "DALL",
+      "dst": "WASH",
+      "links": [
+        "fabric_ATLA_DALL",
+        "fabric_ATLA_WASH"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "FIU",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_ATLA_STAR",
+        "fabric_ATLA_FIU"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "GATECH",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_STAR_WASH",
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "GPN",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_KANS_STAR",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "HAWI",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "INDI",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "KANS",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "LOSA",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "MASS",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "MAX",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "MICH",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "NCSA",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "NEWY",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "PRIN",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "PSC",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "RUTG",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "SALT",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "SEAT",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "SRI",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "STAR",
+      "links": [
+        "fabric_EDUKY_STAR"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "TACC",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "UCSD",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "UTAH",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "EDUKY",
+      "dst": "WASH",
+      "links": [
+        "fabric_EDUKY_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "GATECH",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "GPN",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "HAWI",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "INDI",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "KANS",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "LOSA",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "MASS",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "MAX",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "MICH",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "NCSA",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "NEWY",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "PRIN",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "PSC",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "RUTG",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "SALT",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "SEAT",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "SRI",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "STAR",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_STAR"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "TACC",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "UCSD",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_LOSA",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "UTAH",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_DALL",
+        "fabric_DALL_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "FIU",
+      "dst": "WASH",
+      "links": [
+        "fabric_ATLA_FIU",
+        "fabric_ATLA_WASH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "GPN",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_KANS_STAR",
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "HAWI",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "INDI",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "KANS",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "LOSA",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "MASS",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "MAX",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "MICH",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "NCSA",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "NEWY",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "PRIN",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "PSC",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "RUTG",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "SALT",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "SEAT",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "SRI",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "STAR",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "TACC",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "UCSD",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "UTAH",
+      "links": [
+        "fabric_GATECH_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "GATECH",
+      "dst": "WASH",
+      "links": [
+        "fabric_GATECH_WASH"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "HAWI",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT",
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "INDI",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "KANS",
+      "links": [
+        "fabric_GPN_KANS"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "LOSA",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "MASS",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "MAX",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "MICH",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "NCSA",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "NEWY",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "PRIN",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "PSC",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "RUTG",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "SALT",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "SEAT",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "SRI",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "STAR",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "TACC",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "UCSD",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "UTAH",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "GPN",
+      "dst": "WASH",
+      "links": [
+        "fabric_GPN_KANS",
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "INDI",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "KANS",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "LOSA",
+      "links": [
+        "fabric_HAWI_LOSA"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "MASS",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "MAX",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "MICH",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "NCSA",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "NEWY",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "PRIN",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "PSC",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "RUTG",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "SALT",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "SEAT",
+      "links": [
+        "fabric_HAWI_SEAT"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "SRI",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "STAR",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "TACC",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "UCSD",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "UTAH",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "HAWI",
+      "dst": "WASH",
+      "links": [
+        "fabric_HAWI_LOSA",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "KANS",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "LOSA",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "MASS",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "MAX",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "MICH",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "NCSA",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "NEWY",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "PRIN",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "PSC",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "RUTG",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "SALT",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "SEAT",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "SRI",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "STAR",
+      "links": [
+        "fabric_INDI_STAR"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "TACC",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "UCSD",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "UTAH",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "INDI",
+      "dst": "WASH",
+      "links": [
+        "fabric_INDI_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "LOSA",
+      "links": [
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "MASS",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "MAX",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "MICH",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "NCSA",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "NEWY",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "PRIN",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "PSC",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "RUTG",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "SALT",
+      "links": [
+        "fabric_KANS_SALT"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "SEAT",
+      "links": [
+        "fabric_KANS_SALT",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "SRI",
+      "links": [
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "STAR",
+      "links": [
+        "fabric_KANS_STAR"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "TACC",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "UCSD",
+      "links": [
+        "fabric_KANS_SALT",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "UTAH",
+      "links": [
+        "fabric_KANS_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "KANS",
+      "dst": "WASH",
+      "links": [
+        "fabric_KANS_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "MASS",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "MAX",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "MICH",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "NCSA",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "NEWY",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "PRIN",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "PSC",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "RUTG",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "SALT",
+      "links": [
+        "fabric_LOSA_SALT"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "SEAT",
+      "links": [
+        "fabric_LOSA_SEAT"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "SRI",
+      "links": [
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "STAR",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "TACC",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "UCSD",
+      "links": [
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "UTAH",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "LOSA",
+      "dst": "WASH",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "MAX",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_WASH",
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "MICH",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "NCSA",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "NEWY",
+      "links": [
+        "fabric_MASS_NEWY"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "PRIN",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "PSC",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "RUTG",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "SALT",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "SEAT",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "SRI",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "STAR",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "TACC",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "UCSD",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "UTAH",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "MASS",
+      "dst": "WASH",
+      "links": [
+        "fabric_MASS_NEWY",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "MICH",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "NCSA",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "NEWY",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "PRIN",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "PSC",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "RUTG",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "SALT",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "SEAT",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "SRI",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "STAR",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "TACC",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "UCSD",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "UTAH",
+      "links": [
+        "fabric_MAX_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "MAX",
+      "dst": "WASH",
+      "links": [
+        "fabric_MAX_WASH"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "NCSA",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "NEWY",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "PRIN",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "PSC",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "RUTG",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "SALT",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "SEAT",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "SRI",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "STAR",
+      "links": [
+        "fabric_MICH_STAR"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "TACC",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "UCSD",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "UTAH",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "MICH",
+      "dst": "WASH",
+      "links": [
+        "fabric_MICH_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "NEWY",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "PRIN",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "PSC",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_STAR_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "RUTG",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_NEWY_STAR",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "SALT",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "SEAT",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "SRI",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "STAR",
+      "links": [
+        "fabric_NCSA_STAR"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "TACC",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "UCSD",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "UTAH",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "NCSA",
+      "dst": "WASH",
+      "links": [
+        "fabric_NCSA_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "PRIN",
+      "links": [
+        "fabric_NEWY_PRIN"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "PSC",
+      "links": [
+        "fabric_NEWY_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "RUTG",
+      "links": [
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "SALT",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "SEAT",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "SRI",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "STAR",
+      "links": [
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "TACC",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "UCSD",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "UTAH",
+      "links": [
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "NEWY",
+      "dst": "WASH",
+      "links": [
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "PSC",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_WASH",
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "RUTG",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "SALT",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "SEAT",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "SRI",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "STAR",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "TACC",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "UCSD",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "UTAH",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "PRIN",
+      "dst": "WASH",
+      "links": [
+        "fabric_NEWY_PRIN",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "RUTG",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_NEWY_WASH",
+        "fabric_NEWY_RUTG"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "SALT",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "SEAT",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "SRI",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "STAR",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "TACC",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "UCSD",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "UTAH",
+      "links": [
+        "fabric_PSC_WASH",
+        "fabric_STAR_WASH",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "PSC",
+      "dst": "WASH",
+      "links": [
+        "fabric_PSC_WASH"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "SALT",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "SEAT",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "SRI",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "STAR",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "TACC",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "UCSD",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "UTAH",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_STAR",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "RUTG",
+      "dst": "WASH",
+      "links": [
+        "fabric_NEWY_RUTG",
+        "fabric_NEWY_WASH"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "SEAT",
+      "links": [
+        "fabric_SALT_SEAT"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "SRI",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "STAR",
+      "links": [
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "TACC",
+      "links": [
+        "fabric_SALT_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "UCSD",
+      "links": [
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "UTAH",
+      "links": [
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "SALT",
+      "dst": "WASH",
+      "links": [
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "SRI",
+      "links": [
+        "fabric_LOSA_SEAT",
+        "fabric_LOSA_SRI"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "STAR",
+      "links": [
+        "fabric_SALT_SEAT",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "TACC",
+      "links": [
+        "fabric_SALT_SEAT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "UCSD",
+      "links": [
+        "fabric_LOSA_SEAT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "UTAH",
+      "links": [
+        "fabric_SALT_SEAT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "SEAT",
+      "dst": "WASH",
+      "links": [
+        "fabric_SALT_SEAT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "SRI",
+      "dst": "STAR",
+      "links": [
+        "fabric_LOSA_SRI",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR"
+      ]
+    },
+    {
+      "src": "SRI",
+      "dst": "TACC",
+      "links": [
+        "fabric_LOSA_SRI",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "SRI",
+      "dst": "UCSD",
+      "links": [
+        "fabric_LOSA_SRI",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "SRI",
+      "dst": "UTAH",
+      "links": [
+        "fabric_LOSA_SRI",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "SRI",
+      "dst": "WASH",
+      "links": [
+        "fabric_LOSA_SRI",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "STAR",
+      "dst": "TACC",
+      "links": [
+        "fabric_STAR_TACC"
+      ]
+    },
+    {
+      "src": "STAR",
+      "dst": "UCSD",
+      "links": [
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "STAR",
+      "dst": "UTAH",
+      "links": [
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "STAR",
+      "dst": "WASH",
+      "links": [
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "TACC",
+      "dst": "UCSD",
+      "links": [
+        "fabric_STAR_TACC",
+        "fabric_SALT_STAR",
+        "fabric_LOSA_SALT",
+        "fabric_LOSA_UCSD"
+      ]
+    },
+    {
+      "src": "TACC",
+      "dst": "UTAH",
+      "links": [
+        "fabric_STAR_TACC",
+        "fabric_SALT_STAR",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "TACC",
+      "dst": "WASH",
+      "links": [
+        "fabric_STAR_TACC",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "UCSD",
+      "dst": "UTAH",
+      "links": [
+        "fabric_LOSA_UCSD",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_UTAH"
+      ]
+    },
+    {
+      "src": "UCSD",
+      "dst": "WASH",
+      "links": [
+        "fabric_LOSA_UCSD",
+        "fabric_LOSA_SALT",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    },
+    {
+      "src": "UTAH",
+      "dst": "WASH",
+      "links": [
+        "fabric_SALT_UTAH",
+        "fabric_SALT_STAR",
+        "fabric_STAR_WASH"
+      ]
+    }
+  ],
+  "filesystems": []
+}

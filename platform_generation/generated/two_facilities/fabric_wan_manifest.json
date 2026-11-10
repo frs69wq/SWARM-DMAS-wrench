@@ -1,0 +1,60 @@
+{
+  "available_physical_link_count": 33,
+  "default_bandwidth_gbps": 100.0,
+  "default_latency_ms": 10.0,
+  "disconnected_pairs": [],
+  "facility_count": 2,
+  "generated_at_utc": "2026-11-10T21:07:44.153340+00:00",
+  "included_physical_link_count": 1,
+  "latency_override_count": 0,
+  "latency_sources": {
+    "fabric_ATLA_DALL": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 16.682,
+          "one_way_ms": 8.341,
+          "record": "ATLA__DALL",
+          "src": "ATLA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 16.678,
+          "one_way_ms": 8.339,
+          "record": "DALL__ATLA",
+          "src": "DALL"
+        }
+      ],
+      "latency_ms": 8.339,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 16.678,
+        "one_way_ms": 8.339,
+        "record": "DALL__ATLA",
+        "src": "DALL"
+      },
+      "type": "measured_estimate"
+    }
+  },
+  "link_name_map": {
+    "ATLA__DALL": "fabric_ATLA_DALL"
+  },
+  "links_using_fallback_bandwidth": [],
+  "links_using_fallback_latency": [],
+  "links_without_direct_measurement": [],
+  "route_count": 1,
+  "route_metric": "latency",
+  "route_used_physical_link_count": 1,
+  "selected_sites": [
+    "ATLA",
+    "DALL"
+  ],
+  "skipped_links": [],
+  "source": "platform_generation/fabric_data/us_topology.json",
+  "transit_sites": [],
+  "warnings": [
+    "No eligible direct latency measurement for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH.",
+    "Using the explicitly supplied 10 ms fallback for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH."
+  ]
+}

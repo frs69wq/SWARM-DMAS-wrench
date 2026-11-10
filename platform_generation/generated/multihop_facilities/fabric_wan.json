@@ -1,0 +1,42 @@
+{
+  "facilities": [
+    {
+      "name": "ATLA",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    },
+    {
+      "name": "CLEM",
+      "storage_systems": [],
+      "clusters": [],
+      "links": [],
+      "routes": []
+    }
+  ],
+  "storage_systems": [],
+  "links": [
+    {
+      "name": "fabric_ATLA_WASH",
+      "bandwidth": "1200Gbps",
+      "latency": "6.368ms"
+    },
+    {
+      "name": "fabric_CLEM_WASH",
+      "bandwidth": "40Gbps",
+      "latency": "8.1845ms"
+    }
+  ],
+  "routes": [
+    {
+      "src": "ATLA",
+      "dst": "CLEM",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_CLEM_WASH"
+      ]
+    }
+  ],
+  "filesystems": []
+}

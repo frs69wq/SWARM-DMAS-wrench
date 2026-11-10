@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "defaults": {
+    "facility_control_host": {
+      "speed": "2Gf",
+      "cores": 2
+    },
+    "host_network": {
+      "backbone": {
+        "bandwidth": "10Gbps",
+        "latency": "0.1ms"
+      },
+      "node": {
+        "private_link": {
+          "bandwidth": "10Gbps",
+          "latency": "0.1ms"
+        },
+        "loopback": {
+          "bandwidth": "1Gbps",
+          "latency": "0.01ms"
+        }
+      }
+    },
+    "facility_shared_storage": {
+      "server_speed": "100Gf",
+      "type": "JBOD",
+      "disk_count": 8,
+      "read_bandwidth": "20GBps",
+      "write_bandwidth": "10GBps",
+      "capacity": "2PB"
+    },
+    "facility_network": {
+      "bandwidth": "100Gbps",
+      "latency": "0.5ms"
+    },
+    "wan_gateway_access": {
+      "bandwidth": "100Gbps",
+      "latency": "0.5ms"
+    },
+    "cluster_generation": {
+      "profile": "small",
+      "count": 1,
+      "name_template": "{facility}-{profile}-{index}"
+    }
+  },
+  "cluster_profiles": {
+    "small": {
+      "management_host": {
+        "speed": "4Gf",
+        "cores": 4
+      },
+      "compute_nodes": {
+        "count": 8,
+        "speed": "10Tf",
+        "cores": 64
+      },
+      "scratch": {
+        "server_speed": "100Gf",
+        "type": "JBOD",
+        "disk_count": 4,
+        "read_bandwidth": "10GBps",
+        "write_bandwidth": "8GBps",
+        "capacity": "500TB"
+      },
+      "network": {
+        "backbone": {
+          "bandwidth": "100Gbps",
+          "latency": "0.1ms"
+        },
+        "node": {
+          "private_link": {
+            "bandwidth": "25Gbps",
+            "latency": "0.05ms"
+          },
+          "loopback": {
+            "bandwidth": "1Gbps",
+            "latency": "0.01ms"
+          }
+        },
+        "access": {
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        }
+      }
+    }
+  },
+  "facilities": {}
+}

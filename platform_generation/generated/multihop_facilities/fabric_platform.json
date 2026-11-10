@@ -1,0 +1,563 @@
+{
+  "facilities": [
+    {
+      "name": "ATLA",
+      "storage_systems": [
+        {
+          "name": "facility_ATLA_shared",
+          "server_speed": "100Gf",
+          "type": "JBOD",
+          "disk_count": 8,
+          "read_bandwidth": "20GBps",
+          "write_bandwidth": "10GBps"
+        },
+        {
+          "name": "cluster_ATLA_small_1_scratch",
+          "server_speed": "100Gf",
+          "type": "JBOD",
+          "disk_count": 4,
+          "read_bandwidth": "10GBps",
+          "write_bandwidth": "8GBps"
+        }
+      ],
+      "clusters": [
+        {
+          "name": "facility_ATLA_control",
+          "prefix": "facility_ATLA_control_host_",
+          "suffix": "",
+          "count": 1,
+          "node": {
+            "speed": "2Gf",
+            "cores": 2,
+            "private_link": {
+              "bandwidth": "10Gbps",
+              "latency": "0.1ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "10Gbps",
+            "latency": "0.1ms"
+          }
+        },
+        {
+          "name": "cluster_ATLA_small_1_management",
+          "prefix": "host_ATLA_small_1_manager_",
+          "suffix": "",
+          "count": 1,
+          "node": {
+            "speed": "4Gf",
+            "cores": 4,
+            "private_link": {
+              "bandwidth": "25Gbps",
+              "latency": "0.05ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "100Gbps",
+            "latency": "0.1ms"
+          }
+        },
+        {
+          "name": "cluster_ATLA_small_1_compute",
+          "prefix": "host_ATLA_small_1_compute_",
+          "suffix": "",
+          "count": 8,
+          "node": {
+            "speed": "10Tf",
+            "cores": 64,
+            "private_link": {
+              "bandwidth": "25Gbps",
+              "latency": "0.05ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "100Gbps",
+            "latency": "0.1ms"
+          }
+        }
+      ],
+      "links": [
+        {
+          "name": "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_ATLA_facility_ATLA_control_facility_ATLA_shared",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_ATLA_wan_access",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        }
+      ],
+      "routes": [
+        {
+          "src": "cluster_ATLA_small_1_compute",
+          "dst": "cluster_ATLA_small_1_management",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_compute",
+          "dst": "cluster_ATLA_small_1_scratch",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute",
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_compute",
+          "dst": "facility_ATLA_control",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute",
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_compute",
+          "dst": "facility_ATLA_shared",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute",
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+            "local_ATLA_facility_ATLA_control_facility_ATLA_shared"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_management",
+          "dst": "cluster_ATLA_small_1_scratch",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_management",
+          "dst": "facility_ATLA_control",
+          "links": [
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_management",
+          "dst": "facility_ATLA_shared",
+          "links": [
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+            "local_ATLA_facility_ATLA_control_facility_ATLA_shared"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_scratch",
+          "dst": "facility_ATLA_control",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch",
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_ATLA_small_1_scratch",
+          "dst": "facility_ATLA_shared",
+          "links": [
+            "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch",
+            "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+            "local_ATLA_facility_ATLA_control_facility_ATLA_shared"
+          ]
+        },
+        {
+          "src": "facility_ATLA_control",
+          "dst": "facility_ATLA_shared",
+          "links": [
+            "local_ATLA_facility_ATLA_control_facility_ATLA_shared"
+          ]
+        }
+      ],
+      "wan_gateway": {
+        "name": "ATLA_router",
+        "attachment_zone": "facility_ATLA_control",
+        "access_link": "local_ATLA_wan_access",
+        "routes": [
+          {
+            "zone": "cluster_ATLA_small_1_compute",
+            "links": [
+              "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_compute",
+              "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+              "local_ATLA_wan_access"
+            ]
+          },
+          {
+            "zone": "cluster_ATLA_small_1_management",
+            "links": [
+              "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+              "local_ATLA_wan_access"
+            ]
+          },
+          {
+            "zone": "cluster_ATLA_small_1_scratch",
+            "links": [
+              "local_ATLA_cluster_ATLA_small_1_management_cluster_ATLA_small_1_scratch",
+              "local_ATLA_facility_ATLA_control_cluster_ATLA_small_1_management",
+              "local_ATLA_wan_access"
+            ]
+          },
+          {
+            "zone": "facility_ATLA_control",
+            "links": [
+              "local_ATLA_wan_access"
+            ]
+          },
+          {
+            "zone": "facility_ATLA_shared",
+            "links": [
+              "local_ATLA_facility_ATLA_control_facility_ATLA_shared",
+              "local_ATLA_wan_access"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "CLEM",
+      "storage_systems": [
+        {
+          "name": "facility_CLEM_shared",
+          "server_speed": "100Gf",
+          "type": "JBOD",
+          "disk_count": 8,
+          "read_bandwidth": "20GBps",
+          "write_bandwidth": "10GBps"
+        },
+        {
+          "name": "cluster_CLEM_small_1_scratch",
+          "server_speed": "100Gf",
+          "type": "JBOD",
+          "disk_count": 4,
+          "read_bandwidth": "10GBps",
+          "write_bandwidth": "8GBps"
+        }
+      ],
+      "clusters": [
+        {
+          "name": "facility_CLEM_control",
+          "prefix": "facility_CLEM_control_host_",
+          "suffix": "",
+          "count": 1,
+          "node": {
+            "speed": "2Gf",
+            "cores": 2,
+            "private_link": {
+              "bandwidth": "10Gbps",
+              "latency": "0.1ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "10Gbps",
+            "latency": "0.1ms"
+          }
+        },
+        {
+          "name": "cluster_CLEM_small_1_management",
+          "prefix": "host_CLEM_small_1_manager_",
+          "suffix": "",
+          "count": 1,
+          "node": {
+            "speed": "4Gf",
+            "cores": 4,
+            "private_link": {
+              "bandwidth": "25Gbps",
+              "latency": "0.05ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "100Gbps",
+            "latency": "0.1ms"
+          }
+        },
+        {
+          "name": "cluster_CLEM_small_1_compute",
+          "prefix": "host_CLEM_small_1_compute_",
+          "suffix": "",
+          "count": 8,
+          "node": {
+            "speed": "10Tf",
+            "cores": 64,
+            "private_link": {
+              "bandwidth": "25Gbps",
+              "latency": "0.05ms"
+            },
+            "loopback": {
+              "bandwidth": "1Gbps",
+              "latency": "0.01ms"
+            }
+          },
+          "backbone": {
+            "bandwidth": "100Gbps",
+            "latency": "0.1ms"
+          }
+        }
+      ],
+      "links": [
+        {
+          "name": "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_CLEM_facility_CLEM_control_facility_CLEM_shared",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        },
+        {
+          "name": "local_CLEM_wan_access",
+          "bandwidth": "100Gbps",
+          "latency": "0.5ms"
+        }
+      ],
+      "routes": [
+        {
+          "src": "cluster_CLEM_small_1_compute",
+          "dst": "cluster_CLEM_small_1_management",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_compute",
+          "dst": "cluster_CLEM_small_1_scratch",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute",
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_compute",
+          "dst": "facility_CLEM_control",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute",
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_compute",
+          "dst": "facility_CLEM_shared",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute",
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+            "local_CLEM_facility_CLEM_control_facility_CLEM_shared"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_management",
+          "dst": "cluster_CLEM_small_1_scratch",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_management",
+          "dst": "facility_CLEM_control",
+          "links": [
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_management",
+          "dst": "facility_CLEM_shared",
+          "links": [
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+            "local_CLEM_facility_CLEM_control_facility_CLEM_shared"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_scratch",
+          "dst": "facility_CLEM_control",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch",
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management"
+          ]
+        },
+        {
+          "src": "cluster_CLEM_small_1_scratch",
+          "dst": "facility_CLEM_shared",
+          "links": [
+            "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch",
+            "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+            "local_CLEM_facility_CLEM_control_facility_CLEM_shared"
+          ]
+        },
+        {
+          "src": "facility_CLEM_control",
+          "dst": "facility_CLEM_shared",
+          "links": [
+            "local_CLEM_facility_CLEM_control_facility_CLEM_shared"
+          ]
+        }
+      ],
+      "wan_gateway": {
+        "name": "CLEM_router",
+        "attachment_zone": "facility_CLEM_control",
+        "access_link": "local_CLEM_wan_access",
+        "routes": [
+          {
+            "zone": "cluster_CLEM_small_1_compute",
+            "links": [
+              "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_compute",
+              "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+              "local_CLEM_wan_access"
+            ]
+          },
+          {
+            "zone": "cluster_CLEM_small_1_management",
+            "links": [
+              "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+              "local_CLEM_wan_access"
+            ]
+          },
+          {
+            "zone": "cluster_CLEM_small_1_scratch",
+            "links": [
+              "local_CLEM_cluster_CLEM_small_1_management_cluster_CLEM_small_1_scratch",
+              "local_CLEM_facility_CLEM_control_cluster_CLEM_small_1_management",
+              "local_CLEM_wan_access"
+            ]
+          },
+          {
+            "zone": "facility_CLEM_control",
+            "links": [
+              "local_CLEM_wan_access"
+            ]
+          },
+          {
+            "zone": "facility_CLEM_shared",
+            "links": [
+              "local_CLEM_facility_CLEM_control_facility_CLEM_shared",
+              "local_CLEM_wan_access"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "storage_systems": [],
+  "links": [
+    {
+      "name": "fabric_ATLA_WASH",
+      "bandwidth": "1200Gbps",
+      "latency": "6.368ms"
+    },
+    {
+      "name": "fabric_CLEM_WASH",
+      "bandwidth": "40Gbps",
+      "latency": "8.1845ms"
+    }
+  ],
+  "routes": [
+    {
+      "src": "ATLA",
+      "dst": "CLEM",
+      "links": [
+        "fabric_ATLA_WASH",
+        "fabric_CLEM_WASH"
+      ]
+    }
+  ],
+  "filesystems": [
+    {
+      "name": "facility_ATLA_shared_filesystem",
+      "storage_system": "facility_ATLA_shared",
+      "mount_point": "/ATLA/shared/",
+      "size": "2PB"
+    },
+    {
+      "name": "cluster_ATLA_small_1_scratch_filesystem",
+      "storage_system": "cluster_ATLA_small_1_scratch",
+      "mount_point": "/scratch/ATLA-small-1/",
+      "size": "500TB"
+    },
+    {
+      "name": "facility_CLEM_shared_filesystem",
+      "storage_system": "facility_CLEM_shared",
+      "mount_point": "/CLEM/shared/",
+      "size": "2PB"
+    },
+    {
+      "name": "cluster_CLEM_small_1_scratch_filesystem",
+      "storage_system": "cluster_CLEM_small_1_scratch",
+      "mount_point": "/scratch/CLEM-small-1/",
+      "size": "500TB"
+    }
+  ],
+  "swarm_platform_schema_version": 1,
+  "swarm": {
+    "facility_agents": [
+      {
+        "facility": "ATLA",
+        "host": "facility_ATLA_control_host_0"
+      },
+      {
+        "facility": "CLEM",
+        "host": "facility_CLEM_control_host_0"
+      }
+    ],
+    "scheduling_agents": [
+      {
+        "facility": "ATLA",
+        "cluster": "ATLA-small-1",
+        "management_host": "host_ATLA_small_1_manager_0",
+        "compute_cluster": "cluster_ATLA_small_1_compute",
+        "compute_node_count": 8,
+        "scratch_storage_system": "cluster_ATLA_small_1_scratch"
+      },
+      {
+        "facility": "CLEM",
+        "cluster": "CLEM-small-1",
+        "management_host": "host_CLEM_small_1_manager_0",
+        "compute_cluster": "cluster_CLEM_small_1_compute",
+        "compute_node_count": 8,
+        "scratch_storage_system": "cluster_CLEM_small_1_scratch"
+      }
+    ],
+    "note": "Deployment metadata for SWARM; the generic JSON platform loader constructs the referenced hosts and zones but does not instantiate agents."
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "available_physical_link_count": 33,
+  "default_bandwidth_gbps": 100.0,
+  "default_latency_ms": 10.0,
+  "disconnected_pairs": [],
+  "facility_count": 2,
+  "generated_at_utc": "2026-11-10T21:17:08.947970+00:00",
+  "included_physical_link_count": 2,
+  "latency_override_count": 0,
+  "latency_sources": {
+    "fabric_ATLA_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.736,
+          "one_way_ms": 6.368,
+          "record": "ATLA__WASH",
+          "src": "ATLA"
+        },
+        {
+          "file": "matrix_fab-backbone.json",
+          "min_rtt_ms": 12.739,
+          "one_way_ms": 6.3695,
+          "record": "WASH__ATLA",
+          "src": "WASH"
+        }
+      ],
+      "latency_ms": 6.368,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-backbone.json",
+        "min_rtt_ms": 12.736,
+        "one_way_ms": 6.368,
+        "record": "ATLA__WASH",
+        "src": "ATLA"
+      },
+      "type": "measured_estimate"
+    },
+    "fabric_CLEM_WASH": {
+      "eligible_measurements": [
+        {
+          "file": "matrix_fab-leaves.json",
+          "min_rtt_ms": 16.369,
+          "one_way_ms": 8.1845,
+          "record": "CLEM__WASH",
+          "src": "CLEM"
+        }
+      ],
+      "latency_ms": 8.1845,
+      "method": "one_way_ms (minimum RTT divided by two)",
+      "selected_measurement": {
+        "file": "matrix_fab-leaves.json",
+        "min_rtt_ms": 16.369,
+        "one_way_ms": 8.1845,
+        "record": "CLEM__WASH",
+        "src": "CLEM"
+      },
+      "type": "measured_estimate"
+    }
+  },
+  "link_name_map": {
+    "ATLA__WASH": "fabric_ATLA_WASH",
+    "CLEM__WASH": "fabric_CLEM_WASH"
+  },
+  "links_using_fallback_bandwidth": [],
+  "links_using_fallback_latency": [],
+  "links_without_direct_measurement": [],
+  "route_count": 1,
+  "route_metric": "latency",
+  "route_used_physical_link_count": 2,
+  "selected_sites": [
+    "ATLA",
+    "CLEM"
+  ],
+  "skipped_links": [],
+  "source": "platform_generation/fabric_data/us_topology.json",
+  "transit_sites": [
+    "WASH"
+  ],
+  "warnings": [
+    "No eligible direct latency measurement for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH.",
+    "Using the explicitly supplied 10 ms fallback for physical link(s): ATLA__STAR, EDUKY__STAR, MASS__NEWY, SALT__SEAT, STAR__TACC, STAR__WASH."
+  ]
+}
