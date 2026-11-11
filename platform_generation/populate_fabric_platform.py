@@ -60,6 +60,13 @@ def require_nonempty_string(value: Any, description: str) -> str:
     return value.strip()
 
 
+def require_memory_gb(value: Any, description: str) -> int:
+    # GB is decimal. Keep values representable by SWARM's existing int field.
+    if isinstance(value, bool) or not isinstance(value, int) or not 1 <= value <= 2**31 - 1:
+        raise ValueError(f"{description} must be a positive integer GB value no greater than {2**31 - 1}.")
+    return value
+
+
 def merge_objects(parent: dict[str, Any], overrides: dict[str, Any]) -> dict[str, Any]:
     """Recursively merge object fields; arrays and scalar values replace."""
 
@@ -102,6 +109,7 @@ def storage_definition(
     storage = require_object(spec, f"Storage specification '{name}'")
     required = (
         "server_speed",
+        "server_memory_gb",
         "type",
         "disk_count",
         "read_bandwidth",
@@ -122,6 +130,7 @@ def storage_definition(
     platform_storage = {
         "name": name,
         "server_speed": require_nonempty_string(storage["server_speed"], f"{name}.server_speed"),
+        "server_memory_gb": require_memory_gb(storage["server_memory_gb"], f"{name}.server_memory_gb"),
         "type": storage_type,
         "disk_count": disk_count,
         "read_bandwidth": require_nonempty_string(storage["read_bandwidth"], f"{name}.read_bandwidth"),
@@ -146,7 +155,9 @@ def make_loader_cluster(
     count: int,
     speed: str,
     cores: int,
+    memory_gb: int,
     network: dict[str, Any],
+    properties: dict[str, str],
     node_storage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if isinstance(count, bool) or not isinstance(count, int) or count < 1:
@@ -167,6 +178,7 @@ def make_loader_cluster(
     node: dict[str, Any] = {
         "speed": require_nonempty_string(speed, f"{zone_name}.speed"),
         "cores": cores,
+        "memory_gb": require_memory_gb(memory_gb, f"{zone_name}.memory_gb"),
         "private_link": {
             "bandwidth": require_nonempty_string(
                 private_link.get("bandwidth"), f"{zone_name}.private_link.bandwidth"
@@ -197,6 +209,7 @@ def make_loader_cluster(
         "prefix": host_prefix,
         "suffix": "",
         "count": count,
+        "properties": properties,
         "node": node,
         "backbone": {
             "bandwidth": require_nonempty_string(
@@ -389,7 +402,9 @@ def populate_platform(wan: Any, spec: Any) -> dict[str, Any]:
                     control_host.get("speed"), f"{facility_name}.control_host.speed"
                 ),
                 cores=control_host.get("cores"),
+                memory_gb=control_host.get("memory_gb"),
                 network=network_template,
+                properties={"role": "facility_control", "site": facility_name},
             )
         )
         control_hostname = f"{control_hostname_prefix}0"
@@ -518,7 +533,9 @@ def populate_platform(wan: Any, spec: Any) -> dict[str, Any]:
                         management.get("speed"), f"{logical_name}.management_host.speed"
                     ),
                     cores=management.get("cores"),
+                    memory_gb=management.get("memory_gb"),
                     network=network,
+                    properties={"role": "cluster_management", "site": facility_name, "cluster_id": logical_name},
                 )
             )
             compute_storage = compute.get("node_storage")
@@ -550,7 +567,15 @@ def populate_platform(wan: Any, spec: Any) -> dict[str, Any]:
                         compute.get("speed"), f"{logical_name}.compute_nodes.speed"
                     ),
                     cores=compute.get("cores"),
+                    memory_gb=compute.get("memory_gb"),
                     network=network,
+                    properties={
+                        "role": "compute",
+                        "site": facility_name,
+                        "cluster_id": logical_name,
+                        "memory_amount_in_gb": str(require_memory_gb(
+                            compute.get("memory_gb"), f"{logical_name}.compute_nodes.memory_gb")),
+                    },
                     node_storage=compute_storage,
                 )
             )
@@ -686,6 +711,12 @@ def populate_platform(wan: Any, spec: Any) -> dict[str, Any]:
             platform["swarm_platform_schema_version"] = 1
 
     platform["swarm"] = {
+        "memory": {
+            "unit": "GB",
+            "bytes_per_gb": 1000000000,
+            "cluster_capacity_scope": "per_compute_node",
+            "job_request_scope": "total_across_requested_compute_nodes",
+        },
         "facility_agents": swarm_facility_agents,
         "scheduling_agents": swarm_scheduling_agents,
         "note": (

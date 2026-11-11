@@ -6,6 +6,7 @@
         {
           "name": "facility_ATLA_shared",
           "server_speed": "100Gf",
+          "server_memory_gb": 64,
           "type": "JBOD",
           "disk_count": 8,
           "read_bandwidth": "20GBps",
@@ -14,6 +15,7 @@
         {
           "name": "cluster_ATLA_small_1_scratch",
           "server_speed": "100Gf",
+          "server_memory_gb": 64,
           "type": "JBOD",
           "disk_count": 4,
           "read_bandwidth": "10GBps",
@@ -26,9 +28,14 @@
           "prefix": "facility_ATLA_control_host_",
           "suffix": "",
           "count": 1,
+          "properties": {
+            "role": "facility_control",
+            "site": "ATLA"
+          },
           "node": {
             "speed": "2Gf",
             "cores": 2,
+            "memory_gb": 8,
             "private_link": {
               "bandwidth": "10Gbps",
               "latency": "0.1ms"
@@ -48,9 +55,15 @@
           "prefix": "host_ATLA_small_1_manager_",
           "suffix": "",
           "count": 1,
+          "properties": {
+            "role": "cluster_management",
+            "site": "ATLA",
+            "cluster_id": "ATLA-small-1"
+          },
           "node": {
             "speed": "4Gf",
             "cores": 4,
+            "memory_gb": 32,
             "private_link": {
               "bandwidth": "25Gbps",
               "latency": "0.05ms"
@@ -70,9 +83,16 @@
           "prefix": "host_ATLA_small_1_compute_",
           "suffix": "",
           "count": 8,
+          "properties": {
+            "role": "compute",
+            "site": "ATLA",
+            "cluster_id": "ATLA-small-1",
+            "memory_amount_in_gb": "256"
+          },
           "node": {
             "speed": "10Tf",
             "cores": 64,
+            "memory_gb": 256,
             "private_link": {
               "bandwidth": "25Gbps",
               "latency": "0.05ms"
@@ -245,6 +265,7 @@
         {
           "name": "facility_DALL_shared",
           "server_speed": "100Gf",
+          "server_memory_gb": 64,
           "type": "JBOD",
           "disk_count": 8,
           "read_bandwidth": "20GBps",
@@ -253,6 +274,7 @@
         {
           "name": "cluster_DALL_small_1_scratch",
           "server_speed": "100Gf",
+          "server_memory_gb": 64,
           "type": "JBOD",
           "disk_count": 4,
           "read_bandwidth": "10GBps",
@@ -265,9 +287,14 @@
           "prefix": "facility_DALL_control_host_",
           "suffix": "",
           "count": 1,
+          "properties": {
+            "role": "facility_control",
+            "site": "DALL"
+          },
           "node": {
             "speed": "2Gf",
             "cores": 2,
+            "memory_gb": 8,
             "private_link": {
               "bandwidth": "10Gbps",
               "latency": "0.1ms"
@@ -287,9 +314,15 @@
           "prefix": "host_DALL_small_1_manager_",
           "suffix": "",
           "count": 1,
+          "properties": {
+            "role": "cluster_management",
+            "site": "DALL",
+            "cluster_id": "DALL-small-1"
+          },
           "node": {
             "speed": "4Gf",
             "cores": 4,
+            "memory_gb": 32,
             "private_link": {
               "bandwidth": "25Gbps",
               "latency": "0.05ms"
@@ -309,9 +342,16 @@
           "prefix": "host_DALL_small_1_compute_",
           "suffix": "",
           "count": 8,
+          "properties": {
+            "role": "compute",
+            "site": "DALL",
+            "cluster_id": "DALL-small-1",
+            "memory_amount_in_gb": "256"
+          },
           "node": {
             "speed": "10Tf",
             "cores": 64,
+            "memory_gb": 256,
             "private_link": {
               "bandwidth": "25Gbps",
               "latency": "0.05ms"
@@ -524,6 +564,12 @@
   ],
   "swarm_platform_schema_version": 1,
   "swarm": {
+    "memory": {
+      "unit": "GB",
+      "bytes_per_gb": 1000000000,
+      "cluster_capacity_scope": "per_compute_node",
+      "job_request_scope": "total_across_requested_compute_nodes"
+    },
     "facility_agents": [
       {
         "facility": "ATLA",

@@ -32,7 +32,7 @@ def small_spec():
     return {
         "schema_version": 1,
         "defaults": {
-            "facility_control_host": {"speed": "2Gf", "cores": 2},
+            "facility_control_host": {"speed": "2Gf", "cores": 2, "memory_gb": 8},
             "host_network": {
                 "backbone": {"bandwidth": "10Gbps", "latency": "0.1ms"},
                 "node": {
@@ -42,6 +42,7 @@ def small_spec():
             },
             "facility_shared_storage": {
                 "server_speed": "10Gf",
+                "server_memory_gb": 64,
                 "type": "JBOD",
                 "disk_count": 2,
                 "read_bandwidth": "2GBps",
@@ -57,10 +58,11 @@ def small_spec():
         },
         "cluster_profiles": {
             "small": {
-                "management_host": {"speed": "2Gf", "cores": 2},
-                "compute_nodes": {"count": 2, "speed": "1Tf", "cores": 8},
+                "management_host": {"speed": "2Gf", "cores": 2, "memory_gb": 32},
+                "compute_nodes": {"count": 2, "speed": "1Tf", "cores": 8, "memory_gb": 256},
                 "scratch": {
                     "server_speed": "10Gf",
+                    "server_memory_gb": 64,
                     "type": "OneDisk",
                     "disk_count": 1,
                     "read_bandwidth": "1GBps",
@@ -82,6 +84,46 @@ def small_spec():
 
 
 class PopulateFabricPlatformTests(unittest.TestCase):
+    def test_memory_overrides_and_compute_scope(self):
+        spec = small_spec()
+        spec["facilities"] = {"ATLA": {
+            "control_host": {"memory_gb": 12},
+            "shared_storage": {"server_memory_gb": 96},
+            "clusters": [{"name": "atla-memory", "profile": "small", "overrides": {
+                "compute_nodes": {"memory_gb": 512}, "management_host": {"memory_gb": 48},
+                "scratch": {"server_memory_gb": 128}}}]}}
+        platform = populate_platform(small_wan(), spec)
+        atla = next(f for f in platform["facilities"] if f["name"] == "ATLA")
+        zones = {z["properties"]["role"]: z for z in atla["clusters"]}
+        self.assertEqual(zones["facility_control"]["node"]["memory_gb"], 12)
+        self.assertEqual(zones["cluster_management"]["node"]["memory_gb"], 48)
+        self.assertEqual(zones["compute"]["node"]["memory_gb"], 512)
+        self.assertEqual(zones["compute"]["properties"]["memory_amount_in_gb"], "512")
+        self.assertEqual(zones["compute"]["count"], 2)
+        self.assertNotIn("memory_amount_in_gb", zones["cluster_management"]["properties"])
+        self.assertEqual([s["server_memory_gb"] for s in atla["storage_systems"]], [96, 128])
+        self.assertEqual(platform["swarm"]["memory"]["bytes_per_gb"], 10**9)
+
+    def test_missing_or_invalid_memory_is_rejected(self):
+        locations = [("defaults", "facility_control_host", "memory_gb"),
+                     ("defaults", "facility_shared_storage", "server_memory_gb"),
+                     ("cluster_profiles", "small", "management_host", "memory_gb"),
+                     ("cluster_profiles", "small", "compute_nodes", "memory_gb"),
+                     ("cluster_profiles", "small", "scratch", "server_memory_gb")]
+        for location in locations:
+            for value in [None, True, 0, -1, 1.5, "256", 2**31]:
+                with self.subTest(location=location, value=value):
+                    spec = small_spec()
+                    parent = spec
+                    for key in location[:-1]:
+                        parent = parent[key]
+                    if value is None:
+                        del parent[location[-1]]
+                    else:
+                        parent[location[-1]] = value
+                    with self.assertRaisesRegex(ValueError, "memory_gb"):
+                        populate_platform(small_wan(), spec)
+
     def test_gateway_access_preserves_existing_resources_and_paths(self):
         spec = small_spec()
         original = populate_platform(small_wan(), spec)

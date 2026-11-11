@@ -13,6 +13,25 @@ The original file's SHA-256 is
 Its copyright notices are retained and its LGPL 2.1 license is in
 `COPYING.LESSER`. Local changes add `FacilityZone.hpp`, consume gateway
 descriptions, and reject unsupported extension versions and missing references.
+The local loader also exports `swarm_storage_bindings_v1()` from
+`StorageBindings.hpp`. It records the existing filesystem, storage, and mount
+objects at partition creation for the [WRENCH compatibility integration](../compat/wrench/README.md).
+This interface adds no simulated resources and keeps the loader independent of
+WRENCH; standalone Inspector and SimGrid checks use the same loader as before.
+
+## RAM and cluster properties
+
+`clusters[].node.memory_gb` and `storage_systems[].server_memory_gb` optionally
+set host RAM. Values are positive integer decimal GB within `INT_MAX`. The
+loader sets the WRENCH-recognized host property `mem`, for example `256GB`.
+Documents without RAM keep their previous behavior; the population generator
+requires explicit RAM in all current profiles.
+
+`clusters[].properties` is an optional object of string values applied to the
+actual cluster zone. When `memory_amount_in_gb` is present, it must equal
+`node.memory_gb` as a canonical integer string. Generated compute zones use this
+property for memory per compute node. Role/site/cluster identity properties
+are kept separate from host RAM. See the parent README for units and scope.
 
 ## Gateway schema
 

@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/wrench-project/wrench",
+  "commit": "831b959bb9ed9aa174d862958ebbbc15c2d540e8",
+  "compatibility_version": 1,
+  "patch": "fsmod-storage.patch",
+  "patch_sha256": "cbff48b97df924aa8993946af1a6698231b19484b9f3b8294f5cced9bbf7a380"
+}

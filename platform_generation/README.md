@@ -27,6 +27,13 @@ The default input and output paths are:
 Pass `--wan`, `--spec`, and `--output` to select other files. The population
 script does not modify either input.
 
+The [SWARM extension runner](runner/README.md) checks the generated JSON through
+WRENCH's real platform-loading entry point. Use the repository's
+[WRENCH compatibility build](compat/wrench/README.md) to load the existing FSMod
+JBOD stores and attach storage services to those same filesystems. Loading and
+resource checks pass for both two-facility fixtures and the full platform.
+Unpatched WRENCH rejects the member disks as having duplicate default `/` mounts.
+
 ## Resource specification
 
 `fabric_resource_spec.json` uses schema version 1. Its initial `small` profile
@@ -35,12 +42,15 @@ are an editable starting configuration, not measurements of deployed FABRIC
 resources.
 
 - `defaults.facility_control_host` describes one control host per facility.
+  Its `memory_gb` value specifies RAM for that host.
 - `defaults.host_network` provides the JSON loader's required cluster-zone
   backbone, private-link, and loopback settings for those one-host zones.
 - `defaults.facility_shared_storage` defines facility-wide storage. Storage
   performance and capacity are specified together; the generator places
   performance fields in `storage_systems` and translates `capacity` to the
   filesystem's `size`.
+  `server_memory_gb` specifies the storage server's RAM separately from its
+  filesystem capacity. The same field is required for cluster scratch servers.
 - `defaults.facility_network` defines facility-local inter-zone link
   bandwidth and latency.
 - `defaults.wan_gateway_access` optionally defines one shared WAN access link
@@ -54,6 +64,8 @@ resources.
 - `cluster_profiles` contains reusable management-host, compute-node, scratch,
   and network resources. `compute_nodes.count` does not include the separate
   management host.
+  Both `management_host.memory_gb` and `compute_nodes.memory_gb` are required;
+  compute memory is the capacity of each compute host.
 - `facilities` optionally overrides facility storage or network fields and
   provides explicit cluster lists. An explicit list replaces the generated
   default list. Every WAN facility must end up with at least one cluster.
@@ -64,6 +76,51 @@ resources.
 The generator rejects unknown facility names, unknown profile references,
 malformed resource values, duplicate generated zone/link/filesystem names,
 and clusters that produce invalid resource counts.
+
+## Memory metadata
+
+The development specification uses the following modeling assumptions:
+
+| Host role | RAM per host |
+|---|---:|
+| Facility controller | 8 GB |
+| Cluster management | 32 GB |
+| Compute node | 256 GB |
+| Facility or scratch storage server | 64 GB |
+
+These values are editable profiles, not measurements of FABRIC hosts. Facility
+and cluster overrides use the normal recursive merge rules. RAM values must be
+positive integers no greater than 2,147,483,647 GB, matching the existing SWARM
+integer field. GB means exactly 1,000,000,000 bytes.
+
+The populated JSON carries `node.memory_gb` on cluster zones and
+`server_memory_gb` on storage systems. Our local loader translates these to the
+SimGrid host property `mem` with an explicit `GB` unit, which WRENCH uses as RAM
+capacity. New generation requires RAM for every host. Legacy JSON documents
+without RAM remain accepted by the loader and retain WRENCH's unlimited default.
+
+Cluster-zone `properties` are objects of strings and are applied by the local
+loader. Generated zones identify `role` and `site`; management and compute zones
+also identify their logical `cluster_id`. Compute zones publish
+`memory_amount_in_gb`, the per-compute-node value read by SWARM's cluster-property
+API. The loader rejects disagreement between that property and `node.memory_gb`.
+
+`swarm.memory` declares units and scope. The existing workload generator records
+`MemoryGB` / `requested_memory_gb` as total memory across a job's requested compute
+nodes. Cluster capacity metadata remains per compute node. For example, eight
+256 GB compute nodes provide 2,048 GB compute memory, with management/controller
+RAM accounted for separately.
+
+The extension runner reports every host's WRENCH `memory_bytes` and verifies the
+full RAM path in `memory_metadata`. It reads the per-node field through the same
+cluster-property API as SWARM and selects compute hosts from explicit deployment
+mappings, preserving all eight execution hosts. The full platform has 216 compute
+hosts and 55,296 GB compute RAM; all 324 hosts together have 59,832 GB RAM.
+
+This is resource metadata validation. Agent deployment, the remaining cluster
+attributes needed by `HPCSystemDescription`, and job memory admission per
+allocation remain subsequent work. The existing legacy acceptance test still
+compares a request with aggregate cluster capacity.
 
 ## Platform zones, storage, and network boundaries
 

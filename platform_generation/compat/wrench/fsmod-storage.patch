@@ -1,0 +1,223 @@
+--- a/include/wrench/simulation/Simulation.h
++++ b/include/wrench/simulation/Simulation.h
+@@ -19,6 +19,12 @@
+ #include "Version.h"
+ #include "wrench/simulation/SimulationOutput.h"
+ 
++#define WRENCH_SWARM_FSMOD_COMPAT_VERSION 1
++
++namespace simgrid::fsmod {
++    class FileSystem;
++    class Storage;
++}
+ 
+ namespace wrench {
+ 
+@@ -74,6 +80,12 @@
+         void instantiatePlatform(const std::function<void()> &);
+         void instantiatePlatformFromString(const std::string &platform);
+ 
++        // Call during platform creation, after mounting this exact filesystem
++        // on storage. Capacity belongs to the FSMod partition, not each disk.
++        void registerExistingFileSystem(const std::shared_ptr<simgrid::fsmod::FileSystem> &file_system,
++                                        const std::shared_ptr<simgrid::fsmod::Storage> &storage,
++                                        const std::string &mount_point);
++
+         static std::vector<std::string> getHostnameList();
+         static std::vector<std::string> getHostnameListWithSubstring(const std::string &substring);
+         static std::map<std::string, std::vector<std::string>> getHostnameListByCluster();
+@@ -240,6 +252,13 @@
+ //        static int unique_disk_sequence_number;
+ 
+         void platformSanityCheck() const;
++        struct ExistingFileSystemBinding {
++            std::shared_ptr<simgrid::fsmod::FileSystem> file_system;
++            std::shared_ptr<simgrid::fsmod::Storage> storage;
++            std::string mount_point;
++        };
++        std::vector<ExistingFileSystemBinding> existing_file_system_bindings;
++        std::set<simgrid::s4u::Disk *> validateExistingFileSystems() const;
+         void checkSimulationSetup() const;
+ 
+         void startAllProcesses();
+--- a/src/wrench/simulation/Simulation.cpp
++++ b/src/wrench/simulation/Simulation.cpp
+@@ -1492,41 +1492,34 @@
+             S4U_Simulation::getHostMemoryCapacity(h);
+         }
+ 
+-        // Check Disk Capacities
+-        for (auto const &h: hostnames) {
+-            auto disks = S4U_Simulation::getDisks(h);
+-            for (auto const &d: disks) {
+-                S4U_Simulation::getDiskCapacity(h, d);
++        // Explicit FSMod bindings are validated against their actual backing
++        // disks and filesystem partition. Ordinary disks retain mount checks.
++        const auto fsmod_disks = this->validateExistingFileSystems();
++        for (const auto &h : hostnames) {
++            std::vector<std::string> mounts;
++            for (auto *disk : simgrid::s4u::Host::by_name(h)->get_disks()) {
++                if (fsmod_disks.count(disk)) continue;
++                const char *mount = disk->get_property("mount");
++                mounts.emplace_back(mount ? mount : "/");
++                if (const char *size = disk->get_property("size")) {
++                    try { UnitParser::parse_size(size); }
++                    catch (const std::invalid_argument &) {
++                        throw std::invalid_argument("S4U_Simulation::getDiskCapacity(): Disk " + disk->get_name() +
++                                                    " at host " + h + " has invalid size");
++                    }
++                }
+             }
+-        }
+-
+-        // Check Disk Capacities
+-        for (auto const &h: hostnames) {
+-            auto disks = S4U_Simulation::getDisks(h);
+-            for (auto const &d: disks) {
+-                S4U_Simulation::getDiskCapacity(h, d);
+-            }
+-        }
+-
+-        // Check Disk Prefixness
+-        for (auto const &h: hostnames) {
+-            auto disks = S4U_Simulation::getDisks(h);
+-            for (unsigned int i = 0; i < disks.size(); i++) {
+-                for (unsigned int j = 0; j < disks.size(); j++) {
+-                    if (j == i) {
+-                        continue;
+-                    }
+-                    if (disks[i] == disks[j]) {
++            for (size_t i = 0; i < mounts.size(); ++i) {
++                for (size_t j = 0; j < mounts.size(); ++j) {
++                    if (i == j) continue;
++                    if (mounts[i] == mounts[j])
+                         throw std::invalid_argument("Simulation::platformSanityCheck(): Host " + h +
+-                                                    " has two disks with the same mount point '" + disks[i] + "'");
+-                    }
+-                    if ((disks[j] != "/") and (disks[i] != "/") and
+-                        (FileLocation::properPathPrefix(FileLocation::sanitizePath(disks[i]), FileLocation::sanitizePath(disks[j])))) {
++                            " has two disks with the same mount point '" + mounts[i] + "'");
++                    if (mounts[i] != "/" && mounts[j] != "/" &&
++                        FileLocation::properPathPrefix(FileLocation::sanitizePath(mounts[i]),
++                                                       FileLocation::sanitizePath(mounts[j])))
+                         throw std::invalid_argument("Simulation::platformSanityCheck(): Host " + h +
+-                                                    " has two disks, with one of them having a mount point that "
+-                                                    "is a prefix of the other (" +
+-                                                    disks[j] + " and " + disks[i] + ")");
+-                    }
++                            " has two disks with overlapping mount points");
+                 }
+             }
+         }
+--- /dev/null
++++ b/src/wrench/simulation/FsmodCompatibility.cpp
+@@ -0,0 +1,69 @@
++// SWARM compatibility extension. The original WRENCH license applies.
++#include <wrench/simulation/Simulation.h>
++#include <fsmod/FileSystem.hpp>
++#include <fsmod/Storage.hpp>
++#include <simgrid/s4u.hpp>
++#include <algorithm>
++#include <cmath>
++#include <stdexcept>
++
++namespace wrench {
++    void Simulation::registerExistingFileSystem(
++        const std::shared_ptr<simgrid::fsmod::FileSystem> &file_system,
++        const std::shared_ptr<simgrid::fsmod::Storage> &storage,
++        const std::string &mount_point) {
++        if (!initialized || already_setup)
++            throw std::invalid_argument("registerExistingFileSystem: register during platform creation");
++        existing_file_system_bindings.push_back({file_system, storage, mount_point});
++        try {
++            validateExistingFileSystems();
++        } catch (...) {
++            existing_file_system_bindings.pop_back();
++            throw;
++        }
++    }
++
++    std::set<simgrid::s4u::Disk *> Simulation::validateExistingFileSystems() const {
++        std::set<simgrid::s4u::Disk *> managed;
++        std::set<std::string> names;
++        const auto hosts = simgrid::s4u::Engine::get_instance()->get_all_hosts();
++        for (const auto &binding : existing_file_system_bindings) {
++            const auto &fs = binding.file_system;
++            const auto &storage = binding.storage;
++            if (!fs || !storage || binding.mount_point.empty() || binding.mount_point.front() != '/')
++                throw std::invalid_argument("FSMod binding requires filesystem, storage, and absolute mount path");
++            if (!names.insert(fs->get_name()).second)
++                throw std::invalid_argument("Duplicate FSMod filesystem registration: " + fs->get_name());
++            const auto partition = fs->get_partition_for_path_or_null(binding.mount_point);
++            auto normalized_mount = binding.mount_point;
++            while (normalized_mount.size() > 1 && normalized_mount.back() == '/') normalized_mount.pop_back();
++            if (!partition || fs->get_partitions().size() != 1 || partition->get_name() != normalized_mount ||
++                partition->get_size() == 0 || partition->get_free_space() > partition->get_size())
++                throw std::invalid_argument("Invalid FSMod partition/capacity: " + fs->get_name());
++            const auto disks = storage->get_disks();
++            if (disks.empty()) throw std::invalid_argument("FSMod storage has no backing disks");
++            simgrid::s4u::Host *owner = nullptr;
++            for (auto *disk : disks) {
++                if (!disk || !managed.insert(disk).second)
++                    throw std::invalid_argument("Null or multiply registered FSMod backing disk");
++                auto *host = disk->get_host();
++                if (std::find(hosts.begin(), hosts.end(), host) == hosts.end())
++                    throw std::invalid_argument("FSMod disk is not attached to this platform");
++                const auto host_disks = host->get_disks();
++                if (std::find(host_disks.begin(), host_disks.end(), disk) == host_disks.end())
++                    throw std::invalid_argument("FSMod disk is not attached to its host");
++                if (owner && owner != host)
++                    throw std::invalid_argument("This FSMod compatibility API requires one storage host per store");
++                owner = host;
++                if (!std::isfinite(disk->get_read_bandwidth()) || disk->get_read_bandwidth() <= 0 ||
++                    !std::isfinite(disk->get_write_bandwidth()) || disk->get_write_bandwidth() <= 0)
++                    throw std::invalid_argument("Invalid FSMod disk bandwidth: " + disk->get_name());
++            }
++            const auto &registered = simgrid::fsmod::FileSystem::get_file_systems_by_netzone(owner->get_englobing_zone());
++            const auto found = registered.find(fs->get_name());
++            if (found == registered.end() || found->second != fs)
++                throw std::invalid_argument("FSMod filesystem is not registered at its storage host zone");
++        }
++        return managed;
++    }
++}
+--- a/include/wrench/services/storage/simple/SimpleStorageService.h
++++ b/include/wrench/services/storage/simple/SimpleStorageService.h
+@@ -85,6 +85,13 @@
+                                                                 WRENCH_PROPERTY_COLLECTION_TYPE property_list = {},
+                                                                 const WRENCH_MESSAGE_PAYLOAD_COLLECTION_TYPE& messagepayload_list = {});
+ 
++        // Reuse an existing FSMod filesystem with buffered I/O. Ordinary and
++        // internal storage factories keep their original behavior.
++        static SimpleStorageService *createFsmodStorageService(const std::string &hostname,
++                const std::shared_ptr<simgrid::fsmod::FileSystem> &file_system,
++                WRENCH_PROPERTY_COLLECTION_TYPE property_list = {},
++                const WRENCH_MESSAGE_PAYLOAD_COLLECTION_TYPE &messagepayload_list = {});
++
+ 
+         /***********************/
+         /** \cond DEVELOPER   **/
+--- a/src/wrench/services/storage/simple/SimpleStorageService.cpp
++++ b/src/wrench/services/storage/simple/SimpleStorageService.cpp
+@@ -59,6 +59,21 @@
+      * @param messagepayload_list: a message payload list ({} means "use all defaults")
+      * @return a pointer to a simple storage service
+      */
++    SimpleStorageService *SimpleStorageService::createFsmodStorageService(
++            const std::string &hostname,
++            const std::shared_ptr<simgrid::fsmod::FileSystem> &file_system,
++            WRENCH_PROPERTY_COLLECTION_TYPE property_list,
++            const WRENCH_MESSAGE_PAYLOAD_COLLECTION_TYPE &messagepayload_list) {
++        if (!file_system || file_system->get_partitions().empty())
++            throw std::invalid_argument("Existing FSMod filesystem must have a partition");
++        auto buffer = property_list.find(SimpleStorageServiceProperty::BUFFER_SIZE);
++        if (buffer == property_list.end())
++            property_list[SimpleStorageServiceProperty::BUFFER_SIZE] = "1MB";
++        else if (UnitParser::parse_size(buffer->second) == 0)
++            throw std::invalid_argument("Existing FSMod filesystem requires buffered storage I/O");
++        return createSimpleStorageServiceWithExistingFileSystem(hostname, file_system, property_list, messagepayload_list);
++    }
++
+     SimpleStorageService *SimpleStorageService::createSimpleStorageServiceWithExistingFileSystem(const std::string &hostname,
+                                                                            const std::shared_ptr<simgrid::fsmod::FileSystem> &file_system,
+                                                                            WRENCH_PROPERTY_COLLECTION_TYPE property_list,

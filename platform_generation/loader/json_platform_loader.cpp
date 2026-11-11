@@ -13,6 +13,8 @@
 #include <vector>
 
 #include "FacilityZone.hpp"
+#include "StorageBindings.hpp"
+#include "ResourceMetadata.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -50,6 +52,12 @@ std::string get_config_path()
 std::map<std::string, std::shared_ptr<sgfs::Storage>> storage_map;
 std::map<std::string, sg4::NetZone*> zone_map;
 std::map<std::string, const sg4::Link*> link_map;
+swarm_platform::StorageBindings storage_bindings;
+
+extern "C" const swarm_platform::StorageBindings* swarm_storage_bindings_v1()
+{
+  return &storage_bindings;
+}
 
 void create_storage_system_zone(sg4::NetZone* parent, const json& storage_config)
 {
@@ -65,6 +73,7 @@ void create_storage_system_zone(sg4::NetZone* parent, const json& storage_config
   // Create server host
   const std::string server_speed = storage_config["server_speed"];
   auto* server = zone->add_host(server_name, server_speed);
+  swarm_platform::set_memory(server, swarm_platform::memory_gb(storage_config, "server_memory_gb", name));
 
   // Create storage
   const std::string storage_type = storage_config["type"];
@@ -110,6 +119,8 @@ void create_cluster_zone(sg4::NetZone* parent, const json& cluster_config)
 
   // Node configuration
   const auto& node_cfg = cluster_config["node"];
+  const auto host_memory = swarm_platform::memory_gb(node_cfg, "memory_gb", name + ".node");
+  swarm_platform::apply_cluster_properties(cluster, cluster_config, host_memory);
 
   const std::string host_speed = node_cfg["speed"];
   int host_cores               = node_cfg["cores"];
@@ -139,6 +150,7 @@ void create_cluster_zone(sg4::NetZone* parent, const json& cluster_config)
   for (int i = 0; i < count; i++) {
     std::string hostname = prefix + std::to_string(i) + suffix;
     auto* host           = cluster->add_host(hostname, host_speed)->set_core_count(host_cores);
+    swarm_platform::set_memory(host, host_memory);
 
     // Create node storage if configured (always OneDisk for node-local storage)
     if (has_storage) {
@@ -214,6 +226,7 @@ void create_filesystems(const json& filesystems_config, const json& platform_con
       auto* zone = zone_map[storage_system_name];
       fs->mount_partition(mount_point_pattern, storage_map[storage_name], size);
       sgfs::FileSystem::register_file_system(zone, fs);
+      storage_bindings.push_back({fs, storage_map.at(storage_name), mount_point_pattern});
 
     } else if (fs_cfg.contains("cluster")) {
       // Filesystem on a cluster (per-node partitions)

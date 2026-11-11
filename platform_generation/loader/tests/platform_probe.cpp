@@ -59,12 +59,19 @@ int main(int argc, char** argv) {
         for (const auto& cluster:facility["clusters"]) {
           const std::string name=cluster["name"];
           report["zone_properties"][name]=*zones.at(name)->get_properties();
+          if (cluster.contains("properties"))
+            for (const auto& [key,value]:cluster.at("properties").items())
+              require(zones.at(name)->get_property(key) && zones.at(name)->get_property(key)==value.get<std::string>(),
+                      "Cluster property: "+name+"/"+key);
           check_link(name+"_backbone",cluster["backbone"]["bandwidth"],cluster["backbone"].value("latency","0s"),true);
           for (int i=0;i<cluster["count"].get<int>();++i) {
             const std::string hostname=cluster["prefix"].get<std::string>()+std::to_string(i)+cluster["suffix"].get<std::string>();
             auto* host=sg::Host::by_name(hostname); expected_hosts.insert(hostname);
             require(host->get_core_count()==cluster["node"]["cores"].get<int>(),"Host cores: "+hostname);
             require(near(host->get_speed(),speed(cluster["node"]["speed"])),"Host speed: "+hostname);
+            if (cluster["node"].contains("memory_gb"))
+              require(host->get_property("mem") && host->get_property("mem")==
+                      std::to_string(cluster["node"]["memory_gb"].get<int>())+"GB", "Host RAM: "+hostname);
             report["hosts"].push_back({{"name",hostname},{"cores",host->get_core_count()},{"speed",host->get_speed()},{"properties",*host->get_properties()}});
             for (auto suffix:{"_LinkUP","_LinkDOWN"})
               check_link(hostname+suffix,cluster["node"]["private_link"]["bandwidth"],cluster["node"]["private_link"].value("latency","0s"),true);
@@ -75,7 +82,11 @@ int main(int argc, char** argv) {
           const std::string name=storage["name"], hostname=name+"_server";
           auto* host=sg::Host::by_name(hostname); expected_hosts.insert(hostname);
           require(near(host->get_speed(),speed(storage["server_speed"])),"Storage server speed: "+hostname);
-          report["hosts"].push_back({{"name",hostname},{"cores",host->get_core_count()},{"speed",host->get_speed()}});
+          if (storage.contains("server_memory_gb"))
+            require(host->get_property("mem") && host->get_property("mem")==
+                    std::to_string(storage["server_memory_gb"].get<int>())+"GB", "Storage server RAM: "+hostname);
+          report["hosts"].push_back({{"name",hostname},{"cores",host->get_core_count()},{"speed",host->get_speed()},
+                                    {"properties",*host->get_properties()}});
           const int count=storage["disk_count"];
           require(host->get_disks().size()==static_cast<size_t>(count),"Disk count: "+name);
           for (auto* disk:host->get_disks()) {

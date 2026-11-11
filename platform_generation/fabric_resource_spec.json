@@ -3,7 +3,8 @@
   "defaults": {
     "facility_control_host": {
       "speed": "2Gf",
-      "cores": 2
+      "cores": 2,
+      "memory_gb": 8
     },
     "host_network": {
       "backbone": {
@@ -23,6 +24,7 @@
     },
     "facility_shared_storage": {
       "server_speed": "100Gf",
+      "server_memory_gb": 64,
       "type": "JBOD",
       "disk_count": 8,
       "read_bandwidth": "20GBps",
@@ -47,15 +49,18 @@
     "small": {
       "management_host": {
         "speed": "4Gf",
-        "cores": 4
+        "cores": 4,
+        "memory_gb": 32
       },
       "compute_nodes": {
         "count": 8,
         "speed": "10Tf",
-        "cores": 64
+        "cores": 64,
+        "memory_gb": 256
       },
       "scratch": {
         "server_speed": "100Gf",
+        "server_memory_gb": 64,
         "type": "JBOD",
         "disk_count": 4,
         "read_bandwidth": "10GBps",
