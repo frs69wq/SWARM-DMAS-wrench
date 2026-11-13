@@ -46,7 +46,7 @@ p <- ggplot(data, aes(x = Strategy, y = MeanTurnaround, color = Strategy)) +
     limits = c(0, NA),
     expand = expansion(mult = c(0, 0.04))
   ) +
-  labs(x = "Strategy") +
+  labs(x = NULL) +
   theme_bw(base_size = 11) +
   theme(legend.position = "none")
 

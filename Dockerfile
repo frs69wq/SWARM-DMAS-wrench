@@ -30,7 +30,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install required R packages
-RUN R -e "install.packages(c('jsonlite', 'ggplot2', 'gridExtra', 'readr'), repos='https://cloud.r-project.org')"
+# The plotting packages are pinned to the versions used to produce the paper figures
+RUN R -e "options(repos = 'https://cloud.r-project.org'); \
+          install.packages(c('remotes', 'jsonlite', 'gridExtra', 'readr')); \
+          remotes::install_version('ggplot2', version = '3.5.1', upgrade = 'never'); \
+          remotes::install_version('patchwork', version = '1.3.0', upgrade = 'never'); \
+          remotes::install_version('plyr', version = '1.8.9', upgrade = 'never'); \
+          for (p in c('ggplot2', 'patchwork', 'plyr')) library(p, character.only = TRUE)"
 
 # Upgrade pip to the latest version
 RUN python3 -m venv /opt/venv
