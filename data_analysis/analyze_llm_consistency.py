@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Compare job placement across independent decentralized LLM runs."""
+"""How to run
 
-# how to run
-
+python3 data_analysis/analyze_llm_consistency.py
+"""
 
 import re
 import sys
